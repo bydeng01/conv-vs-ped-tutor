@@ -1,0 +1,10 @@
+metric,condition,mean,median,ci95_lo,ci95_hi,n
+inwindow_visible_tutor_turns,conv,13.5,11.5,10.3,17.1,10
+inwindow_visible_tutor_turns,ped,22.3,23.0,21.0,23.5,10
+model_calls,conv,67.8,67.5,67.3,68.4,10
+model_calls,ped,91.6,91.5,91.2,92.0,10
+tutor_tokens,conv,20761.7,20208.0,19260.6475,22649.535,10
+tutor_tokens,ped,30075.8,30550.5,28598.7925,31482.102499999997,10
+total_tokens,conv,269089.9,258081.5,252643.77,289303.8,10
+total_tokens,ped,187484.8,189964.0,175901.0075,199038.7425,10
+inwindow_visible_tutor_turns_gap,ped_minus_conv,8.8,11.0,4.6,12.6,10

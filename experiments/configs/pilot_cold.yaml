@@ -1,0 +1,7 @@
+# Pilot, cold baseline condition (no tutor). One seed.
+condition: cold
+models_config: configs/models.yaml
+agent_config: null        # no tutor
+domain: domain/algebra/problems.yaml
+seeds: [0]
+backend: mock

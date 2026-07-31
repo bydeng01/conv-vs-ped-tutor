@@ -1,0 +1,456 @@
+{
+  "analysis": "condition-adjusted leakage sensitivity",
+  "eligible_conditions": [
+    "conv",
+    "ped"
+  ],
+  "epistemic_status": "post hoc sensitivity analysis",
+  "inputs": [
+    {
+      "base": "sonnet",
+      "path": "results/confirmatory/per_turn.csv",
+      "sha256": "c0f0c1d8273dd6ed3bb09f52c6695d96954155e2e78f5cac652b7195aa3096be"
+    },
+    {
+      "base": "gpt",
+      "path": "results/confirmatory_gpt/per_turn.csv",
+      "sha256": "e9ea84db273d2c7378da3a2893b53459743c52a81501f098a72f86092f016826"
+    },
+    {
+      "base": "gemini",
+      "path": "results/confirmatory_gemini/per_turn.csv",
+      "sha256": "67cc270300c25b7d64ae35cb314c14a1ff43c92efb8bd1c894da1e8ab1df4a83"
+    }
+  ],
+  "provenance": {
+    "numpy": "2.4.6",
+    "optimizer_policy_source": "analysis.inferential.J2_OPTIMIZERS",
+    "pandas": "3.0.3",
+    "python": "3.12.8",
+    "scipy": "1.17.1",
+    "script": "analysis/condition_adjusted_sensitivity.py",
+    "statsmodels": "0.14.6"
+  },
+  "relationship_to_preregistered_j2": "additive; the pre-registered pooled J2 analyses and inference.json files remain primary and unchanged",
+  "results": {
+    "gemini": {
+      "models": {
+        "helpfulness": {
+          "coefficient": 0.053163645061076265,
+          "condition_coefficient_ped_vs_conv": -0.07490054681500899,
+          "confidence_interval_95": [
+            -0.029600252240201505,
+            0.13592754236235405
+          ],
+          "converged": true,
+          "formula": "helpfulness ~ leaks_i + C(condition)",
+          "groups": "single dummy group (_grp = 1)",
+          "model": "linear mixed model; crossed replicate and problem random intercepts as variance components over one dummy group; maximum likelihood",
+          "n_obs": 442,
+          "optimizer_history": [
+            {
+              "allvecs": [
+                [
+                  0.18216994056882524,
+                  -0.32548312664713946
+                ],
+                [
+                  0.05240283786368499,
+                  0.08616714197223124
+                ],
+                [
+                  -0.034109835183694454,
+                  0.0858077553693743
+                ],
+                [
+                  -0.033930493749293786,
+                  0.08579829319568587
+                ]
+              ],
+              "converged": true,
+              "direc": [
+                [
+                  1.0,
+                  0.0
+                ],
+                [
+                  0.0,
+                  1.0
+                ]
+              ],
+              "fcalls": 90,
+              "fopt": 0.049002300080780097,
+              "iterations": 3,
+              "warnflag": 0
+            }
+          ],
+          "optimizer_sequence": [
+            "lbfgs",
+            "bfgs",
+            "cg",
+            "powell"
+          ],
+          "p_value": 0.20803433427545726,
+          "re_formula": "0",
+          "reml": false,
+          "selected_optimizer": "powell",
+          "standard_error": 0.04222725415064197,
+          "variance_components": {
+            "problem": 7.379769691352995e-05,
+            "replicate": 0.0004718671525714632,
+            "residual": 0.06410065239162271
+          },
+          "vc_formula": {
+            "problem": "0 + C(problem_id)",
+            "replicate": "0 + C(replicate_id)"
+          },
+          "warnings": [
+            "Maximum Likelihood optimization failed to converge. Check mle_retvals",
+            "Retrying MixedLM optimization with bfgs",
+            "Maximum Likelihood optimization failed to converge. Check mle_retvals",
+            "Retrying MixedLM optimization with cg",
+            "Maximum Likelihood optimization failed to converge. Check mle_retvals",
+            "Retrying MixedLM optimization with powell",
+            "The MLE may be on the boundary of the parameter space."
+          ]
+        },
+        "next_turn_independence": {
+          "coefficient": -0.6036559999755627,
+          "condition_coefficient_ped_vs_conv": -0.08083987473273099,
+          "confidence_interval_95": [
+            -0.7349135275440954,
+            -0.47239847240703003
+          ],
+          "converged": true,
+          "formula": "indep_i ~ leaks_i + C(condition)",
+          "groups": "single dummy group (_grp = 1)",
+          "model": "linear mixed model; crossed replicate and problem random intercepts as variance components over one dummy group; maximum likelihood",
+          "n_obs": 442,
+          "optimizer_history": [
+            {
+              "allvecs": [
+                [
+                  -0.19643531052582747,
+                  0.32727767467595925
+                ],
+                [
+                  0.00023652157265890983,
+                  0.38962398084205885
+                ],
+                [
+                  1.0996808134725142e-05,
+                  0.3896684486922883
+                ]
+              ],
+              "converged": true,
+              "direc": [
+                [
+                  1.0,
+                  0.0
+                ],
+                [
+                  0.0,
+                  1.0
+                ]
+              ],
+              "fcalls": 65,
+              "fopt": 0.478200017411103,
+              "iterations": 2,
+              "warnflag": 0
+            }
+          ],
+          "optimizer_sequence": [
+            "lbfgs",
+            "bfgs",
+            "cg",
+            "powell"
+          ],
+          "p_value": 1.9883126786598337e-19,
+          "re_formula": "0",
+          "reml": false,
+          "selected_optimizer": "powell",
+          "standard_error": 0.06696935688812412,
+          "variance_components": {
+            "problem": 1.759445871334113e-11,
+            "replicate": 0.02209190158857687,
+            "residual": 0.1454931728296691
+          },
+          "vc_formula": {
+            "problem": "0 + C(problem_id)",
+            "replicate": "0 + C(replicate_id)"
+          },
+          "warnings": [
+            "Maximum Likelihood optimization failed to converge. Check mle_retvals",
+            "Retrying MixedLM optimization with bfgs",
+            "Maximum Likelihood optimization failed to converge. Check mle_retvals",
+            "Retrying MixedLM optimization with cg",
+            "Maximum Likelihood optimization failed to converge. Check mle_retvals",
+            "Retrying MixedLM optimization with powell",
+            "The MLE may be on the boundary of the parameter space."
+          ]
+        }
+      },
+      "sample": {
+        "condition_counts": {
+          "conv": 215,
+          "ped": 227
+        },
+        "excluded_condition_counts": {},
+        "n_problems": 6,
+        "n_replicates": 10,
+        "rows_analyzed": 442,
+        "rows_read": 442
+      }
+    },
+    "gpt": {
+      "models": {
+        "helpfulness": {
+          "coefficient": -0.04058210052078997,
+          "condition_coefficient_ped_vs_conv": 0.37706572396779303,
+          "confidence_interval_95": [
+            -0.17828103378220939,
+            0.09711683274062943
+          ],
+          "converged": true,
+          "formula": "helpfulness ~ leaks_i + C(condition)",
+          "groups": "single dummy group (_grp = 1)",
+          "model": "linear mixed model; crossed replicate and problem random intercepts as variance components over one dummy group; maximum likelihood",
+          "n_obs": 379,
+          "optimizer_history": [
+            {
+              "allvecs": [
+                [
+                  -0.2223175313408457,
+                  0.256847693729955
+                ],
+                [
+                  0.001081940612858212,
+                  0.28969715459558637
+                ],
+                [
+                  2.3486365358229427e-05,
+                  0.2895455790758853
+                ]
+              ],
+              "converged": true,
+              "direc": [
+                [
+                  1.0,
+                  0.0
+                ],
+                [
+                  0.0,
+                  1.0
+                ]
+              ],
+              "fcalls": 63,
+              "fopt": 0.6203078400423067,
+              "iterations": 2,
+              "warnflag": 0
+            }
+          ],
+          "optimizer_sequence": [
+            "lbfgs",
+            "bfgs",
+            "cg",
+            "powell"
+          ],
+          "p_value": 0.5635118854628991,
+          "re_formula": "0",
+          "reml": false,
+          "selected_optimizer": "powell",
+          "standard_error": 0.070255848754146,
+          "variance_components": {
+            "problem": 1.075555454794247e-10,
+            "replicate": 0.01634688692989243,
+            "residual": 0.19498499068261663
+          },
+          "vc_formula": {
+            "problem": "0 + C(problem_id)",
+            "replicate": "0 + C(replicate_id)"
+          },
+          "warnings": [
+            "Maximum Likelihood optimization failed to converge. Check mle_retvals",
+            "Retrying MixedLM optimization with bfgs",
+            "Maximum Likelihood optimization failed to converge. Check mle_retvals",
+            "Retrying MixedLM optimization with cg",
+            "Maximum Likelihood optimization failed to converge. Check mle_retvals",
+            "Retrying MixedLM optimization with powell",
+            "The MLE may be on the boundary of the parameter space."
+          ]
+        },
+        "next_turn_independence": {
+          "coefficient": -0.29475489235139385,
+          "condition_coefficient_ped_vs_conv": 0.3315099706951758,
+          "confidence_interval_95": [
+            -0.4153538853786942,
+            -0.17415589932409345
+          ],
+          "converged": true,
+          "formula": "indep_i ~ leaks_i + C(condition)",
+          "groups": "single dummy group (_grp = 1)",
+          "model": "linear mixed model; crossed replicate and problem random intercepts as variance components over one dummy group; maximum likelihood",
+          "n_obs": 379,
+          "optimizer_history": [
+            {
+              "converged": true,
+              "fcalls": 23,
+              "fopt": 0.5141301297218545,
+              "gopt": [
+                -0.00926747468333164,
+                0.016355353923340813
+              ],
+              "iterations": 4,
+              "warnflag": 0
+            }
+          ],
+          "optimizer_sequence": [
+            "lbfgs",
+            "bfgs",
+            "cg",
+            "powell"
+          ],
+          "p_value": 1.6650724920614195e-06,
+          "re_formula": "0",
+          "reml": false,
+          "selected_optimizer": "lbfgs",
+          "standard_error": 0.061531229134091175,
+          "variance_components": {
+            "problem": 0.0015822227938625509,
+            "replicate": 0.012659672618865341,
+            "residual": 0.15671912630305349
+          },
+          "vc_formula": {
+            "problem": "0 + C(problem_id)",
+            "replicate": "0 + C(replicate_id)"
+          },
+          "warnings": [
+            "The MLE may be on the boundary of the parameter space."
+          ]
+        }
+      },
+      "sample": {
+        "condition_counts": {
+          "conv": 161,
+          "ped": 218
+        },
+        "excluded_condition_counts": {},
+        "n_problems": 6,
+        "n_replicates": 10,
+        "rows_analyzed": 379,
+        "rows_read": 379
+      }
+    },
+    "sonnet": {
+      "models": {
+        "helpfulness": {
+          "coefficient": 0.5002182459393254,
+          "condition_coefficient_ped_vs_conv": 0.3516400297743643,
+          "confidence_interval_95": [
+            0.33989474836029016,
+            0.6605417435183607
+          ],
+          "converged": true,
+          "formula": "helpfulness ~ leaks_i + C(condition)",
+          "groups": "single dummy group (_grp = 1)",
+          "model": "linear mixed model; crossed replicate and problem random intercepts as variance components over one dummy group; maximum likelihood",
+          "n_obs": 358,
+          "optimizer_history": [
+            {
+              "converged": true,
+              "fcalls": 75,
+              "fopt": 0.6937307670830594,
+              "gopt": [
+                0.01889948502839461,
+                -0.017261379631568832
+              ],
+              "iterations": 6,
+              "warnflag": 0
+            }
+          ],
+          "optimizer_sequence": [
+            "lbfgs",
+            "bfgs",
+            "cg",
+            "powell"
+          ],
+          "p_value": 9.643784879152811e-10,
+          "re_formula": "0",
+          "reml": false,
+          "selected_optimizer": "lbfgs",
+          "standard_error": 0.08179920592605096,
+          "variance_components": {
+            "problem": 0.03159653856132494,
+            "replicate": 0.020665389260016015,
+            "residual": 0.21737274594226053
+          },
+          "vc_formula": {
+            "problem": "0 + C(problem_id)",
+            "replicate": "0 + C(replicate_id)"
+          },
+          "warnings": []
+        },
+        "next_turn_independence": {
+          "coefficient": -0.3015182405213561,
+          "condition_coefficient_ped_vs_conv": 0.16357881156704604,
+          "confidence_interval_95": [
+            -0.4333964668665105,
+            -0.16964001417620173
+          ],
+          "converged": true,
+          "formula": "indep_i ~ leaks_i + C(condition)",
+          "groups": "single dummy group (_grp = 1)",
+          "model": "linear mixed model; crossed replicate and problem random intercepts as variance components over one dummy group; maximum likelihood",
+          "n_obs": 358,
+          "optimizer_history": [
+            {
+              "converged": true,
+              "fcalls": 20,
+              "fopt": 0.5848490167770991,
+              "gopt": [
+                6.911236437391077e-06,
+                -1.4097869527589633e-07
+              ],
+              "iterations": 11,
+              "warnflag": 0
+            }
+          ],
+          "optimizer_sequence": [
+            "lbfgs",
+            "bfgs",
+            "cg",
+            "powell"
+          ],
+          "p_value": 7.424513053934483e-06,
+          "re_formula": "0",
+          "reml": false,
+          "selected_optimizer": "lbfgs",
+          "standard_error": 0.0672860457566532,
+          "variance_components": {
+            "problem": 7.706180112285161e-10,
+            "replicate": 0.01610956949861838,
+            "residual": 0.18123071491266915
+          },
+          "vc_formula": {
+            "problem": "0 + C(problem_id)",
+            "replicate": "0 + C(replicate_id)"
+          },
+          "warnings": [
+            "The MLE may be on the boundary of the parameter space."
+          ]
+        }
+      },
+      "sample": {
+        "condition_counts": {
+          "conv": 135,
+          "ped": 223
+        },
+        "excluded_condition_counts": {},
+        "n_problems": 6,
+        "n_replicates": 10,
+        "rows_analyzed": 358,
+        "rows_read": 358
+      }
+    }
+  }
+}

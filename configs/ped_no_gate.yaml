@@ -1,0 +1,28 @@
+# PedTutor ABLATION variant: ped_no_gate (decisions-log.md 2026-06-30 pre-registration).
+#
+# ADDITIVE structural ablation. The frozen PedTutor and configs/ped_full.yaml are NOT
+# edited and stay byte-stable: ALL prompts and routing are sourced UNCHANGED from the
+# base config below. This file declares ONLY the structural manipulation. It is consumed
+# by agents/ped_ablations.py:PedTutorVariant (a subclass of the frozen PedTutor that
+# overrides ONLY graph construction), so agents/ped_tutor.py is byte-identical too.
+#
+# Manipulation: DROP the deferral_gate responder node. The deferral_gate's model call
+# (node="deferral_gate") never happens and the graph never enters it. The orphaned route
+# value "defer" (student demanded the answer) is RE-ROUTED to the retained `decomposer`
+# responder (the uniform remap rule, justified in the pre-registration: the decomposer is
+# the neutral single-step scaffold that never reveals the answer, so it represents "the
+# specialized deferral node is simply gone"). state_tracker still runs, so each visible
+# turn is state_tracker + one responder == 2 model calls (UNCHANGED vs full ped).
+#
+# `branch` semantics (pre-registered): the visible turn keeps its ORIGINAL deterministic
+# route value, so a rerouted answer-demand turn is handled by node="decomposer" but still
+# carries branch="defer" (the student-behaviour routing reason). The realized responder
+# is recoverable from the call's node tag. Nothing is tuned toward an outcome.
+
+agent: ped_tutor
+base_config: configs/ped_full.yaml
+variant: no_gate
+drop_node: deferral_gate
+# orphaned route value -> retained responder node it now lands on
+reroute:
+  defer: decomposer

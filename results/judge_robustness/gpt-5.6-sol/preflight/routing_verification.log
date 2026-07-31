@@ -1,0 +1,42 @@
+OpenRouter routing verification -- 2026-07-20T08:00:30Z
+  endpoint https://openrouter.ai/api/v1   slug openai/gpt-5.6-sol
+  frozen pin: {"provider": {"order": ["openai"], "allow_fallbacks": false}}
+
+[0] auth precondition -- one UNPINNED call must succeed before anything is interpreted
+  unpinned call served by 'OpenAI' (model 'openai/gpt-5.6-sol')
+  NOTE: default routing is NOT the frozen route -- recorded only as a baseline.
+  PASS  auth_precondition: unpinned call succeeded, served by 'OpenAI'
+
+[1] POSITIVE CONTROL -- the frozen pin, repeated, must be stable
+  order=['openai'] over 3 calls -> ['OpenAI', 'OpenAI', 'OpenAI']
+  PASS  frozen_pin_stable: served by ['OpenAI'] (expected exactly ['OpenAI'])
+
+[2] DISCRIMINATING POSITIVE CONTROL -- pin a DIFFERENT provider; routing must follow it
+    If order=['azure'] is served by Azure while order=['openai'] is served by OpenAI,
+    then `order` demonstrably SELECTS the upstream. No 404 can establish this.
+  order=['azure'] -> served by 'Azure' (model 'openai/gpt-5.6-sol')
+  PASS  order_selects_provider: order=['azure'] served by 'Azure' vs order=['openai'] served by 'OpenAI'; routing follows `order`
+
+[3] NEGATIVE CONTROL -- a bogus tag must be refused
+  PASS  bogus_tag_refused: refused (NotFoundError: Error code: 404 - {'error': {'message': 'No endpoints found for openai/gpt-5.6-sol.', 'code': 404}, 'user_id': 'user_<redacted-for-anonymous-review>'})
+
+[4] MISCASE PROBE -- documents what a 404 proves
+    A valid-but-miscased tag returning the SAME error as a bogus one means 404 shows
+    'tag unrecognized', not 'provider refused'. This is why [2] is the real control.
+  PASS  miscase_documented: order=['OpenAI'] -> served by 'OpenAI'; differs from the bogus tag
+
+[5] allow_fallbacks ISOLATION -- an unroutable pin must SUCCEED when fallbacks are on
+  PASS  allow_fallbacks_is_load_bearing: bogus tag + allow_fallbacks=True -> served by 'OpenAI' (so allow_fallbacks=False is what blocks the fallback)
+
+[6] reasoning_effort through the route (the scoring preflight's prompts are too trivial)
+  reasoning_effort=minimal  -> reasoning_tokens=166
+  reasoning_effort=high     -> reasoning_tokens=126
+  **FAIL**  reasoning_effort_honored: minimal=166 high=126; NOT demonstrated -- the frozen config sets reasoning_effort=medium, so this must be resolved or disclosed
+
+==========================================================================
+  6/7 verdicts passed
+
+  The load-bearing one is `order_selects_provider` [2]: it is the only test that
+  distinguishes an ENFORCED pin from one that is accepted and ignored while OpenAI
+  happens to be the default. `bogus_tag_refused` [3] alone cannot.
+==========================================================================

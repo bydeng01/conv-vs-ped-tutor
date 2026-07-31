@@ -1,0 +1,17 @@
+{
+  "state": "scoring",
+  "timestamp_utc": "2026-07-20T00:36:11Z",
+  "complete": false,
+  "reason": "live scoring attempt started",
+  "previously_promoted_outputs_now_invalid": [],
+  "stale_staging_dirs_removed": [],
+  "note": "A scoring attempt is in progress. Any files listed above are from an EARLIER run and must not be reported, compared, or packaged; they are replaced atomically on success and deleted on failure.",
+  "base": "sonnet",
+  "rubrics": [
+    "helpfulness",
+    "pedagogy"
+  ],
+  "reps": 3,
+  "backend": "live",
+  "units": 358
+}

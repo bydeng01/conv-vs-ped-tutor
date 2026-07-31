@@ -1,0 +1,7 @@
+# Pilot, ConvTutor condition. One seed.
+condition: conv
+models_config: configs/models.yaml
+agent_config: configs/conv_tutor.yaml
+domain: domain/algebra/problems.yaml
+seeds: [0]
+backend: mock        # flip to "live" once ANTHROPIC_API_KEY is set

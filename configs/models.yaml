@@ -1,0 +1,68 @@
+# FINAL-STAGE config (the confirmatory run reads this).
+#
+# Roles must be distinct and correctly tiered. The TUTOR is the model whose
+# conversational alignment the paper studies, and is the SAME for ConvTutor and
+# PedTutor (capability control). The STUDENT is the learner instrument and only
+# needs to genuinely struggle.
+#
+# DEVIATION FROM BRIEF (logged in decisions-log.md 2026-06-15): the brief named a
+# Haiku-tier *Claude* student, but calibration showed Haiku is too capable to
+# struggle (100% cold on hard algebra; it role-plays "stuck" yet commits correct
+# answers). The brief's own rationale is that the student "must genuinely
+# struggle," so the student is a genuinely-weak open model (Llama-3.1-8B), while
+# the tutor and judge remain Claude. Capability control is unaffected (both tutors
+# share the Sonnet tutor). Needs BOTH ANTHROPIC_API_KEY and GROQ_API_KEY.
+
+provider: anthropic          # default; the student role overrides to openrouter
+providers:
+  anthropic:
+    api_key_env: ANTHROPIC_API_KEY
+  cerebras:                   # available, but ruled out as the STUDENT: this account
+                             # serves only gpt-oss-120b / zai-glm-4.7 (no weak small
+                             # model; list_models 2026-06-18), both too strong to struggle.
+    base_url: https://api.cerebras.ai/v1
+    api_key_env: CEREBRAS_API_KEY
+  groq:
+    base_url: https://api.groq.com/openai/v1
+    api_key_env: GROQ_API_KEY
+  openrouter:
+    base_url: https://openrouter.ai/api/v1
+    api_key_env: OPENROUTER_API_KEY
+
+roles:
+  tutor:                      # subject of the thesis; SAME for ConvTutor & PedTutor
+    provider: anthropic
+    model: claude-sonnet-4-6
+    temperature: 0.4          # low but nonzero so replicates vary
+    max_tokens: 1024
+  student:                    # genuinely weak learner instrument (open model).
+                              # SOLVED 2026-06-18: OpenRouter routes to Groq for this model
+                              # (list_endpoints), so we pin OpenRouter -> Groq to get the
+                              # calibration-validated WEAK serving (cold ~11%) through
+                              # OpenRouter's throughput -- no Groq Dev plan, no 6000-TPM free
+                              # cap. Reference-precision 8B servings (DeepInfra fp8/bf16) were
+                              # too strong (cold ~89%); the weakness is Groq's quantization, so
+                              # we pin specifically to Groq. served_provider is logged per call
+                              # to confirm "Groq" actually served it. Re-gate cold before pilot.
+    provider: openrouter
+    model: meta-llama/llama-3.1-8b-instruct
+    temperature: 0.8          # moderate, so it behaves like a real learner
+    max_tokens: 512
+    extra_body:
+      provider:
+        order: ["Groq"]             # the calibrated-weak serving (~$0.05/M in, $0.08/M out)
+        allow_fallbacks: false      # stay on Groq; no drift
+        # NO quantizations filter -- Groq's quant is unreported ("unknown" in
+        # list_endpoints), so filtering (e.g. fp8) would EXCLUDE Groq and break the pin.
+  judge:                      # third config; perceived-helpfulness only (Step 6)
+    provider: anthropic
+    model: claude-opus-4-8
+    # claude-opus-4-8 rejects the `temperature` parameter ("deprecated for this
+    # model"), so it is omitted and the judge uses the model's default sampling.
+    # The 3 reps/turn are therefore genuine stochastic samples (decisions-log
+    # 2026-06-18). The client also drops temperature automatically for any model
+    # that rejects it. Found pre-data, during judge instrument validation.
+    temperature: null
+    max_tokens: 512
+
+backend: live

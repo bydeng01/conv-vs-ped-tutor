@@ -1,0 +1,36 @@
+# PedTutor ABLATION variant: ped_no_tracker (decisions-log.md 2026-06-30 pre-registration).
+#
+# ADDITIVE structural ablation. The frozen PedTutor and configs/ped_full.yaml are NOT
+# edited and stay byte-stable: ALL prompts and routing are sourced UNCHANGED from the
+# base config below. This file declares ONLY the structural manipulation. It is consumed
+# by agents/ped_ablations.py:PedTutorVariant (a subclass of the frozen PedTutor that
+# overrides ONLY graph construction), so agents/ped_tutor.py is byte-identical too.
+#
+# Manipulation: DROP the state_tracker ENTRY/planner node. Its model call
+# (node="state_tracker") never happens and the graph never enters it. The deterministic
+# routing signals (asked / attempts / hint_level / reveal_allowed) are precomputed in
+# respond() and do NOT depend on the tracker, so routing is unchanged. The new graph
+# ENTRY is a conditional route directly from START to the routed responder
+# (defer->deferral_gate, decompose->decomposer, hint->hint_cascade); ALL THREE responders
+# are retained. Responders consume the planner estimate via _responder_system; with the
+# tracker gone they receive the ASSESSMENT FALLBACK below — the empty assessment, which
+# the existing format_assessment() renders as "(planner produced no structured estimate)"
+# with progressed=False. This is the SAME graceful-degradation path the frozen code
+# already takes when the planner yields no structured estimate (e.g. the offline mock);
+# it is faithful, not a re-implemented stub.
+#
+# CALL-COUNT CONFOUND (disclosed): dropping the entry node reduces each visible turn to
+# ONE responder call (n_model_calls == 1), one fewer than full ped (== 2). So ped_no_tracker
+# alone confounds structure with per-turn call count; ped_no_gate / ped_no_cascade do not
+# (they stay at 2). The per-1k-tutor-token sensitivity (analysis/inferential.cost_normalized)
+# and the matched visible-turn-budget pass (analysis/matched_budget.py) bound the
+# token/visible-turn side of compute; the internal call-count drop is disclosed, not
+# "controlled". `branch` keeps its original route value (unchanged stamping).
+
+agent: ped_tutor
+base_config: configs/ped_full.yaml
+variant: no_tracker
+drop_node: state_tracker
+# state_tracker is the ENTRY/planner node (not a visible responder). With it dropped:
+new_entry: route                 # START routes directly to the responder via the deterministic _route
+assessment_fallback: ""          # responders get the empty assessment -> "(planner produced no structured estimate)", progressed=False

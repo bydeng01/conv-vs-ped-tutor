@@ -1,0 +1,254 @@
+{
+  "purpose": "captured verification of the OpenRouter routing pin (cross-judge-amendment-openrouter-2026-07-20.md \u00a73, \u00a76)",
+  "utc": "2026-07-20T08:01:15Z",
+  "base_url": "https://openrouter.ai/api/v1",
+  "model_slug": "openai/gpt-5.6-sol",
+  "frozen_pin": {
+    "provider": {
+      "order": [
+        "openai"
+      ],
+      "allow_fallbacks": false
+    }
+  },
+  "calls": [
+    {
+      "label": "precondition-unpinned",
+      "utc": "2026-07-20T08:00:30Z",
+      "extra_body": null,
+      "reasoning_effort": null,
+      "served_provider": "OpenAI",
+      "returned_model": "openai/gpt-5.6-sol",
+      "usage": {
+        "prompt": 13,
+        "completion": 5,
+        "reasoning": 0
+      },
+      "response_id": "gen-1784534431-WiepSsi8t8iKeRjviNvU",
+      "error": null
+    },
+    {
+      "label": "frozen-pin-1",
+      "utc": "2026-07-20T08:00:35Z",
+      "extra_body": {
+        "provider": {
+          "order": [
+            "openai"
+          ],
+          "allow_fallbacks": false
+        }
+      },
+      "reasoning_effort": null,
+      "served_provider": "OpenAI",
+      "returned_model": "openai/gpt-5.6-sol",
+      "usage": {
+        "prompt": 13,
+        "completion": 5,
+        "reasoning": 0
+      },
+      "response_id": "gen-1784534435-bicDs7AoxNJVZmAyNBDY",
+      "error": null
+    },
+    {
+      "label": "frozen-pin-2",
+      "utc": "2026-07-20T08:00:38Z",
+      "extra_body": {
+        "provider": {
+          "order": [
+            "openai"
+          ],
+          "allow_fallbacks": false
+        }
+      },
+      "reasoning_effort": null,
+      "served_provider": "OpenAI",
+      "returned_model": "openai/gpt-5.6-sol",
+      "usage": {
+        "prompt": 13,
+        "completion": 5,
+        "reasoning": 0
+      },
+      "response_id": "gen-1784534438-sGiAQAQTAYH8mUMPZP0Z",
+      "error": null
+    },
+    {
+      "label": "frozen-pin-3",
+      "utc": "2026-07-20T08:00:41Z",
+      "extra_body": {
+        "provider": {
+          "order": [
+            "openai"
+          ],
+          "allow_fallbacks": false
+        }
+      },
+      "reasoning_effort": null,
+      "served_provider": "OpenAI",
+      "returned_model": "openai/gpt-5.6-sol",
+      "usage": {
+        "prompt": 13,
+        "completion": 5,
+        "reasoning": 0
+      },
+      "response_id": "gen-1784534441-IPBDzlJn08kKZG3NM1hS",
+      "error": null
+    },
+    {
+      "label": "positive-control-azure",
+      "utc": "2026-07-20T08:00:44Z",
+      "extra_body": {
+        "provider": {
+          "order": [
+            "azure"
+          ],
+          "allow_fallbacks": false
+        }
+      },
+      "reasoning_effort": null,
+      "served_provider": "Azure",
+      "returned_model": "openai/gpt-5.6-sol",
+      "usage": {
+        "prompt": 13,
+        "completion": 5,
+        "reasoning": 0
+      },
+      "response_id": "gen-1784534444-Jm25JDwpqkbG3YxBVuH5",
+      "error": null
+    },
+    {
+      "label": "negative-control-bogus",
+      "utc": "2026-07-20T08:00:47Z",
+      "extra_body": {
+        "provider": {
+          "order": [
+            "definitely-not-a-provider"
+          ],
+          "allow_fallbacks": false
+        }
+      },
+      "reasoning_effort": null,
+      "served_provider": null,
+      "returned_model": null,
+      "usage": null,
+      "error": "NotFoundError: Error code: 404 - {'error': {'message': 'No endpoints found for openai/gpt-5.6-sol.', 'code': 404}, 'user_id': 'user_<redacted-for-anonymous-review>'}"
+    },
+    {
+      "label": "miscase-OpenAI",
+      "utc": "2026-07-20T08:00:49Z",
+      "extra_body": {
+        "provider": {
+          "order": [
+            "OpenAI"
+          ],
+          "allow_fallbacks": false
+        }
+      },
+      "reasoning_effort": null,
+      "served_provider": "OpenAI",
+      "returned_model": "openai/gpt-5.6-sol",
+      "usage": {
+        "prompt": 13,
+        "completion": 5,
+        "reasoning": 0
+      },
+      "response_id": "gen-1784534449-Dj93VXcGznXlZbJ8pfae",
+      "error": null
+    },
+    {
+      "label": "bogus-with-fallbacks",
+      "utc": "2026-07-20T08:00:51Z",
+      "extra_body": {
+        "provider": {
+          "order": [
+            "definitely-not-a-provider"
+          ],
+          "allow_fallbacks": true
+        }
+      },
+      "reasoning_effort": null,
+      "served_provider": "OpenAI",
+      "returned_model": "openai/gpt-5.6-sol",
+      "usage": {
+        "prompt": 13,
+        "completion": 5,
+        "reasoning": 0
+      },
+      "response_id": "gen-1784534451-dfIaoiMeLLzdcdxRDT1W",
+      "error": null
+    },
+    {
+      "label": "reasoning-minimal",
+      "utc": "2026-07-20T08:00:54Z",
+      "extra_body": {
+        "provider": {
+          "order": [
+            "openai"
+          ],
+          "allow_fallbacks": false
+        }
+      },
+      "reasoning_effort": "minimal",
+      "served_provider": "OpenAI",
+      "returned_model": "openai/gpt-5.6-sol",
+      "usage": {
+        "prompt": 38,
+        "completion": 256,
+        "reasoning": 166
+      },
+      "response_id": "gen-1784534454-JX47i2wlrVy5xFYAmR5O",
+      "error": null
+    },
+    {
+      "label": "reasoning-high",
+      "utc": "2026-07-20T08:01:06Z",
+      "extra_body": {
+        "provider": {
+          "order": [
+            "openai"
+          ],
+          "allow_fallbacks": false
+        }
+      },
+      "reasoning_effort": "high",
+      "served_provider": "OpenAI",
+      "returned_model": "openai/gpt-5.6-sol",
+      "usage": {
+        "prompt": 38,
+        "completion": 256,
+        "reasoning": 126
+      },
+      "response_id": "gen-1784534466-mpxlCR5DhOYRKm3hmiBt",
+      "error": null
+    }
+  ],
+  "verdicts": {
+    "auth_precondition": {
+      "pass": true,
+      "detail": "unpinned call succeeded, served by 'OpenAI'"
+    },
+    "frozen_pin_stable": {
+      "pass": true,
+      "detail": "served by ['OpenAI'] (expected exactly ['OpenAI'])"
+    },
+    "order_selects_provider": {
+      "pass": true,
+      "detail": "order=['azure'] served by 'Azure' vs order=['openai'] served by 'OpenAI'; routing follows `order`"
+    },
+    "bogus_tag_refused": {
+      "pass": true,
+      "detail": "refused (NotFoundError: Error code: 404 - {'error': {'message': 'No endpoints found for openai/gpt-5.6-sol.', 'code': 404}, 'user_id': 'user_<redacted-for-anonymous-review>'})"
+    },
+    "miscase_documented": {
+      "pass": true,
+      "detail": "order=['OpenAI'] -> served by 'OpenAI'; differs from the bogus tag"
+    },
+    "allow_fallbacks_is_load_bearing": {
+      "pass": true,
+      "detail": "bogus tag + allow_fallbacks=True -> served by 'OpenAI' (so allow_fallbacks=False is what blocks the fallback)"
+    },
+    "reasoning_effort_honored": {
+      "pass": false,
+      "detail": "minimal=166 high=126; NOT demonstrated -- the frozen config sets reasoning_effort=medium, so this must be resolved or disclosed"
+    }
+  }
+}

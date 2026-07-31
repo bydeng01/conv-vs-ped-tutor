@@ -1,0 +1,14 @@
+{
+  "base": "gpt",
+  "source_results": "results/confirmatory_gpt",
+  "units": 379,
+  "rubrics": [
+    "helpfulness",
+    "pedagogy"
+  ],
+  "reps": 3,
+  "expected_valid_ratings_per_rubric": 1137,
+  "expected_calls_total": 2274,
+  "freeze_tag": "crossmodel-gpt-freeze",
+  "freeze_head": "644271b1e6e365a84d679a103beb08f0775e60ef"
+}

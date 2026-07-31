@@ -1,0 +1,14 @@
+{
+  "base": "sonnet",
+  "source_results": "results/confirmatory",
+  "units": 358,
+  "rubrics": [
+    "helpfulness",
+    "pedagogy"
+  ],
+  "reps": 3,
+  "expected_valid_ratings_per_rubric": 1074,
+  "expected_calls_total": 2148,
+  "freeze_tag": "confirmatory-freeze",
+  "freeze_head": "1a12b566bb825ff91359fb7c526e24b161ae38d3"
+}

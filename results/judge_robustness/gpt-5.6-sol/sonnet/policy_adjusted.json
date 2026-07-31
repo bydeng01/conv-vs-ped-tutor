@@ -1,0 +1,151 @@
+{
+  "epistemic_status": "post hoc judge robustness",
+  "analysis": "condition-adjusted leakage sensitivity on GPT-5.6 Sol scores",
+  "primary_judge": "Claude Opus 4.8",
+  "robustness_judge": "GPT-5.6 Sol (gpt-5.6-sol)",
+  "base": "sonnet",
+  "original_transcript_freeze": {
+    "confirmatory-freeze": "1a12b566bb825ff91359fb7c526e24b161ae38d3"
+  },
+  "second_judge_plan_freeze": {
+    "judge-robustness-openrouter-freeze": "8e85836603f6e983bc7df1e71e1924ce1bd52c40"
+  },
+  "requested_model": "openai/gpt-5.6-sol",
+  "returned_model": "openai/gpt-5.6-sol",
+  "request_parameters": {
+    "reasoning_effort": "medium",
+    "temperature": "omitted",
+    "max_completion_tokens": 2048,
+    "seed_policy": "seeded(base=0,+rep)",
+    "reps": 3,
+    "provider": "openrouter",
+    "endpoint": "https://openrouter.ai/api/v1",
+    "provider_routing": {
+      "provider": {
+        "order": [
+          "openai"
+        ],
+        "allow_fallbacks": false
+      }
+    }
+  },
+  "backend": "live",
+  "score_source": "GPT-5.6 Sol judge calls",
+  "formula": "{outcome} ~ leaks_i + C(condition)",
+  "eligible_conditions": [
+    "conv",
+    "ped"
+  ],
+  "note": "leak->helpfulness is GPT-specific; leak->next_turn_independence is the DETERMINISTIC (judge-invariant) leg, included for completeness.",
+  "sample": {
+    "rows_read": 358,
+    "rows_analyzed": 358,
+    "condition_counts": {
+      "conv": 135,
+      "ped": 223
+    },
+    "excluded_condition_counts": {},
+    "n_replicates": 10,
+    "n_problems": 6
+  },
+  "models": {
+    "helpfulness": {
+      "formula": "helpfulness ~ leaks_i + C(condition)",
+      "model": "linear mixed model; crossed replicate and problem random intercepts as variance components over one dummy group; maximum likelihood",
+      "reml": false,
+      "groups": "single dummy group (_grp = 1)",
+      "re_formula": "0",
+      "vc_formula": {
+        "replicate": "0 + C(replicate_id)",
+        "problem": "0 + C(problem_id)"
+      },
+      "optimizer_sequence": [
+        "lbfgs",
+        "bfgs",
+        "cg",
+        "powell"
+      ],
+      "selected_optimizer": "lbfgs",
+      "converged": true,
+      "optimizer_history": [
+        {
+          "fopt": 0.04543671862528139,
+          "gopt": [
+            0.011182576745773267,
+            -0.0004911256777338833
+          ],
+          "fcalls": 26,
+          "warnflag": 0,
+          "converged": true,
+          "iterations": 7
+        }
+      ],
+      "warnings": [
+        "The MLE may be on the boundary of the parameter space."
+      ],
+      "coefficient": 0.04383040969476206,
+      "standard_error": 0.03795723962337822,
+      "confidence_interval_95": [
+        -0.03056441291961593,
+        0.11822523230914006
+      ],
+      "p_value": 0.24820050973354313,
+      "condition_coefficient_ped_vs_conv": -0.101715323245317,
+      "variance_components": {
+        "problem": 0.0003474160495076571,
+        "replicate": 0.0029001687540365436,
+        "residual": 0.062121992835501336
+      },
+      "n_obs": 358
+    },
+    "next_turn_independence": {
+      "formula": "indep_i ~ leaks_i + C(condition)",
+      "model": "linear mixed model; crossed replicate and problem random intercepts as variance components over one dummy group; maximum likelihood",
+      "reml": false,
+      "groups": "single dummy group (_grp = 1)",
+      "re_formula": "0",
+      "vc_formula": {
+        "replicate": "0 + C(replicate_id)",
+        "problem": "0 + C(problem_id)"
+      },
+      "optimizer_sequence": [
+        "lbfgs",
+        "bfgs",
+        "cg",
+        "powell"
+      ],
+      "selected_optimizer": "lbfgs",
+      "converged": true,
+      "optimizer_history": [
+        {
+          "fopt": 0.5848490167770991,
+          "gopt": [
+            6.911236437391077e-06,
+            -1.4097869527589633e-07
+          ],
+          "fcalls": 20,
+          "warnflag": 0,
+          "converged": true,
+          "iterations": 11
+        }
+      ],
+      "warnings": [
+        "The MLE may be on the boundary of the parameter space."
+      ],
+      "coefficient": -0.3015182405213561,
+      "standard_error": 0.0672860457566532,
+      "confidence_interval_95": [
+        -0.4333964668665105,
+        -0.16964001417620173
+      ],
+      "p_value": 7.424513053934483e-06,
+      "condition_coefficient_ped_vs_conv": 0.16357881156704604,
+      "variance_components": {
+        "problem": 7.706180112285161e-10,
+        "replicate": 0.01610956949861838,
+        "residual": 0.18123071491266915
+      },
+      "n_obs": 358
+    }
+  }
+}

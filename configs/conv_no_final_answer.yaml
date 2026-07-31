@@ -1,0 +1,26 @@
+# ConvTutor ABLATION variant: conv_no_final_answer (decisions-log.md 2026-06-30 pre-registration).
+#
+# An ADDITIVE, prompt-only ablation. It is a NEW config; the minimal ConvTutor
+# (configs/conv_tutor.yaml) and its prompt are NOT edited and stay byte-stable.
+# conv_no_final_answer uses the SAME single-node ConvTutor agent and the SAME single
+# model call per turn as the minimal ConvTutor; ONLY the system prompt below differs.
+#
+# Purpose (descriptive): test whether a single prompt-only non-disclosure instruction —
+# without PedTutor's structure (no separate nodes, no deterministic >=2-attempt reveal
+# gate) — is enough to suppress a conversational tutor's emergent answer-leakage and
+# raise student independence. The instruction is a generic "do not give the final
+# answer" directive; it does NOT contain canonical_answer or any of the frozen leakage
+# strings, and it is not tuned against the metrics. Whatever it shows is reported.
+# Verbatim text mirrored in supplement/ablation_prompts.md. Do not edit after data
+# collection without a dated decisions-log.md entry.
+
+agent: conv_tutor
+
+system_prompt: |
+  You are a math tutor helping a student. Be helpful and clear, but do not give away
+  the final answer — guide the student to reach it themselves. Explain the ideas and
+  the next step to try, and let the student carry out the final reasoning and the
+  arithmetic on their own.
+
+# Max student/tutor exchanges per problem during training (matches the minimal ConvTutor).
+max_turns_per_problem: 8

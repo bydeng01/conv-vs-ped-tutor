@@ -1,0 +1,14 @@
+{
+  "base": "gemini",
+  "source_results": "results/confirmatory_gemini",
+  "units": 442,
+  "rubrics": [
+    "helpfulness",
+    "pedagogy"
+  ],
+  "reps": 3,
+  "expected_valid_ratings_per_rubric": 1326,
+  "expected_calls_total": 2652,
+  "freeze_tag": "crossmodel-gemini-freeze",
+  "freeze_head": "68ee3faf8d1370da15bb7f8ab1a87599389a7eb6"
+}

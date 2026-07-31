@@ -1,0 +1,767 @@
+{
+  "results_dir": "results/ablation",
+  "kind": "DESCRIPTIVE ablation extension (#5). NOT the primary; NOT part of the \u00a710 J1/J2 verdict; NEVER fed to analysis/run_inference.py.",
+  "alpha_for_reference_only": 0.05,
+  "conditions_present": [
+    "cold",
+    "conv",
+    "conv_no_final_answer",
+    "conv_socratic",
+    "ped",
+    "ped_no_cascade",
+    "ped_no_gate",
+    "ped_no_tracker"
+  ],
+  "ablation_conditions_present": [
+    "conv_socratic",
+    "conv_no_final_answer",
+    "ped_no_gate",
+    "ped_no_tracker",
+    "ped_no_cascade"
+  ],
+  "per_session_marginals_variant_minus_baseline": {
+    "conv_socratic": {
+      "baseline": "conv",
+      "separation_reference": "ped",
+      "vs_baseline": {
+        "leakage_rate": {
+          "n_pairs": 10,
+          "variant_mean": 0.017424242424242422,
+          "baseline_mean": 0.4296176046176046,
+          "mean_diff_variant_minus_baseline": -0.4121933621933622,
+          "median_diff": -0.3354978354978355,
+          "diff_ci95": [
+            -0.5423538961038961,
+            -0.29567009379509385
+          ],
+          "cliffs_delta_variant_vs_baseline": -1.0,
+          "n_variant_gt_baseline": 0,
+          "n_variant_lt_baseline": 10
+        },
+        "independence_ratio": {
+          "n_pairs": 10,
+          "variant_mean": 0.6569576719576719,
+          "baseline_mean": 0.579924944336709,
+          "mean_diff_variant_minus_baseline": 0.07703272762096289,
+          "median_diff": 0.09276556776556771,
+          "diff_ci95": [
+            -0.08784900284900288,
+            0.2355293130072541
+          ],
+          "cliffs_delta_variant_vs_baseline": 0.25,
+          "n_variant_gt_baseline": 6,
+          "n_variant_lt_baseline": 4
+        },
+        "helpfulness_mean": {
+          "n_pairs": 10,
+          "variant_mean": 4.8042748917748925,
+          "baseline_mean": 4.703114478114478,
+          "mean_diff_variant_minus_baseline": 0.1011604136604138,
+          "median_diff": 0.0052609427609429105,
+          "diff_ci95": [
+            -0.09323818542568528,
+            0.3270442520442522
+          ],
+          "cliffs_delta_variant_vs_baseline": 0.12,
+          "n_variant_gt_baseline": 5,
+          "n_variant_lt_baseline": 5
+        },
+        "pedagogy_mean": {
+          "n_pairs": 10,
+          "variant_mean": 4.863383838383838,
+          "baseline_mean": 2.5779100529100534,
+          "mean_diff_variant_minus_baseline": 2.2854737854737857,
+          "median_diff": 2.1562049062049065,
+          "diff_ci95": [
+            1.9306248496873495,
+            2.635190746753247
+          ],
+          "cliffs_delta_variant_vs_baseline": 1.0,
+          "n_variant_gt_baseline": 10,
+          "n_variant_lt_baseline": 0
+        }
+      },
+      "vs_separation_reference": {
+        "leakage_rate": {
+          "n_pairs": 10,
+          "variant_mean": 0.017424242424242422,
+          "baseline_mean": 0.0642512077294686,
+          "mean_diff_variant_minus_baseline": -0.04682696530522617,
+          "median_diff": -0.020833333333333332,
+          "diff_ci95": [
+            -0.10833333333333332,
+            0.005681818181818183
+          ],
+          "cliffs_delta_variant_vs_baseline": -0.34,
+          "n_variant_gt_baseline": 3,
+          "n_variant_lt_baseline": 5
+        },
+        "independence_ratio": {
+          "n_pairs": 10,
+          "variant_mean": 0.6569576719576719,
+          "baseline_mean": 0.6561379310344828,
+          "mean_diff_variant_minus_baseline": 0.0008197409231891883,
+          "median_diff": 0.010714285714285676,
+          "diff_ci95": [
+            -0.1367332831600073,
+            0.14624434409779233
+          ],
+          "cliffs_delta_variant_vs_baseline": 0.0,
+          "n_variant_gt_baseline": 5,
+          "n_variant_lt_baseline": 5
+        },
+        "helpfulness_mean": {
+          "n_pairs": 10,
+          "variant_mean": 4.8042748917748925,
+          "baseline_mean": 4.796980965258998,
+          "mean_diff_variant_minus_baseline": 0.007293926515894533,
+          "median_diff": 0.0027173913043476716,
+          "diff_ci95": [
+            -0.10978935006323447,
+            0.1296935190413453
+          ],
+          "cliffs_delta_variant_vs_baseline": -0.03,
+          "n_variant_gt_baseline": 5,
+          "n_variant_lt_baseline": 5
+        },
+        "pedagogy_mean": {
+          "n_pairs": 10,
+          "variant_mean": 4.863383838383838,
+          "baseline_mean": 4.298555925386588,
+          "mean_diff_variant_minus_baseline": 0.5648279129972497,
+          "median_diff": 0.5205314009661839,
+          "diff_ci95": [
+            0.3476283645956132,
+            0.8168148880105406
+          ],
+          "cliffs_delta_variant_vs_baseline": 0.96,
+          "n_variant_gt_baseline": 10,
+          "n_variant_lt_baseline": 0
+        }
+      }
+    },
+    "conv_no_final_answer": {
+      "baseline": "conv",
+      "separation_reference": "ped",
+      "vs_baseline": {
+        "leakage_rate": {
+          "n_pairs": 10,
+          "variant_mean": 0.14557808630698657,
+          "baseline_mean": 0.4296176046176046,
+          "mean_diff_variant_minus_baseline": -0.2840395183106181,
+          "median_diff": -0.2777777777777778,
+          "diff_ci95": [
+            -0.375166258861911,
+            -0.1965931903064257
+          ],
+          "cliffs_delta_variant_vs_baseline": -0.83,
+          "n_variant_gt_baseline": 0,
+          "n_variant_lt_baseline": 10
+        },
+        "independence_ratio": {
+          "n_pairs": 10,
+          "variant_mean": 0.7245853827472228,
+          "baseline_mean": 0.579924944336709,
+          "mean_diff_variant_minus_baseline": 0.14466043841051382,
+          "median_diff": 0.1527777777777778,
+          "diff_ci95": [
+            0.01905658007405756,
+            0.27347252830351737
+          ],
+          "cliffs_delta_variant_vs_baseline": 0.43,
+          "n_variant_gt_baseline": 7,
+          "n_variant_lt_baseline": 3
+        },
+        "helpfulness_mean": {
+          "n_pairs": 10,
+          "variant_mean": 4.8105722779635816,
+          "baseline_mean": 4.703114478114478,
+          "mean_diff_variant_minus_baseline": 0.10745779984910415,
+          "median_diff": 0.013687600644122444,
+          "diff_ci95": [
+            -0.12074833479724778,
+            0.3544261294261294
+          ],
+          "cliffs_delta_variant_vs_baseline": 0.14,
+          "n_variant_gt_baseline": 5,
+          "n_variant_lt_baseline": 4
+        },
+        "pedagogy_mean": {
+          "n_pairs": 10,
+          "variant_mean": 4.141390861435618,
+          "baseline_mean": 2.5779100529100534,
+          "mean_diff_variant_minus_baseline": 1.5634808085255654,
+          "median_diff": 1.4528478057889824,
+          "diff_ci95": [
+            1.2189069644951995,
+            1.9136614344734546
+          ],
+          "cliffs_delta_variant_vs_baseline": 0.97,
+          "n_variant_gt_baseline": 10,
+          "n_variant_lt_baseline": 0
+        }
+      },
+      "vs_separation_reference": {
+        "leakage_rate": {
+          "n_pairs": 10,
+          "variant_mean": 0.14557808630698657,
+          "baseline_mean": 0.0642512077294686,
+          "mean_diff_variant_minus_baseline": 0.08132687857751797,
+          "median_diff": 0.1291407867494824,
+          "diff_ci95": [
+            -0.023564425770308126,
+            0.1762148337595908
+          ],
+          "cliffs_delta_variant_vs_baseline": 0.42,
+          "n_variant_gt_baseline": 6,
+          "n_variant_lt_baseline": 2
+        },
+        "independence_ratio": {
+          "n_pairs": 10,
+          "variant_mean": 0.7245853827472228,
+          "baseline_mean": 0.6561379310344828,
+          "mean_diff_variant_minus_baseline": 0.06844745171274011,
+          "median_diff": 0.007052113041223718,
+          "diff_ci95": [
+            -0.05380466129717095,
+            0.20312476305706786
+          ],
+          "cliffs_delta_variant_vs_baseline": 0.3,
+          "n_variant_gt_baseline": 6,
+          "n_variant_lt_baseline": 4
+        },
+        "helpfulness_mean": {
+          "n_pairs": 10,
+          "variant_mean": 4.8105722779635816,
+          "baseline_mean": 4.796980965258998,
+          "mean_diff_variant_minus_baseline": 0.01359131270458489,
+          "median_diff": -0.03845664886854827,
+          "diff_ci95": [
+            -0.15190176369524197,
+            0.17997497615847136
+          ],
+          "cliffs_delta_variant_vs_baseline": 0.06,
+          "n_variant_gt_baseline": 4,
+          "n_variant_lt_baseline": 6
+        },
+        "pedagogy_mean": {
+          "n_pairs": 10,
+          "variant_mean": 4.141390861435618,
+          "baseline_mean": 4.298555925386588,
+          "mean_diff_variant_minus_baseline": -0.15716506395097044,
+          "median_diff": -0.298822855888073,
+          "diff_ci95": [
+            -0.49143351880766045,
+            0.21768879694710885
+          ],
+          "cliffs_delta_variant_vs_baseline": -0.31,
+          "n_variant_gt_baseline": 4,
+          "n_variant_lt_baseline": 6
+        }
+      }
+    },
+    "ped_no_gate": {
+      "baseline": "ped",
+      "separation_reference": "conv",
+      "vs_baseline": {
+        "leakage_rate": {
+          "n_pairs": 10,
+          "variant_mean": 0.07486471861471862,
+          "baseline_mean": 0.0642512077294686,
+          "mean_diff_variant_minus_baseline": 0.010613510885250019,
+          "median_diff": 0.020833333333333332,
+          "diff_ci95": [
+            -0.0659928751803752,
+            0.08700059014053577
+          ],
+          "cliffs_delta_variant_vs_baseline": 0.2,
+          "n_variant_gt_baseline": 5,
+          "n_variant_lt_baseline": 4
+        },
+        "independence_ratio": {
+          "n_pairs": 10,
+          "variant_mean": 0.7545776309460519,
+          "baseline_mean": 0.6561379310344828,
+          "mean_diff_variant_minus_baseline": 0.0984396999115692,
+          "median_diff": 0.07532840722495898,
+          "diff_ci95": [
+            0.02287643219857376,
+            0.17816493000177208
+          ],
+          "cliffs_delta_variant_vs_baseline": 0.28,
+          "n_variant_gt_baseline": 7,
+          "n_variant_lt_baseline": 3
+        },
+        "helpfulness_mean": {
+          "n_pairs": 10,
+          "variant_mean": 4.7503659425369955,
+          "baseline_mean": 4.796980965258998,
+          "mean_diff_variant_minus_baseline": -0.04661502272200204,
+          "median_diff": -0.08607328344170462,
+          "diff_ci95": [
+            -0.17512164935083985,
+            0.08510486585465157
+          ],
+          "cliffs_delta_variant_vs_baseline": -0.16,
+          "n_variant_gt_baseline": 4,
+          "n_variant_lt_baseline": 6
+        },
+        "pedagogy_mean": {
+          "n_pairs": 10,
+          "variant_mean": 4.257230364664575,
+          "baseline_mean": 4.298555925386588,
+          "mean_diff_variant_minus_baseline": -0.04132556072201345,
+          "median_diff": 0.039241095162148465,
+          "diff_ci95": [
+            -0.3666359865820676,
+            0.27941287865293907
+          ],
+          "cliffs_delta_variant_vs_baseline": -0.12,
+          "n_variant_gt_baseline": 5,
+          "n_variant_lt_baseline": 5
+        }
+      },
+      "vs_separation_reference": {
+        "leakage_rate": {
+          "n_pairs": 10,
+          "variant_mean": 0.07486471861471862,
+          "baseline_mean": 0.4296176046176046,
+          "mean_diff_variant_minus_baseline": -0.354752886002886,
+          "median_diff": -0.2734848484848485,
+          "diff_ci95": [
+            -0.4992183892496393,
+            -0.22320125360750367
+          ],
+          "cliffs_delta_variant_vs_baseline": -0.96,
+          "n_variant_gt_baseline": 0,
+          "n_variant_lt_baseline": 10
+        },
+        "independence_ratio": {
+          "n_pairs": 10,
+          "variant_mean": 0.7545776309460519,
+          "baseline_mean": 0.579924944336709,
+          "mean_diff_variant_minus_baseline": 0.17465268660934294,
+          "median_diff": 0.18479532163742685,
+          "diff_ci95": [
+            0.07002223727997721,
+            0.2898441127757691
+          ],
+          "cliffs_delta_variant_vs_baseline": 0.42,
+          "n_variant_gt_baseline": 7,
+          "n_variant_lt_baseline": 3
+        },
+        "helpfulness_mean": {
+          "n_pairs": 10,
+          "variant_mean": 4.7503659425369955,
+          "baseline_mean": 4.703114478114478,
+          "mean_diff_variant_minus_baseline": 0.04725146442251722,
+          "median_diff": -0.027251683501683388,
+          "diff_ci95": [
+            -0.13389499791144513,
+            0.262434400394927
+          ],
+          "cliffs_delta_variant_vs_baseline": -0.01,
+          "n_variant_gt_baseline": 5,
+          "n_variant_lt_baseline": 5
+        },
+        "pedagogy_mean": {
+          "n_pairs": 10,
+          "variant_mean": 4.257230364664575,
+          "baseline_mean": 2.5779100529100534,
+          "mean_diff_variant_minus_baseline": 1.6793203117545226,
+          "median_diff": 1.7321428571428574,
+          "diff_ci95": [
+            1.2524464462194729,
+            2.068510161135161
+          ],
+          "cliffs_delta_variant_vs_baseline": 1.0,
+          "n_variant_gt_baseline": 10,
+          "n_variant_lt_baseline": 0
+        }
+      }
+    },
+    "ped_no_tracker": {
+      "baseline": "ped",
+      "separation_reference": "conv",
+      "vs_baseline": {
+        "leakage_rate": {
+          "n_pairs": 10,
+          "variant_mean": 0.026155185394315834,
+          "baseline_mean": 0.0642512077294686,
+          "mean_diff_variant_minus_baseline": -0.038096022335152774,
+          "median_diff": 0.0018939393939393957,
+          "diff_ci95": [
+            -0.10277777777777777,
+            0.01767833615659699
+          ],
+          "cliffs_delta_variant_vs_baseline": -0.13,
+          "n_variant_gt_baseline": 5,
+          "n_variant_lt_baseline": 4
+        },
+        "independence_ratio": {
+          "n_pairs": 10,
+          "variant_mean": 0.7735239919722678,
+          "baseline_mean": 0.6561379310344828,
+          "mean_diff_variant_minus_baseline": 0.11738606093778507,
+          "median_diff": 0.1532275132275132,
+          "diff_ci95": [
+            -0.017545717022441162,
+            0.2473945356686736
+          ],
+          "cliffs_delta_variant_vs_baseline": 0.39,
+          "n_variant_gt_baseline": 7,
+          "n_variant_lt_baseline": 3
+        },
+        "helpfulness_mean": {
+          "n_pairs": 10,
+          "variant_mean": 4.7193412384716735,
+          "baseline_mean": 4.796980965258998,
+          "mean_diff_variant_minus_baseline": -0.07763972678732403,
+          "median_diff": -0.112128146453089,
+          "diff_ci95": [
+            -0.19896363809721948,
+            0.06376797147678169
+          ],
+          "cliffs_delta_variant_vs_baseline": -0.29,
+          "n_variant_gt_baseline": 2,
+          "n_variant_lt_baseline": 8
+        },
+        "pedagogy_mean": {
+          "n_pairs": 10,
+          "variant_mean": 4.308493004579961,
+          "baseline_mean": 4.298555925386588,
+          "mean_diff_variant_minus_baseline": 0.009937079193372344,
+          "median_diff": -0.008207070707070496,
+          "diff_ci95": [
+            -0.21466521375903483,
+            0.26723259771629326
+          ],
+          "cliffs_delta_variant_vs_baseline": -0.14,
+          "n_variant_gt_baseline": 4,
+          "n_variant_lt_baseline": 5
+        }
+      },
+      "vs_separation_reference": {
+        "leakage_rate": {
+          "n_pairs": 10,
+          "variant_mean": 0.026155185394315834,
+          "baseline_mean": 0.4296176046176046,
+          "mean_diff_variant_minus_baseline": -0.40346241922328885,
+          "median_diff": -0.3333333333333333,
+          "diff_ci95": [
+            -0.5298394660894661,
+            -0.28861518915866735
+          ],
+          "cliffs_delta_variant_vs_baseline": -1.0,
+          "n_variant_gt_baseline": 0,
+          "n_variant_lt_baseline": 10
+        },
+        "independence_ratio": {
+          "n_pairs": 10,
+          "variant_mean": 0.7735239919722678,
+          "baseline_mean": 0.579924944336709,
+          "mean_diff_variant_minus_baseline": 0.19359904763555877,
+          "median_diff": 0.18888888888888888,
+          "diff_ci95": [
+            0.05875125082452666,
+            0.32566029304442085
+          ],
+          "cliffs_delta_variant_vs_baseline": 0.67,
+          "n_variant_gt_baseline": 9,
+          "n_variant_lt_baseline": 1
+        },
+        "helpfulness_mean": {
+          "n_pairs": 10,
+          "variant_mean": 4.7193412384716735,
+          "baseline_mean": 4.703114478114478,
+          "mean_diff_variant_minus_baseline": 0.016226760357195235,
+          "median_diff": -0.06481481481481444,
+          "diff_ci95": [
+            -0.12988471673254273,
+            0.22661224564485452
+          ],
+          "cliffs_delta_variant_vs_baseline": -0.07,
+          "n_variant_gt_baseline": 2,
+          "n_variant_lt_baseline": 7
+        },
+        "pedagogy_mean": {
+          "n_pairs": 10,
+          "variant_mean": 4.308493004579961,
+          "baseline_mean": 2.5779100529100534,
+          "mean_diff_variant_minus_baseline": 1.7305829516699085,
+          "median_diff": 1.7073412698412698,
+          "diff_ci95": [
+            1.3371790890269146,
+            2.11225897693289
+          ],
+          "cliffs_delta_variant_vs_baseline": 1.0,
+          "n_variant_gt_baseline": 10,
+          "n_variant_lt_baseline": 0
+        }
+      }
+    },
+    "ped_no_cascade": {
+      "baseline": "ped",
+      "separation_reference": "conv",
+      "vs_baseline": {
+        "leakage_rate": {
+          "n_pairs": 10,
+          "variant_mean": 0.03369565217391305,
+          "baseline_mean": 0.0642512077294686,
+          "mean_diff_variant_minus_baseline": -0.03055555555555555,
+          "median_diff": -0.020833333333333332,
+          "diff_ci95": [
+            -0.08786986714975846,
+            0.02397342995169082
+          ],
+          "cliffs_delta_variant_vs_baseline": -0.16,
+          "n_variant_gt_baseline": 3,
+          "n_variant_lt_baseline": 5
+        },
+        "independence_ratio": {
+          "n_pairs": 10,
+          "variant_mean": 0.595632183908046,
+          "baseline_mean": 0.6561379310344828,
+          "mean_diff_variant_minus_baseline": -0.06050574712643678,
+          "median_diff": -0.06149425287356325,
+          "diff_ci95": [
+            -0.12714285714285714,
+            0.0005720853858785085
+          ],
+          "cliffs_delta_variant_vs_baseline": -0.31,
+          "n_variant_gt_baseline": 3,
+          "n_variant_lt_baseline": 7
+        },
+        "helpfulness_mean": {
+          "n_pairs": 10,
+          "variant_mean": 4.948429951690821,
+          "baseline_mean": 4.796980965258998,
+          "mean_diff_variant_minus_baseline": 0.1514489864318241,
+          "median_diff": 0.15187198067632846,
+          "diff_ci95": [
+            0.05779327889882835,
+            0.24609503935233346
+          ],
+          "cliffs_delta_variant_vs_baseline": 0.74,
+          "n_variant_gt_baseline": 9,
+          "n_variant_lt_baseline": 1
+        },
+        "pedagogy_mean": {
+          "n_pairs": 10,
+          "variant_mean": 4.833816425120772,
+          "baseline_mean": 4.298555925386588,
+          "mean_diff_variant_minus_baseline": 0.5352604997341841,
+          "median_diff": 0.5123243302591134,
+          "diff_ci95": [
+            0.30115806953979174,
+            0.8168700737350625
+          ],
+          "cliffs_delta_variant_vs_baseline": 0.96,
+          "n_variant_gt_baseline": 10,
+          "n_variant_lt_baseline": 0
+        }
+      },
+      "vs_separation_reference": {
+        "leakage_rate": {
+          "n_pairs": 10,
+          "variant_mean": 0.03369565217391305,
+          "baseline_mean": 0.4296176046176046,
+          "mean_diff_variant_minus_baseline": -0.39592195244369155,
+          "median_diff": -0.3333333333333333,
+          "diff_ci95": [
+            -0.5250554653679653,
+            -0.2730143045360437
+          ],
+          "cliffs_delta_variant_vs_baseline": -1.0,
+          "n_variant_gt_baseline": 0,
+          "n_variant_lt_baseline": 10
+        },
+        "independence_ratio": {
+          "n_pairs": 10,
+          "variant_mean": 0.595632183908046,
+          "baseline_mean": 0.579924944336709,
+          "mean_diff_variant_minus_baseline": 0.015707239571336927,
+          "median_diff": 0.0,
+          "diff_ci95": [
+            -0.05718957870504524,
+            0.08857296380090487
+          ],
+          "cliffs_delta_variant_vs_baseline": 0.06,
+          "n_variant_gt_baseline": 4,
+          "n_variant_lt_baseline": 4
+        },
+        "helpfulness_mean": {
+          "n_pairs": 10,
+          "variant_mean": 4.948429951690821,
+          "baseline_mean": 4.703114478114478,
+          "mean_diff_variant_minus_baseline": 0.24531547357634337,
+          "median_diff": 0.19970538720538755,
+          "diff_ci95": [
+            0.07633083552920532,
+            0.44331059691114044
+          ],
+          "cliffs_delta_variant_vs_baseline": 0.43,
+          "n_variant_gt_baseline": 6,
+          "n_variant_lt_baseline": 2
+        },
+        "pedagogy_mean": {
+          "n_pairs": 10,
+          "variant_mean": 4.833816425120772,
+          "baseline_mean": 2.5779100529100534,
+          "mean_diff_variant_minus_baseline": 2.25590637221072,
+          "median_diff": 2.151785714285714,
+          "diff_ci95": [
+            1.8725586611456175,
+            2.631956018518518
+          ],
+          "cliffs_delta_variant_vs_baseline": 1.0,
+          "n_variant_gt_baseline": 10,
+          "n_variant_lt_baseline": 0
+        }
+      }
+    }
+  },
+  "leak_to_next_independence_coupling_per_condition": {
+    "conv": {
+      "n_turns": 135,
+      "descriptive_pooled": {
+        "leaky_next_indep_mean": 0.38461538461538464,
+        "nonleaky_next_indep_mean": 0.5542168674698795,
+        "n_leaky": 52,
+        "n_nonleaky": 83
+      },
+      "cluster_within_replicate": {
+        "mean_within_replicate_effect": -0.1806746031746032,
+        "effect_ci95": [
+          -0.498906746031746,
+          0.162704365079365
+        ],
+        "n_replicates_used": 10,
+        "wilcoxon_W": 13.5,
+        "p_two_sided": 0.3125,
+        "note": "leaky-minus-nonleaky next-turn independence within each replicate, signed-rank across replicates; predicted sign is negative if leakage suppresses the next student attempt. DESCRIPTIVE, fit per condition."
+      }
+    },
+    "conv_no_final_answer": {
+      "n_turns": 190,
+      "descriptive_pooled": {
+        "leaky_next_indep_mean": 0.25,
+        "nonleaky_next_indep_mean": 0.7848101265822784,
+        "n_leaky": 32,
+        "n_nonleaky": 158
+      },
+      "cluster_within_replicate": {
+        "mean_within_replicate_effect": -0.49495061182367683,
+        "effect_ci95": [
+          -0.7511671335200747,
+          -0.23412698412698413
+        ],
+        "n_replicates_used": 7,
+        "wilcoxon_W": 0.0,
+        "p_two_sided": 0.03125,
+        "note": "leaky-minus-nonleaky next-turn independence within each replicate, signed-rank across replicates; predicted sign is negative if leakage suppresses the next student attempt. DESCRIPTIVE, fit per condition."
+      }
+    },
+    "conv_socratic": {
+      "n_turns": 223,
+      "descriptive_pooled": {
+        "leaky_next_indep_mean": 0.25,
+        "nonleaky_next_indep_mean": 0.6757990867579908,
+        "n_leaky": 4,
+        "n_nonleaky": 219
+      },
+      "cluster_within_replicate": {
+        "mean_within_replicate_effect": -0.5173913043478261,
+        "effect_ci95": [
+          -0.9,
+          0.08695652173913049
+        ],
+        "n_replicates_used": 3,
+        "wilcoxon_W": 1.0,
+        "p_two_sided": 0.5,
+        "note": "leaky-minus-nonleaky next-turn independence within each replicate, signed-rank across replicates; predicted sign is negative if leakage suppresses the next student attempt. DESCRIPTIVE, fit per condition."
+      }
+    },
+    "ped": {
+      "n_turns": 223,
+      "descriptive_pooled": {
+        "leaky_next_indep_mean": 0.14285714285714285,
+        "nonleaky_next_indep_mean": 0.7990430622009569,
+        "n_leaky": 14,
+        "n_nonleaky": 209
+      },
+      "cluster_within_replicate": {
+        "mean_within_replicate_effect": -0.6256174857433439,
+        "effect_ci95": [
+          -0.7994306418219462,
+          -0.4559587374232683
+        ],
+        "n_replicates_used": 6,
+        "wilcoxon_W": 0.0,
+        "p_two_sided": 0.03125,
+        "note": "leaky-minus-nonleaky next-turn independence within each replicate, signed-rank across replicates; predicted sign is negative if leakage suppresses the next student attempt. DESCRIPTIVE, fit per condition."
+      }
+    },
+    "ped_no_cascade": {
+      "n_turns": 239,
+      "descriptive_pooled": {
+        "leaky_next_indep_mean": 0.0,
+        "nonleaky_next_indep_mean": 0.7012987012987013,
+        "n_leaky": 8,
+        "n_nonleaky": 231
+      },
+      "cluster_within_replicate": {
+        "mean_within_replicate_effect": -0.7254658385093168,
+        "effect_ci95": [
+          -0.8248447204968944,
+          -0.6236024844720497
+        ],
+        "n_replicates_used": 5,
+        "wilcoxon_W": 0.0,
+        "p_two_sided": 0.0625,
+        "note": "leaky-minus-nonleaky next-turn independence within each replicate, signed-rank across replicates; predicted sign is negative if leakage suppresses the next student attempt. DESCRIPTIVE, fit per condition."
+      }
+    },
+    "ped_no_gate": {
+      "n_turns": 191,
+      "descriptive_pooled": {
+        "leaky_next_indep_mean": 0.07142857142857142,
+        "nonleaky_next_indep_mean": 0.8587570621468926,
+        "n_leaky": 14,
+        "n_nonleaky": 177
+      },
+      "cluster_within_replicate": {
+        "mean_within_replicate_effect": -0.7634215408651499,
+        "effect_ci95": [
+          -0.8899521531100477,
+          -0.609803730104482
+        ],
+        "n_replicates_used": 7,
+        "wilcoxon_W": 0.0,
+        "p_two_sided": 0.015625,
+        "note": "leaky-minus-nonleaky next-turn independence within each replicate, signed-rank across replicates; predicted sign is negative if leakage suppresses the next student attempt. DESCRIPTIVE, fit per condition."
+      }
+    },
+    "ped_no_tracker": {
+      "n_turns": 197,
+      "descriptive_pooled": {
+        "leaky_next_indep_mean": 0.0,
+        "nonleaky_next_indep_mean": 0.8489583333333334,
+        "n_leaky": 5,
+        "n_nonleaky": 192
+      },
+      "cluster_within_replicate": {
+        "mean_within_replicate_effect": -0.8343195934500283,
+        "effect_ci95": [
+          -0.9278260869565216,
+          -0.7450028232636928
+        ],
+        "n_replicates_used": 5,
+        "wilcoxon_W": 0.0,
+        "p_two_sided": 0.0625,
+        "note": "leaky-minus-nonleaky next-turn independence within each replicate, signed-rank across replicates; predicted sign is negative if leakage suppresses the next student attempt. DESCRIPTIVE, fit per condition."
+      }
+    }
+  },
+  "note": "Paired by replicate id (variant - baseline). Cliff's delta + percentile bootstrap CIs are descriptive effect sizes, no NHST verdict. The coupling is fit SEPARATELY per condition and never pooled across conditions. 'No node collapses the leakage/independence separation' is an allowed, reportable result."
+}

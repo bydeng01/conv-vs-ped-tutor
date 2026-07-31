@@ -1,0 +1,1282 @@
+{
+  "analysis": "prospectively specified post hoc cross-judge robustness analysis over frozen transcripts",
+  "epistemic_status": "post hoc judge robustness",
+  "primary_judge": "Claude Opus 4.8",
+  "robustness_judge": "GPT-5.6 Sol",
+  "wording_guardrails": {
+    "supported": [
+      "replicated across Claude Opus 4.8 and GPT-5.6 Sol",
+      "directionally consistent across two specified judges",
+      "judge-contingent"
+    ],
+    "forbidden": [
+      "generalizable across LLM judges",
+      "judge-independent",
+      "universally helpful",
+      "comprehensive judge validation",
+      "any human-preference or human-validity claim"
+    ],
+    "consensus_averaging": "NOT performed; both instruments are reported separately",
+    "equivalence": "a nonsignificant interaction is NOT evidence of judge invariance; no equivalence test is run without a pre-approved frozen bound"
+  },
+  "same_family_flag": {
+    "robustness_judge": {
+      "base": "gpt",
+      "reason": "GPT-5.6 Sol (robustness judge) and the GPT-5.5 tutor share a model family; this is the arm the Sonnet+Gemini-only sensitivity removes"
+    },
+    "primary_judge": {
+      "base": "sonnet",
+      "reason": "Claude Opus 4.8 (primary judge) and the Claude Sonnet 4.6 tutor share a model family; a property of the original confirmatory study, disclosed for symmetry so the same-family caveat is not read as applying only to the GPT arm"
+    },
+    "note": "Both judges have a same-family arm. The Sonnet+Gemini-only sensitivity below removes the GPT-judge family confound; the Sonnet base still carries the primary-judge (Claude) family overlap, which no reweighting removes."
+  },
+  "per_base": {
+    "sonnet": {
+      "opus_dir": "results/confirmatory",
+      "gpt_dir": "results/judge_robustness/gpt-5.6-sol/sonnet",
+      "same_family_robustness_judge": false,
+      "same_family": false,
+      "same_family_note": null,
+      "same_family_primary_judge": true,
+      "same_family_primary_judge_note": "Claude Opus 4.8 (primary judge) judged the Claude Sonnet 4.6 tutor base -- same model family; a property of the original study, disclosed for symmetry",
+      "instruments": {
+        "helpfulness": {
+          "agreement": {
+            "instrument": "helpfulness",
+            "n_turns": 358,
+            "spearman_of_per_turn_means": 0.41754029352614386,
+            "spearman_clustered_ci95": [
+              0.2986376398387103,
+              0.5641854740360046
+            ],
+            "quadratic_weighted_kappa_on_medians": 0.25865235711456047,
+            "kappa_clustered_ci95": [
+              0.1519352101300101,
+              0.4444289798721642
+            ],
+            "mean_signed_diff_gpt_minus_opus": 0.19459962756052138,
+            "mean_absolute_diff": 0.23743016759776536,
+            "exact_agreement_on_medians": 0.8128491620111732,
+            "within_one_agreement_on_medians": 0.9692737430167597,
+            "opus_median_distribution": {
+              "1": 0,
+              "2": 5,
+              "3": 7,
+              "4": 69,
+              "5": 277
+            },
+            "gpt_median_distribution": {
+              "1": 0,
+              "2": 0,
+              "3": 0,
+              "4": 29,
+              "5": 329
+            },
+            "opus_mean_of_per_turn_means": 4.723463687150838,
+            "gpt_mean_of_per_turn_means": 4.918063314711359,
+            "valid_rep_rate_opus": 1.0,
+            "valid_rep_rate_gpt": 1.0,
+            "within_turn_rep_variance_opus": 0.032588454376163874,
+            "within_turn_rep_variance_gpt": 0.01582867783985102,
+            "note": "Correlation is not agreement; the mean signed diff reports any systematic scale shift even when Spearman is high."
+          },
+          "interaction": {
+            "instrument": "helpfulness",
+            "raw": {
+              "available": true,
+              "formula": "score_difference ~ leaks_i + C(condition)",
+              "model": "crossed replicate+problem RE (variance components over one dummy group); ML; optimizers ['lbfgs', 'bfgs', 'cg', 'powell']",
+              "converged": true,
+              "judge_x_leakage_leaks_i": {
+                "coef": -0.44779490768514596,
+                "se": 0.06910689837369545,
+                "p": 9.187927529169842e-11,
+                "ci95": [
+                  -0.5832419395808587,
+                  -0.31234787578943324
+                ]
+              },
+              "judge_x_policy_condition_ped": {
+                "coef": -0.4483806870187367,
+                "se": 0.05591412152660152,
+                "p": 1.0652655858188369e-15,
+                "ci95": [
+                  -0.5579703514380714,
+                  -0.33879102259940197
+                ]
+              },
+              "variance_components": {
+                "problem": 0.010397773272358928,
+                "replicate": 0.017284882410998143,
+                "residual": 0.1967891177929074
+              },
+              "warnings": [
+                "Maximum Likelihood optimization failed to converge. Check mle_retvals",
+                "Retrying MixedLM optimization with bfgs",
+                "Maximum Likelihood optimization failed to converge. Check mle_retvals",
+                "Retrying MixedLM optimization with cg",
+                "Maximum Likelihood optimization failed to converge. Check mle_retvals",
+                "Retrying MixedLM optimization with powell"
+              ],
+              "n_obs": 358,
+              "n_replicates": 10,
+              "n_problems": 6,
+              "n_leaky": 66,
+              "n_nonleaky": 292
+            },
+            "standardized_within_judge_and_base": {
+              "available": true,
+              "formula": "score_difference_std ~ leaks_i + C(condition)",
+              "model": "crossed replicate+problem RE (variance components over one dummy group); ML; optimizers ['lbfgs', 'bfgs', 'cg', 'powell']",
+              "converged": true,
+              "judge_x_leakage_leaks_i": {
+                "coef": -0.7106783041320538,
+                "se": 0.16142537842981722,
+                "p": 1.0700118993050547e-05,
+                "ci95": [
+                  -1.0270662320452444,
+                  -0.39429037621886315
+                ]
+              },
+              "judge_x_policy_condition_ped": {
+                "coef": -1.015392944523256,
+                "se": 0.13020205992203843,
+                "p": 6.2600937999336036e-15,
+                "ci95": [
+                  -1.2705842926833772,
+                  -0.7602015963631346
+                ]
+              },
+              "variance_components": {
+                "problem": 0.021994235426666342,
+                "replicate": 0.044795824217163195,
+                "residual": 1.0685048649832358
+              },
+              "warnings": [],
+              "n_obs": 358,
+              "n_replicates": 10,
+              "n_problems": 6,
+              "n_leaky": 66,
+              "n_nonleaky": 292
+            }
+          },
+          "difference_of_differences": {
+            "instrument": "helpfulness",
+            "n_replicates": 10,
+            "replicate_ids": [
+              "0",
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7",
+              "8",
+              "9"
+            ],
+            "dod_values": [
+              0.08459595959595845,
+              0.14009661835748766,
+              0.013888888888889284,
+              -0.09722222222222232,
+              0.3386243386243395,
+              0.5120772946859917,
+              0.09722222222222232,
+              0.17153996101364566,
+              0.8434343434343416,
+              -0.015151515151514694
+            ],
+            "mean_dod": 0.20891058894491393,
+            "dod_ci95": [
+              0.05962139923810426,
+              0.3914024039567515
+            ],
+            "wilcoxon_W": 6.5,
+            "p_two_sided": 0.029296875,
+            "interpretation": "(Conv-Ped)_GPT - (Conv-Ped)_Opus per replicate; a non-zero mean means the two judges disagree about the ConvTutor-PedTutor gap."
+          },
+          "policy_adjusted_leak_to_helpfulness_p": 0.24820050973354313
+        },
+        "pedagogy": {
+          "agreement": {
+            "instrument": "pedagogy",
+            "n_turns": 358,
+            "spearman_of_per_turn_means": 0.7540425644037281,
+            "spearman_clustered_ci95": [
+              0.594855791474432,
+              0.8557562285323685
+            ],
+            "quadratic_weighted_kappa_on_medians": 0.6189255713645788,
+            "kappa_clustered_ci95": [
+              0.505531881062172,
+              0.6932803836586632
+            ],
+            "mean_signed_diff_gpt_minus_opus": 0.8054003724394787,
+            "mean_absolute_diff": 0.8109869646182496,
+            "exact_agreement_on_medians": 0.4022346368715084,
+            "within_one_agreement_on_medians": 0.8072625698324022,
+            "opus_median_distribution": {
+              "1": 33,
+              "2": 51,
+              "3": 56,
+              "4": 87,
+              "5": 131
+            },
+            "gpt_median_distribution": {
+              "1": 0,
+              "2": 31,
+              "3": 29,
+              "4": 44,
+              "5": 254
+            },
+            "opus_mean_of_per_turn_means": 3.649906890130354,
+            "gpt_mean_of_per_turn_means": 4.455307262569832,
+            "valid_rep_rate_opus": 1.0,
+            "valid_rep_rate_gpt": 1.0,
+            "within_turn_rep_variance_opus": 0.0446927374301676,
+            "within_turn_rep_variance_gpt": 0.040968342644320296,
+            "note": "Correlation is not agreement; the mean signed diff reports any systematic scale shift even when Spearman is high."
+          },
+          "interaction": {
+            "instrument": "pedagogy",
+            "raw": {
+              "available": true,
+              "formula": "score_difference ~ leaks_i + C(condition)",
+              "model": "crossed replicate+problem RE (variance components over one dummy group); ML; optimizers ['lbfgs', 'bfgs', 'cg', 'powell']",
+              "converged": true,
+              "judge_x_leakage_leaks_i": {
+                "coef": 0.21868055941665562,
+                "se": 0.10460688266473794,
+                "p": 0.03657301887710513,
+                "ci95": [
+                  0.013654836858761926,
+                  0.4237062819745493
+                ]
+              },
+              "judge_x_policy_condition_ped": {
+                "coef": -0.472260692726622,
+                "se": 0.08435008449136149,
+                "p": 2.1581938447433694e-08,
+                "ci95": [
+                  -0.6375838204226011,
+                  -0.30693756503064296
+                ]
+              },
+              "variance_components": {
+                "problem": 0.04976529651515491,
+                "replicate": 0.016864208765085244,
+                "residual": 0.45560684682506664
+              },
+              "warnings": [],
+              "n_obs": 358,
+              "n_replicates": 10,
+              "n_problems": 6,
+              "n_leaky": 66,
+              "n_nonleaky": 292
+            },
+            "standardized_within_judge_and_base": {
+              "available": true,
+              "formula": "score_difference_std ~ leaks_i + C(condition)",
+              "model": "crossed replicate+problem RE (variance components over one dummy group); ML; optimizers ['lbfgs', 'bfgs', 'cg', 'powell']",
+              "converged": true,
+              "judge_x_leakage_leaks_i": {
+                "coef": -0.1596973565897567,
+                "se": 0.08704725856381515,
+                "p": 0.06656420188650906,
+                "ci95": [
+                  -0.3303068483277802,
+                  0.010912135148266777
+                ]
+              },
+              "judge_x_policy_condition_ped": {
+                "coef": -0.09818804227771338,
+                "se": 0.07025893187158101,
+                "p": 0.16225819841942912,
+                "ci95": [
+                  -0.2358930183382655,
+                  0.03951693378283874
+                ]
+              },
+              "variance_components": {
+                "problem": 0.06091808799001359,
+                "replicate": 0.01653674028589342,
+                "residual": 0.31796016936303173
+              },
+              "warnings": [
+                "The Hessian matrix at the estimated parameter values is not positive definite."
+              ],
+              "n_obs": 358,
+              "n_replicates": 10,
+              "n_problems": 6,
+              "n_leaky": 66,
+              "n_nonleaky": 292
+            }
+          },
+          "difference_of_differences": {
+            "instrument": "pedagogy",
+            "n_replicates": 10,
+            "replicate_ids": [
+              "0",
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7",
+              "8",
+              "9"
+            ],
+            "dod_values": [
+              0.46464646464646453,
+              0.6772946859903377,
+              0.4166666666666674,
+              0.16468253968253999,
+              0.2142857142857144,
+              1.0354267310789043,
+              -0.1944444444444433,
+              0.6900584795321643,
+              0.7335858585858586,
+              0.6010101010101012
+            ],
+            "mean_dod": 0.4803212797034309,
+            "dod_ci95": [
+              0.2701576858813706,
+              0.6790187500756721
+            ],
+            "wilcoxon_W": 2.0,
+            "p_two_sided": 0.005859375,
+            "interpretation": "(Conv-Ped)_GPT - (Conv-Ped)_Opus per replicate; a non-zero mean means the two judges disagree about the ConvTutor-PedTutor gap."
+          },
+          "policy_adjusted_leak_to_helpfulness_p": null
+        }
+      }
+    },
+    "gpt": {
+      "opus_dir": "results/confirmatory_gpt",
+      "gpt_dir": "results/judge_robustness/gpt-5.6-sol/gpt",
+      "same_family_robustness_judge": true,
+      "same_family": true,
+      "same_family_note": "GPT-5.6 Sol (robustness judge) judging the GPT-5.5 tutor base -- same model family; interpret with caution",
+      "same_family_primary_judge": false,
+      "same_family_primary_judge_note": null,
+      "instruments": {
+        "helpfulness": {
+          "agreement": {
+            "instrument": "helpfulness",
+            "n_turns": 379,
+            "spearman_of_per_turn_means": 0.20504983397252163,
+            "spearman_clustered_ci95": [
+              0.05542243632399769,
+              0.37957609178660967
+            ],
+            "quadratic_weighted_kappa_on_medians": 0.11115353149713658,
+            "kappa_clustered_ci95": [
+              0.008744583187439781,
+              0.31737610748752154
+            ],
+            "mean_signed_diff_gpt_minus_opus": 0.25065963060686014,
+            "mean_absolute_diff": 0.28232189973614774,
+            "exact_agreement_on_medians": 0.7519788918205804,
+            "within_one_agreement_on_medians": 0.9736147757255936,
+            "opus_median_distribution": {
+              "1": 0,
+              "2": 1,
+              "3": 9,
+              "4": 89,
+              "5": 280
+            },
+            "gpt_median_distribution": {
+              "1": 0,
+              "2": 0,
+              "3": 2,
+              "4": 13,
+              "5": 364
+            },
+            "opus_mean_of_per_turn_means": 4.702726473175022,
+            "gpt_mean_of_per_turn_means": 4.953386103781883,
+            "valid_rep_rate_opus": 1.0,
+            "valid_rep_rate_gpt": 1.0,
+            "within_turn_rep_variance_opus": 0.0316622691292876,
+            "within_turn_rep_variance_gpt": 0.005277044854881266,
+            "note": "Correlation is not agreement; the mean signed diff reports any systematic scale shift even when Spearman is high."
+          },
+          "interaction": {
+            "instrument": "helpfulness",
+            "raw": {
+              "available": true,
+              "formula": "score_difference ~ leaks_i + C(condition)",
+              "model": "crossed replicate+problem RE (variance components over one dummy group); ML; optimizers ['lbfgs', 'bfgs', 'cg', 'powell']",
+              "converged": true,
+              "judge_x_leakage_leaks_i": {
+                "coef": 0.07456093089562817,
+                "se": 0.06987951795905191,
+                "p": 0.28597516240312815,
+                "ci95": [
+                  -0.06240040756113348,
+                  0.21152226935238982
+                ]
+              },
+              "judge_x_policy_condition_ped": {
+                "coef": -0.4421548610236024,
+                "se": 0.06714679801685305,
+                "p": 4.551957262601497e-11,
+                "ci95": [
+                  -0.5737601668138199,
+                  -0.3105495552333849
+                ]
+              },
+              "variance_components": {
+                "problem": 3.3113986415187194e-11,
+                "replicate": 0.015211410044524845,
+                "residual": 0.1843415242333924
+              },
+              "warnings": [
+                "Maximum Likelihood optimization failed to converge. Check mle_retvals",
+                "Retrying MixedLM optimization with bfgs",
+                "Maximum Likelihood optimization failed to converge. Check mle_retvals",
+                "Retrying MixedLM optimization with cg",
+                "Maximum Likelihood optimization failed to converge. Check mle_retvals",
+                "Retrying MixedLM optimization with powell",
+                "The MLE may be on the boundary of the parameter space."
+              ],
+              "n_obs": 379,
+              "n_replicates": 10,
+              "n_problems": 6,
+              "n_leaky": 136,
+              "n_nonleaky": 243
+            },
+            "standardized_within_judge_and_base": {
+              "available": true,
+              "formula": "score_difference_std ~ leaks_i + C(condition)",
+              "model": "crossed replicate+problem RE (variance components over one dummy group); ML; optimizers ['lbfgs', 'bfgs', 'cg', 'powell']",
+              "converged": true,
+              "judge_x_leakage_leaks_i": {
+                "coef": 0.23197815423388862,
+                "se": 0.17892241916383134,
+                "p": 0.19479320123065902,
+                "ci95": [
+                  -0.11870334335399996,
+                  0.5826596518217773
+                ]
+              },
+              "judge_x_policy_condition_ped": {
+                "coef": -1.0318214086264472,
+                "se": 0.17188246387922576,
+                "p": 1.9362840585722533e-09,
+                "ci95": [
+                  -1.3687048474037364,
+                  -0.694937969849158
+                ]
+              },
+              "variance_components": {
+                "problem": 5.63053229699962e-07,
+                "replicate": 0.06892167548764999,
+                "residual": 1.1910234484876547
+              },
+              "warnings": [
+                "The MLE may be on the boundary of the parameter space."
+              ],
+              "n_obs": 379,
+              "n_replicates": 10,
+              "n_problems": 6,
+              "n_leaky": 136,
+              "n_nonleaky": 243
+            }
+          },
+          "difference_of_differences": {
+            "instrument": "helpfulness",
+            "n_replicates": 10,
+            "replicate_ids": [
+              "0",
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7",
+              "8",
+              "9"
+            ],
+            "dod_values": [
+              0.2499999999999991,
+              0.526984126984126,
+              0.09920634920634885,
+              0.6964285714285712,
+              0.36231884057971175,
+              0.5732323232323235,
+              1.0972222222222219,
+              0.05233494363929214,
+              0.004629629629630649,
+              0.952569169960475
+            ],
+            "mean_dod": 0.46149261768827,
+            "dod_ci95": [
+              0.2509839923562751,
+              0.6869421936758895
+            ],
+            "wilcoxon_W": 0.0,
+            "p_two_sided": 0.001953125,
+            "interpretation": "(Conv-Ped)_GPT - (Conv-Ped)_Opus per replicate; a non-zero mean means the two judges disagree about the ConvTutor-PedTutor gap."
+          },
+          "policy_adjusted_leak_to_helpfulness_p": 0.4369257215981217
+        },
+        "pedagogy": {
+          "agreement": {
+            "instrument": "pedagogy",
+            "n_turns": 379,
+            "spearman_of_per_turn_means": 0.8473463230077997,
+            "spearman_clustered_ci95": [
+              0.6727822956126676,
+              0.9038236804537655
+            ],
+            "quadratic_weighted_kappa_on_medians": 0.6317392455194552,
+            "kappa_clustered_ci95": [
+              0.5414702098575952,
+              0.6869157215977474
+            ],
+            "mean_signed_diff_gpt_minus_opus": 0.9956024626209323,
+            "mean_absolute_diff": 1.0114335971855761,
+            "exact_agreement_on_medians": 0.23218997361477572,
+            "within_one_agreement_on_medians": 0.7678100263852242,
+            "opus_median_distribution": {
+              "1": 61,
+              "2": 87,
+              "3": 47,
+              "4": 122,
+              "5": 62
+            },
+            "gpt_median_distribution": {
+              "1": 0,
+              "2": 64,
+              "3": 42,
+              "4": 67,
+              "5": 206
+            },
+            "opus_mean_of_per_turn_means": 3.108179419525066,
+            "gpt_mean_of_per_turn_means": 4.103781882145999,
+            "valid_rep_rate_opus": 1.0,
+            "valid_rep_rate_gpt": 1.0,
+            "within_turn_rep_variance_opus": 0.03869832893579595,
+            "within_turn_rep_variance_gpt": 0.05980650835532102,
+            "note": "Correlation is not agreement; the mean signed diff reports any systematic scale shift even when Spearman is high."
+          },
+          "interaction": {
+            "instrument": "pedagogy",
+            "raw": {
+              "available": true,
+              "formula": "score_difference ~ leaks_i + C(condition)",
+              "model": "crossed replicate+problem RE (variance components over one dummy group); ML; optimizers ['lbfgs', 'bfgs', 'cg', 'powell']",
+              "converged": true,
+              "judge_x_leakage_leaks_i": {
+                "coef": 0.3116006225472151,
+                "se": 0.10295309052837648,
+                "p": 0.0024729876014526523,
+                "ci95": [
+                  0.10981627301450544,
+                  0.5133849720799247
+                ]
+              },
+              "judge_x_policy_condition_ped": {
+                "coef": -0.17574541687320205,
+                "se": 0.09659638576347254,
+                "p": 0.06885365806225818,
+                "ci95": [
+                  -0.36507085400634587,
+                  0.013580020259941733
+                ]
+              },
+              "variance_components": {
+                "problem": 4.4197114391735814e-11,
+                "replicate": 0.008462867751983634,
+                "residual": 0.4189160229881758
+              },
+              "warnings": [
+                "Maximum Likelihood optimization failed to converge. Check mle_retvals",
+                "Retrying MixedLM optimization with bfgs",
+                "Maximum Likelihood optimization failed to converge. Check mle_retvals",
+                "Retrying MixedLM optimization with cg",
+                "Maximum Likelihood optimization failed to converge. Check mle_retvals",
+                "Retrying MixedLM optimization with powell",
+                "The MLE may be on the boundary of the parameter space."
+              ],
+              "n_obs": 379,
+              "n_replicates": 10,
+              "n_problems": 6,
+              "n_leaky": 136,
+              "n_nonleaky": 243
+            },
+            "standardized_within_judge_and_base": {
+              "available": true,
+              "formula": "score_difference_std ~ leaks_i + C(condition)",
+              "model": "crossed replicate+problem RE (variance components over one dummy group); ML; optimizers ['lbfgs', 'bfgs', 'cg', 'powell']",
+              "converged": true,
+              "judge_x_leakage_leaks_i": {
+                "coef": 0.14781374220055757,
+                "se": 0.08263569729497103,
+                "p": 0.07365676601671188,
+                "ci95": [
+                  -0.014149248334939607,
+                  0.30977673273605477
+                ]
+              },
+              "judge_x_policy_condition_ped": {
+                "coef": 0.08715620512308168,
+                "se": 0.07780403890292194,
+                "p": 0.2626278827971199,
+                "ci95": [
+                  -0.06533690897839857,
+                  0.23964931922456195
+                ]
+              },
+              "variance_components": {
+                "problem": 4.1196711086079436e-10,
+                "replicate": 0.005109165838605673,
+                "residual": 0.27479800681838135
+              },
+              "warnings": [
+                "Maximum Likelihood optimization failed to converge. Check mle_retvals",
+                "Retrying MixedLM optimization with bfgs",
+                "Maximum Likelihood optimization failed to converge. Check mle_retvals",
+                "Retrying MixedLM optimization with cg",
+                "Maximum Likelihood optimization failed to converge. Check mle_retvals",
+                "Retrying MixedLM optimization with powell",
+                "The MLE may be on the boundary of the parameter space."
+              ],
+              "n_obs": 379,
+              "n_replicates": 10,
+              "n_problems": 6,
+              "n_leaky": 136,
+              "n_nonleaky": 243
+            }
+          },
+          "difference_of_differences": {
+            "instrument": "pedagogy",
+            "n_replicates": 10,
+            "replicate_ids": [
+              "0",
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7",
+              "8",
+              "9"
+            ],
+            "dod_values": [
+              -0.0555555555555558,
+              0.5873015873015874,
+              0.01984126984126977,
+              0.5476190476190483,
+              0.592226613965745,
+              -0.12626262626262585,
+              0.4583333333333326,
+              -0.016103059581320522,
+              0.6388888888888888,
+              0.8194993412384721
+            ],
+            "mean_dod": 0.3465788840788842,
+            "dod_ci95": [
+              0.13990631600685954,
+              0.5467487177677396
+            ],
+            "wilcoxon_W": 8.0,
+            "p_two_sided": 0.048828125,
+            "interpretation": "(Conv-Ped)_GPT - (Conv-Ped)_Opus per replicate; a non-zero mean means the two judges disagree about the ConvTutor-PedTutor gap."
+          },
+          "policy_adjusted_leak_to_helpfulness_p": null
+        }
+      }
+    },
+    "gemini": {
+      "opus_dir": "results/confirmatory_gemini",
+      "gpt_dir": "results/judge_robustness/gpt-5.6-sol/gemini",
+      "same_family_robustness_judge": false,
+      "same_family": false,
+      "same_family_note": null,
+      "same_family_primary_judge": false,
+      "same_family_primary_judge_note": null,
+      "instruments": {
+        "helpfulness": {
+          "agreement": {
+            "instrument": "helpfulness",
+            "n_turns": 442,
+            "spearman_of_per_turn_means": 0.5853788646318331,
+            "spearman_clustered_ci95": [
+              0.39294146037532013,
+              0.7098385358692395
+            ],
+            "quadratic_weighted_kappa_on_medians": 0.5427872860635696,
+            "kappa_clustered_ci95": [
+              0.3492869518792896,
+              0.742681347150259
+            ],
+            "mean_signed_diff_gpt_minus_opus": 0.028657616892911006,
+            "mean_absolute_diff": 0.04374057315233785,
+            "exact_agreement_on_medians": 0.9683257918552036,
+            "within_one_agreement_on_medians": 0.997737556561086,
+            "opus_median_distribution": {
+              "1": 0,
+              "2": 1,
+              "3": 0,
+              "4": 23,
+              "5": 418
+            },
+            "gpt_median_distribution": {
+              "1": 0,
+              "2": 0,
+              "3": 1,
+              "4": 14,
+              "5": 427
+            },
+            "opus_mean_of_per_turn_means": 4.9343891402714934,
+            "gpt_mean_of_per_turn_means": 4.9630467571644035,
+            "valid_rep_rate_opus": 1.0,
+            "valid_rep_rate_gpt": 1.0,
+            "within_turn_rep_variance_opus": 0.008295625942684766,
+            "within_turn_rep_variance_gpt": 0.008295625942684766,
+            "note": "Correlation is not agreement; the mean signed diff reports any systematic scale shift even when Spearman is high."
+          },
+          "interaction": {
+            "instrument": "helpfulness",
+            "raw": {
+              "available": true,
+              "formula": "score_difference ~ leaks_i + C(condition)",
+              "model": "crossed replicate+problem RE (variance components over one dummy group); ML; optimizers ['lbfgs', 'bfgs', 'cg', 'powell']",
+              "converged": true,
+              "judge_x_leakage_leaks_i": {
+                "coef": -0.020177394615039753,
+                "se": 0.034459399594970914,
+                "p": 0.5581839419581412,
+                "ci95": [
+                  -0.08771657675005687,
+                  0.047361787519977355
+                ]
+              },
+              "judge_x_policy_condition_ped": {
+                "coef": 0.018556635351389038,
+                "se": 0.02002381208022547,
+                "p": 0.35406756767298797,
+                "ci95": [
+                  -0.020689315159050946,
+                  0.05780258586182902
+                ]
+              },
+              "variance_components": {
+                "problem": 4.387747715090876e-12,
+                "replicate": 4.442233414525606e-12,
+                "residual": 0.043794373519890566
+              },
+              "warnings": [
+                "Maximum Likelihood optimization failed to converge. Check mle_retvals",
+                "Retrying MixedLM optimization with bfgs",
+                "Maximum Likelihood optimization failed to converge. Check mle_retvals",
+                "Retrying MixedLM optimization with cg",
+                "Maximum Likelihood optimization failed to converge. Check mle_retvals",
+                "Retrying MixedLM optimization with powell",
+                "The MLE may be on the boundary of the parameter space."
+              ],
+              "n_obs": 442,
+              "n_replicates": 10,
+              "n_problems": 6,
+              "n_leaky": 42,
+              "n_nonleaky": 400
+            },
+            "standardized_within_judge_and_base": {
+              "available": true,
+              "formula": "score_difference_std ~ leaks_i + C(condition)",
+              "model": "crossed replicate+problem RE (variance components over one dummy group); ML; optimizers ['lbfgs', 'bfgs', 'cg', 'powell']",
+              "converged": true,
+              "judge_x_leakage_leaks_i": {
+                "coef": -0.025430896720608324,
+                "se": 0.14774120105242916,
+                "p": 0.8633342437964567,
+                "ci95": [
+                  -0.31499832981606063,
+                  0.26413653637484397
+                ]
+              },
+              "judge_x_policy_condition_ped": {
+                "coef": -0.017163867732898654,
+                "se": 0.08627980222754734,
+                "p": 0.8423154467283843,
+                "ci95": [
+                  -0.18626917269213017,
+                  0.15194143722633285
+                ]
+              },
+              "variance_components": {
+                "problem": 2.0137624263143315e-10,
+                "replicate": 2.7229665738622263e-10,
+                "residual": 0.8153457040643259
+              },
+              "warnings": [
+                "Maximum Likelihood optimization failed to converge. Check mle_retvals",
+                "Retrying MixedLM optimization with bfgs",
+                "Maximum Likelihood optimization failed to converge. Check mle_retvals",
+                "Retrying MixedLM optimization with cg",
+                "Maximum Likelihood optimization failed to converge. Check mle_retvals",
+                "Retrying MixedLM optimization with powell",
+                "The MLE may be on the boundary of the parameter space."
+              ],
+              "n_obs": 442,
+              "n_replicates": 10,
+              "n_problems": 6,
+              "n_leaky": 42,
+              "n_nonleaky": 400
+            }
+          },
+          "difference_of_differences": {
+            "instrument": "helpfulness",
+            "n_replicates": 10,
+            "replicate_ids": [
+              "0",
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7",
+              "8",
+              "9"
+            ],
+            "dod_values": [
+              -0.04166666666666696,
+              -0.14583333333333393,
+              0.013888888888889284,
+              0.02777777777777768,
+              0.015873015873015817,
+              0.0,
+              0.03312629399585987,
+              -0.041666666666666075,
+              -0.05797101449275299,
+              -0.041666666666666075
+            ],
+            "mean_dod": -0.023813837129054338,
+            "dod_ci95": [
+              -0.05902777777777777,
+              0.005711266390614327
+            ],
+            "wilcoxon_W": 10.0,
+            "p_two_sided": 0.15625,
+            "interpretation": "(Conv-Ped)_GPT - (Conv-Ped)_Opus per replicate; a non-zero mean means the two judges disagree about the ConvTutor-PedTutor gap."
+          },
+          "policy_adjusted_leak_to_helpfulness_p": 0.23101010960737567
+        },
+        "pedagogy": {
+          "agreement": {
+            "instrument": "pedagogy",
+            "n_turns": 442,
+            "spearman_of_per_turn_means": 0.43065033089672483,
+            "spearman_clustered_ci95": [
+              0.33795316471146203,
+              0.49877385694083354
+            ],
+            "quadratic_weighted_kappa_on_medians": 0.25004990351986145,
+            "kappa_clustered_ci95": [
+              0.166225130183562,
+              0.3101910901207716
+            ],
+            "mean_signed_diff_gpt_minus_opus": 0.36425339366515835,
+            "mean_absolute_diff": 0.37179487179487175,
+            "exact_agreement_on_medians": 0.6787330316742082,
+            "within_one_agreement_on_medians": 0.9570135746606335,
+            "opus_median_distribution": {
+              "1": 1,
+              "2": 4,
+              "3": 24,
+              "4": 120,
+              "5": 293
+            },
+            "gpt_median_distribution": {
+              "1": 0,
+              "2": 0,
+              "3": 0,
+              "4": 24,
+              "5": 418
+            },
+            "opus_mean_of_per_turn_means": 4.576923076923077,
+            "gpt_mean_of_per_turn_means": 4.9411764705882355,
+            "valid_rep_rate_opus": 1.0,
+            "valid_rep_rate_gpt": 1.0,
+            "within_turn_rep_variance_opus": 0.03695324283559576,
+            "within_turn_rep_variance_gpt": 0.01809954751131222,
+            "note": "Correlation is not agreement; the mean signed diff reports any systematic scale shift even when Spearman is high."
+          },
+          "interaction": {
+            "instrument": "pedagogy",
+            "raw": {
+              "available": true,
+              "formula": "score_difference ~ leaks_i + C(condition)",
+              "model": "crossed replicate+problem RE (variance components over one dummy group); ML; optimizers ['lbfgs', 'bfgs', 'cg', 'powell']",
+              "converged": true,
+              "judge_x_leakage_leaks_i": {
+                "coef": 0.8032831515528785,
+                "se": 0.08007689023692864,
+                "p": 1.1093470527103699e-23,
+                "ci95": [
+                  0.6463353306945313,
+                  0.9602309724112258
+                ]
+              },
+              "judge_x_policy_condition_ped": {
+                "coef": -0.14441114536581406,
+                "se": 0.04599328257214373,
+                "p": 0.0016904518659192737,
+                "ci95": [
+                  -0.23455632273798951,
+                  -0.054265967993638614
+                ]
+              },
+              "variance_components": {
+                "problem": 0.0002884037343506901,
+                "replicate": 0.004859600466548212,
+                "residual": 0.23066398682994382
+              },
+              "warnings": [
+                "Maximum Likelihood optimization failed to converge. Check mle_retvals",
+                "Retrying MixedLM optimization with bfgs",
+                "Maximum Likelihood optimization failed to converge. Check mle_retvals",
+                "Retrying MixedLM optimization with cg",
+                "Maximum Likelihood optimization failed to converge. Check mle_retvals",
+                "Retrying MixedLM optimization with powell",
+                "The MLE may be on the boundary of the parameter space."
+              ],
+              "n_obs": 442,
+              "n_replicates": 10,
+              "n_problems": 6,
+              "n_leaky": 42,
+              "n_nonleaky": 400
+            },
+            "standardized_within_judge_and_base": {
+              "available": true,
+              "formula": "score_difference_std ~ leaks_i + C(condition)",
+              "model": "crossed replicate+problem RE (variance components over one dummy group); ML; optimizers ['lbfgs', 'bfgs', 'cg', 'powell']",
+              "converged": true,
+              "judge_x_leakage_leaks_i": {
+                "coef": 0.9068122086961375,
+                "se": 0.14871428732603953,
+                "p": 1.0761857614230242e-09,
+                "ci95": [
+                  0.6153375615505586,
+                  1.1982868558417166
+                ]
+              },
+              "judge_x_policy_condition_ped": {
+                "coef": -0.1813903207877108,
+                "se": 0.0854243425163722,
+                "p": 0.03372008072999213,
+                "ci95": [
+                  -0.348818955522814,
+                  -0.013961686052607614
+                ]
+              },
+              "variance_components": {
+                "problem": 0.000733822700444407,
+                "replicate": 0.0021796284603649734,
+                "residual": 0.797608513384268
+              },
+              "warnings": [
+                "Maximum Likelihood optimization failed to converge. Check mle_retvals",
+                "Retrying MixedLM optimization with bfgs",
+                "Maximum Likelihood optimization failed to converge. Check mle_retvals",
+                "Retrying MixedLM optimization with cg",
+                "Maximum Likelihood optimization failed to converge. Check mle_retvals",
+                "Retrying MixedLM optimization with powell",
+                "The MLE may be on the boundary of the parameter space."
+              ],
+              "n_obs": 442,
+              "n_replicates": 10,
+              "n_problems": 6,
+              "n_leaky": 42,
+              "n_nonleaky": 400
+            }
+          },
+          "difference_of_differences": {
+            "instrument": "pedagogy",
+            "n_replicates": 10,
+            "replicate_ids": [
+              "0",
+              "1",
+              "2",
+              "3",
+              "4",
+              "5",
+              "6",
+              "7",
+              "8",
+              "9"
+            ],
+            "dod_values": [
+              -0.10416666666666696,
+              0.17028985507246386,
+              0.888888888888888,
+              0.7222222222222214,
+              0.04497354497354422,
+              -0.22222222222222232,
+              0.18357487922705396,
+              8.881784197001252e-16,
+              0.14432367149758463,
+              -0.17728758169934622
+            ],
+            "mean_dod": 0.16505965912935214,
+            "dod_ci95": [
+              -0.032078626740551126,
+              0.3972344073498959
+            ],
+            "wilcoxon_W": 17.0,
+            "p_two_sided": 0.322265625,
+            "interpretation": "(Conv-Ped)_GPT - (Conv-Ped)_Opus per replicate; a non-zero mean means the two judges disagree about the ConvTutor-PedTutor gap."
+          },
+          "policy_adjusted_leak_to_helpfulness_p": null
+        }
+      }
+    }
+  },
+  "overall_pooled_descriptive": {
+    "helpfulness": {
+      "agreement": {
+        "instrument": "helpfulness",
+        "n_turns": 1179,
+        "spearman_of_per_turn_means": 0.3717921732468297,
+        "spearman_clustered_ci95": [
+          0.26782245423781753,
+          0.47153308965122426
+        ],
+        "quadratic_weighted_kappa_on_medians": 0.2430048661800488,
+        "kappa_clustered_ci95": [
+          0.1500990981587781,
+          0.37545943992676106
+        ],
+        "mean_signed_diff_gpt_minus_opus": 0.1504099519366695,
+        "mean_absolute_diff": 0.17924795024031667,
+        "exact_agreement_on_medians": 0.8515691263782866,
+        "within_one_agreement_on_medians": 0.981340118744699,
+        "opus_median_distribution": {
+          "1": 0,
+          "2": 7,
+          "3": 16,
+          "4": 181,
+          "5": 975
+        },
+        "gpt_median_distribution": {
+          "1": 0,
+          "2": 0,
+          "3": 3,
+          "4": 56,
+          "5": 1120
+        },
+        "opus_mean_of_per_turn_means": 4.7958722080859495,
+        "gpt_mean_of_per_turn_means": 4.9462821600226174,
+        "valid_rep_rate_opus": 1.0,
+        "valid_rep_rate_gpt": 1.0,
+        "within_turn_rep_variance_opus": 0.023183488832343793,
+        "within_turn_rep_variance_gpt": 0.009612666101215719,
+        "note": "Correlation is not agreement; the mean signed diff reports any systematic scale shift even when Spearman is high."
+      }
+    },
+    "pedagogy": {
+      "agreement": {
+        "instrument": "pedagogy",
+        "n_turns": 1179,
+        "spearman_of_per_turn_means": 0.7401872776416921,
+        "spearman_clustered_ci95": [
+          0.6360773218137424,
+          0.8236619791989445
+        ],
+        "quadratic_weighted_kappa_on_medians": 0.652699944989619,
+        "kappa_clustered_ci95": [
+          0.5747060903833403,
+          0.704017809501943
+        ],
+        "mean_signed_diff_gpt_minus_opus": 0.7011591744416171,
+        "mean_absolute_diff": 0.7107718405428329,
+        "exact_agreement_on_medians": 0.45122985581000846,
+        "within_one_agreement_on_medians": 0.8507209499575912,
+        "opus_median_distribution": {
+          "1": 95,
+          "2": 142,
+          "3": 127,
+          "4": 329,
+          "5": 486
+        },
+        "gpt_median_distribution": {
+          "1": 0,
+          "2": 95,
+          "3": 71,
+          "4": 135,
+          "5": 878
+        },
+        "opus_mean_of_per_turn_means": 3.8232965790217692,
+        "gpt_mean_of_per_turn_means": 4.524455753463387,
+        "valid_rep_rate_opus": 1.0,
+        "valid_rep_rate_gpt": 1.0,
+        "within_turn_rep_variance_opus": 0.03986429177268872,
+        "within_turn_rep_variance_gpt": 0.038450664404862875,
+        "note": "Correlation is not agreement; the mean signed diff reports any systematic scale shift even when Spearman is high."
+      }
+    }
+  },
+  "same_family_sensitivity_sonnet_gemini_only": {
+    "helpfulness": {
+      "agreement": {
+        "instrument": "helpfulness",
+        "n_turns": 800,
+        "spearman_of_per_turn_means": 0.4844509277359187,
+        "spearman_clustered_ci95": [
+          0.3737759218089837,
+          0.5974431448260411
+        ],
+        "quadratic_weighted_kappa_on_medians": 0.3383240763100701,
+        "kappa_clustered_ci95": [
+          0.2291976954897731,
+          0.5127379712285655
+        ],
+        "mean_signed_diff_gpt_minus_opus": 0.10291666666666668,
+        "mean_absolute_diff": 0.13041666666666665,
+        "exact_agreement_on_medians": 0.89875,
+        "within_one_agreement_on_medians": 0.985,
+        "opus_median_distribution": {
+          "1": 0,
+          "2": 6,
+          "3": 7,
+          "4": 92,
+          "5": 695
+        },
+        "gpt_median_distribution": {
+          "1": 0,
+          "2": 0,
+          "3": 1,
+          "4": 43,
+          "5": 756
+        },
+        "opus_mean_of_per_turn_means": 4.84,
+        "gpt_mean_of_per_turn_means": 4.942916666666666,
+        "valid_rep_rate_opus": 1.0,
+        "valid_rep_rate_gpt": 1.0,
+        "within_turn_rep_variance_opus": 0.01916666666666666,
+        "within_turn_rep_variance_gpt": 0.011666666666666665,
+        "note": "Correlation is not agreement; the mean signed diff reports any systematic scale shift even when Spearman is high."
+      }
+    },
+    "pedagogy": {
+      "agreement": {
+        "instrument": "pedagogy",
+        "n_turns": 800,
+        "spearman_of_per_turn_means": 0.6411590762725692,
+        "spearman_clustered_ci95": [
+          0.5068230510649916,
+          0.7423847041431876
+        ],
+        "quadratic_weighted_kappa_on_medians": 0.6001851773915239,
+        "kappa_clustered_ci95": [
+          0.4691987788839596,
+          0.6827510615086568
+        ],
+        "mean_signed_diff_gpt_minus_opus": 0.5616666666666666,
+        "mean_absolute_diff": 0.5683333333333332,
+        "exact_agreement_on_medians": 0.555,
+        "within_one_agreement_on_medians": 0.89,
+        "opus_median_distribution": {
+          "1": 34,
+          "2": 55,
+          "3": 80,
+          "4": 207,
+          "5": 424
+        },
+        "gpt_median_distribution": {
+          "1": 0,
+          "2": 31,
+          "3": 29,
+          "4": 68,
+          "5": 672
+        },
+        "opus_mean_of_per_turn_means": 4.162083333333333,
+        "gpt_mean_of_per_turn_means": 4.72375,
+        "valid_rep_rate_opus": 1.0,
+        "valid_rep_rate_gpt": 1.0,
+        "within_turn_rep_variance_opus": 0.04041666666666666,
+        "within_turn_rep_variance_gpt": 0.028333333333333332,
+        "note": "Correlation is not agreement; the mean signed diff reports any systematic scale shift even when Spearman is high."
+      }
+    }
+  },
+  "holm_families": {
+    "family_A_policy_adjusted_leakage_slopes_helpfulness": [
+      {
+        "label": "sonnet",
+        "p_raw": 0.24820050973354313,
+        "p_holm": 0.693030328822127,
+        "family_size": 3,
+        "significant_holm_0.05": false
+      },
+      {
+        "label": "gpt",
+        "p_raw": 0.4369257215981217,
+        "p_holm": 0.693030328822127,
+        "family_size": 3,
+        "significant_holm_0.05": false
+      },
+      {
+        "label": "gemini",
+        "p_raw": 0.23101010960737567,
+        "p_holm": 0.693030328822127,
+        "family_size": 3,
+        "significant_holm_0.05": false
+      }
+    ],
+    "family_B_judge_x_leakage_interactions_helpfulness": [
+      {
+        "label": "sonnet",
+        "p_raw": 9.187927529169842e-11,
+        "p_holm": 2.756378258750953e-10,
+        "family_size": 3,
+        "significant_holm_0.05": true
+      },
+      {
+        "label": "gpt",
+        "p_raw": 0.28597516240312815,
+        "p_holm": 0.5719503248062563,
+        "family_size": 3,
+        "significant_holm_0.05": false
+      },
+      {
+        "label": "gemini",
+        "p_raw": 0.5581839419581412,
+        "p_holm": 0.5719503248062563,
+        "family_size": 3,
+        "significant_holm_0.05": false
+      }
+    ],
+    "family_C_judge_x_condition_interactions_helpfulness": [
+      {
+        "label": "sonnet",
+        "p_raw": 1.0652655858188369e-15,
+        "p_holm": 3.1957967574565107e-15,
+        "family_size": 3,
+        "significant_holm_0.05": true
+      },
+      {
+        "label": "gpt",
+        "p_raw": 4.551957262601497e-11,
+        "p_holm": 9.103914525202995e-11,
+        "family_size": 3,
+        "significant_holm_0.05": true
+      },
+      {
+        "label": "gemini",
+        "p_raw": 0.35406756767298797,
+        "p_holm": 0.35406756767298797,
+        "family_size": 3,
+        "significant_holm_0.05": false
+      }
+    ],
+    "declared_family_size": 3,
+    "note": "Three separately declared families of three tests each; raw and Holm-adjusted p reported. The multiplicity denominator is the DECLARED family size, so a missing or failed test blocks the comparison instead of shrinking the correction. Do NOT infer equivalence from a nonsignificant interaction."
+  }
+}

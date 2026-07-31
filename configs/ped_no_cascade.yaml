@@ -1,0 +1,29 @@
+# PedTutor ABLATION variant: ped_no_cascade (decisions-log.md 2026-06-30 pre-registration).
+#
+# ADDITIVE structural ablation. The frozen PedTutor and configs/ped_full.yaml are NOT
+# edited and stay byte-stable: ALL prompts and routing are sourced UNCHANGED from the
+# base config below. This file declares ONLY the structural manipulation. It is consumed
+# by agents/ped_ablations.py:PedTutorVariant (a subclass of the frozen PedTutor that
+# overrides ONLY graph construction), so agents/ped_tutor.py is byte-identical too.
+#
+# Manipulation: DROP the hint_cascade responder node. The hint_cascade's model call
+# (node="hint_cascade") never happens and the graph never enters it. The orphaned route
+# value "hint" (engaging student, an attempt already made, not asking for the answer) is
+# RE-ROUTED to the retained `decomposer` responder (the uniform remap rule: the decomposer
+# is the neutral single-step scaffold and is the semantically nearest retained responder —
+# routing the engaged student to the deferral_gate would mis-frame them as "asking for the
+# answer"). state_tracker still runs, so each visible turn is state_tracker + one responder
+# == 2 model calls (UNCHANGED vs full ped).
+#
+# `branch` semantics (pre-registered): the visible turn keeps its ORIGINAL deterministic
+# route value, so a rerouted hint turn is handled by node="decomposer" but still carries
+# branch="hint". The realized responder is recoverable from the call's node tag. Nothing
+# is tuned toward an outcome.
+
+agent: ped_tutor
+base_config: configs/ped_full.yaml
+variant: no_cascade
+drop_node: hint_cascade
+# orphaned route value -> retained responder node it now lands on
+reroute:
+  hint: decomposer

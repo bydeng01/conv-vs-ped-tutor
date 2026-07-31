@@ -1,0 +1,35 @@
+{
+  "epistemic_status": "prospectively specified post hoc cross-judge robustness analysis over frozen transcripts",
+  "timestamp_utc": "2026-07-20T00:25:13Z",
+  "requested_model": "gpt-5.6-sol",
+  "endpoint": "https://api.openai.com/v1",
+  "reasoning_effort": "medium",
+  "temperature": "omitted from request",
+  "max_completion_tokens": 2048,
+  "backend": "live",
+  "openai_sdk_version": "2.41.1",
+  "sdk_max_retries": 0,
+  "max_transport_attempts_per_call": 5,
+  "seed_supported": true,
+  "temperature_omitted": true,
+  "token_field": "max_completion_tokens",
+  "returned_model": [
+    "gpt-5.6-sol"
+  ],
+  "response_model_consistent": true,
+  "finish_reasons": [
+    "stop",
+    "stop"
+  ],
+  "parser_ok": true,
+  "usage_logged": true,
+  "degraded_responses": {},
+  "system_fingerprint": null,
+  "system_fingerprints_seen": [
+    "None"
+  ],
+  "fingerprint_drift_detectable": false,
+  "request_contract_sha256": "9c251cac793863b38d812713b19567f0cf451ef5b506b605b36612d85130db8e",
+  "preflight_freeze_commit": "80025a85050c5448bb72d604531d764bd6cd95ee",
+  "implementation_commit": "80025a85050c5448bb72d604531d764bd6cd95ee"
+}

@@ -1,0 +1,172 @@
+{
+  "epistemic_status": "post hoc judge robustness",
+  "analysis": "prospectively specified post hoc cross-judge robustness analysis over frozen transcripts",
+  "primary_judge": "Claude Opus 4.8",
+  "robustness_judge": "GPT-5.6 Sol",
+  "base": "sonnet",
+  "original_data_freezes": {
+    "confirmatory-freeze": "1a12b566bb825ff91359fb7c526e24b161ae38d3",
+    "crossmodel-gpt-freeze": "644271b1e6e365a84d679a103beb08f0775e60ef",
+    "crossmodel-gemini-freeze": "68ee3faf8d1370da15bb7f8ab1a87599389a7eb6"
+  },
+  "this_base_freeze": {
+    "confirmatory-freeze": "1a12b566bb825ff91359fb7c526e24b161ae38d3"
+  },
+  "implementation_commit": "8e85836603f6e983bc7df1e71e1924ce1bd52c40",
+  "implementation_commit_dirty": true,
+  "second_judge_plan_freeze": {
+    "judge-robustness-openrouter-freeze": "8e85836603f6e983bc7df1e71e1924ce1bd52c40"
+  },
+  "requested_model": "openai/gpt-5.6-sol",
+  "returned_model": "openai/gpt-5.6-sol",
+  "request_parameters": {
+    "reasoning_effort": "medium",
+    "temperature": "omitted",
+    "max_completion_tokens": 2048,
+    "seed_policy": "seeded(base=0,+rep)",
+    "reps": 3,
+    "provider": "openrouter",
+    "endpoint": "https://openrouter.ai/api/v1",
+    "provider_routing": {
+      "provider": {
+        "order": [
+          "openai"
+        ],
+        "allow_fallbacks": false
+      }
+    },
+    "backend": "live"
+  },
+  "spend_containment": {
+    "max_provider_calls": 2363,
+    "http_attempts_used": 2134,
+    "http_attempts_lifetime": 2154,
+    "responses_evaluated": 2134,
+    "accepted_ratings": 2134,
+    "attempts_per_response": 1.0,
+    "accept_rate": 1.0,
+    "ceiling_counts": "every HTTP request, including transport retries; CUMULATIVE across invocations (resuming does not replenish it)",
+    "breaker_warmup_responses": 60,
+    "breaker_min_accept_rate": 0.5,
+    "spend_ledger": {
+      "ledger": "results/judge_robustness/gpt-5.6-sol/sonnet/spend_ledger.json",
+      "provider": "openrouter",
+      "authorized_total_lifetime": 2363,
+      "http_attempts_before_this_run": 20,
+      "http_attempts_this_run": 2134,
+      "http_attempts_total": 2154,
+      "remaining": 209,
+      "prior_invocations": 4
+    }
+  },
+  "served_provider_identity": {
+    "provider_configured": "openrouter",
+    "endpoint": "https://openrouter.ai/api/v1",
+    "routing_pin": {
+      "provider": {
+        "order": [
+          "openai"
+        ],
+        "allow_fallbacks": false
+      }
+    },
+    "provider_frozen_at_preflight": "OpenAI",
+    "served_providers_observed": {
+      "OpenAI": 2148
+    },
+    "ratings_without_attestation": 0,
+    "spans_multiple_providers": false,
+    "observed_disagrees_with_frozen": false,
+    "note": "Ratings were served through an intermediary (OpenRouter), pinned to the `openai` upstream with fallbacks DISABLED. Each rating records the upstream that actually served it, taken from the response body's top-level `provider` field; a promoted base is asserted to have one identified upstream for every rating. `requested_model` is the ROUTER's slug and attests to the router's label, not to an upstream deployment -- which is why the per-rating attestation above, and the dated snapshot the route resolves to, are the identity evidence. The residual caveat is the intermediary itself: one additional hop that could in principle misroute, mitigated by the enforced pin (a bogus provider tag is refused) and by this per-rating attestation. See cross-judge-amendment-openrouter-2026-07-19.md."
+  },
+  "served_backend_identity": {
+    "system_fingerprint_frozen_at_preflight": null,
+    "system_fingerprints_observed": {
+      "None": 2148
+    },
+    "spans_multiple_backends": false,
+    "observed_disagrees_with_frozen": false,
+    "fingerprint_drift_allowed": false,
+    "note": "`gpt-5.6-sol` is not an immutable dated snapshot. A change of system_fingerprint under an unchanged model ID is an in-place BACKEND update. Read BOTH flags: spans_multiple_backends true means this run MIXED regimes; observed_disagrees_with_frozen true means at least one rating came from a backend other than the one frozen at preflight -- which a fully-cached resume shows WITHOUT spanning, since it observes a single (rotated) fingerprint. Either flag MUST be disclosed."
+  },
+  "versions": {
+    "python": "3.12.8",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "pandas": "3.0.3",
+    "statsmodels": "0.14.6",
+    "openai": "2.41.1"
+  },
+  "rubric_and_module_hashes": {
+    "analysis/judge.py": "c808ffaf0654fd911ed9d19e658fc60fb7489b95806a6e1105cd127710628159",
+    "analysis/judge_pedagogy.py": "a79766c86a44a7075f2c1579343f09802282ec99bbbff97b52c42edba5a0c9fe",
+    "supplement/judge_rubric.md": "3258f0297f8e41c86f05dc1ada4b1ba8bdf661638186accd54ef29734cc0b30c",
+    "supplement/judge_pedagogy_rubric.md": "901f2fb274c7b93d5cc1a57c4629d8c78c327d861100a2ee8cac51de10fb7362"
+  },
+  "source_manifest": {
+    "confirmatory-log-manifest.sha256": "b0b4671b202d339911dc8b1dec6f24751b5a4ac189f79094cc65b7ac1be9172c"
+  },
+  "expected_counts": {
+    "units": 358,
+    "rubrics": 2,
+    "reps": 3,
+    "calls_per_rubric": 1074,
+    "calls_total": 2148
+  },
+  "cache_stamps": {
+    "helpfulness": {
+      "schema_version": "cross-judge-1",
+      "instrument": "helpfulness",
+      "backend": "live",
+      "provider": "openrouter",
+      "endpoint": "https://openrouter.ai/api/v1",
+      "provider_routing": {
+        "provider": {
+          "order": [
+            "openai"
+          ],
+          "allow_fallbacks": false
+        }
+      },
+      "requested_model": "openai/gpt-5.6-sol",
+      "returned_model": "openai/gpt-5.6-sol",
+      "reasoning_effort": "medium",
+      "temperature_behavior": "omitted",
+      "max_completion_tokens": 2048,
+      "seed_policy": "seeded(base=0,+rep)",
+      "reps": 3,
+      "rubric_text_sha256": "3258f0297f8e41c86f05dc1ada4b1ba8bdf661638186accd54ef29734cc0b30c",
+      "system_prompt_sha256": "cd37c9c7a870e3e8f355be160752a62ba0fe6a2391ebb82248a6b07be0fc01bf",
+      "user_template_sha256": "306cfbc72d2ad4628ab47fc40cba5c46657726b0f916377aeba99e5686a0b2e5",
+      "parser_code_sha256": "d161ea2d8d367881f370f61c09b7a3bb114ba2c4eb47c183d987c8e10df1f8dc",
+      "plan_freeze": "8e85836603f6e983bc7df1e71e1924ce1bd52c40"
+    },
+    "pedagogy": {
+      "schema_version": "cross-judge-1",
+      "instrument": "pedagogy",
+      "backend": "live",
+      "provider": "openrouter",
+      "endpoint": "https://openrouter.ai/api/v1",
+      "provider_routing": {
+        "provider": {
+          "order": [
+            "openai"
+          ],
+          "allow_fallbacks": false
+        }
+      },
+      "requested_model": "openai/gpt-5.6-sol",
+      "returned_model": "openai/gpt-5.6-sol",
+      "reasoning_effort": "medium",
+      "temperature_behavior": "omitted",
+      "max_completion_tokens": 2048,
+      "seed_policy": "seeded(base=0,+rep)",
+      "reps": 3,
+      "rubric_text_sha256": "901f2fb274c7b93d5cc1a57c4629d8c78c327d861100a2ee8cac51de10fb7362",
+      "system_prompt_sha256": "a8990e3699be09e8ae2d686422037a722d825d37c79e7bee6f0db82d63b5c895",
+      "user_template_sha256": "49ef8357fe5747c8d7022aeb30bb1ba6df8b8897c709f913f1b6eb4eb7d907d2",
+      "parser_code_sha256": "ce0324b3151a28623ceabb5cdf23b959f7709ec95e055f4ee150a69e55aef60c",
+      "plan_freeze": "8e85836603f6e983bc7df1e71e1924ce1bd52c40"
+    }
+  }
+}

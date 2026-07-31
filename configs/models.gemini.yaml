@@ -1,0 +1,59 @@
+# CROSS-MODEL EXTENSION config -- Gemini tutor base (Phase 1).
+#
+# This is configs/models.yaml with ONLY the tutor role changed to a Gemini base, per the
+# pre-registered extension (decisions-log.md 2026-06-27; paper-plan.md §12). The student,
+# the judge, their providers, the tutor sampling budget, and the backend are IDENTICAL to
+# the primary -- run_confirmatory.py's `tutor_only_drift` guard REFUSES this config if any
+# of those differ, so the base swap is the only change.
+#
+# TUTOR MODEL PIN (decisions-log.md 2026-06-27, point 1): the `model` id below is the PINNED
+# base for this run -- a current Gemini 2.5-or-later general-purpose chat model (Google folded
+# LearnLM into Gemini 2.5+; NOT a reasoning / mini / nano / flash-lite variant), selected by the
+# deterministic rule BEFORE this base's leakage gate and recorded in the dated pin record. It is
+# never re-selected after any leakage rate or P1-J2 outcome. To reproduce, use it as-is; confirm
+# against the vendor list (`python experiments/list_models.py` with GEMINI_API_KEY set).
+#
+# Needs GEMINI_API_KEY (tutor) in addition to the primary's ANTHROPIC_API_KEY (judge) and
+# OPENROUTER_API_KEY (student). The Gemini tutor routes through the existing OpenAI-compatible
+# client path (agents/model_client.py `_complete_openai`) via Google's OpenAI-compat endpoint;
+# confirm the base_url below is current for your account at pin time.
+
+provider: anthropic          # global default (the judge uses it); unchanged from the primary
+providers:
+  anthropic:
+    api_key_env: ANTHROPIC_API_KEY
+  cerebras:
+    base_url: https://api.cerebras.ai/v1
+    api_key_env: CEREBRAS_API_KEY
+  groq:
+    base_url: https://api.groq.com/openai/v1
+    api_key_env: GROQ_API_KEY
+  openrouter:
+    base_url: https://openrouter.ai/api/v1
+    api_key_env: OPENROUTER_API_KEY
+  gemini:                    # NEW: the Gemini tutor's provider (Google's OpenAI-compat endpoint)
+    base_url: https://generativelanguage.googleapis.com/v1beta/openai/
+    api_key_env: GEMINI_API_KEY
+roles:
+  tutor:                      # the ONLY change vs the primary: a Gemini base, same budget
+    provider: gemini
+    model: models/gemini-3.1-pro-preview   # PINNED id (see header + dated pin record)
+    temperature: 0.4          # identical to the primary tutor (held constant; only the model changes)
+    max_tokens: 1024          # identical to the primary tutor
+    reasoning_effort: low     # vendor minimum for Gemini 3.x; sent as documented top-level field
+  student:                    # IDENTICAL to the primary -- do not change (OpenRouter -> Groq Llama-8B)
+    provider: openrouter
+    model: meta-llama/llama-3.1-8b-instruct
+    temperature: 0.8
+    max_tokens: 512
+    extra_body:
+      provider:
+        order: ["Groq"]
+        allow_fallbacks: false
+  judge:                      # IDENTICAL to the primary -- do not change (Opus, default sampling)
+    provider: anthropic
+    model: claude-opus-4-8
+    temperature: null
+    max_tokens: 512
+
+backend: live

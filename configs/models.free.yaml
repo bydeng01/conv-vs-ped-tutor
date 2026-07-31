@@ -1,0 +1,52 @@
+# Free-tier model config for PILOT / CALIBRATION ONLY.
+#
+# DEVIATION FROM BRIEF (logged in decisions-log.md 2026-06-15): the brief mandates
+# Anthropic for all three roles. Free OpenAI-compatible providers are used for the
+# non-inferential calibration/pilot to conserve paid budget; the FINAL confirmatory
+# run uses configs/models.yaml (Anthropic). Because the pilot model differs from the
+# final model, the cold-baseline and leakage gates MUST be re-verified on the final
+# Anthropic model before the confirmatory run.
+#
+# Roles must remain DISTINCT and correctly tiered: capable tutor (same for both
+# agents = capability control), genuinely weaker student, third judge config.
+# Confirm model strings against current free-tier availability before running.
+
+backend: live
+provider: groq           # default provider when a role does not override it
+
+providers:
+  groq:
+    base_url: https://api.groq.com/openai/v1
+    api_key_env: GROQ_API_KEY
+  cerebras:
+    base_url: https://api.cerebras.ai/v1
+    api_key_env: CEREBRAS_API_KEY
+  openrouter:
+    base_url: https://openrouter.ai/api/v1
+    api_key_env: OPENROUTER_API_KEY
+
+# Provider split to avoid any single free-tier DAILY token cap (Groq's 70B is only
+# ~100k tokens/day, and that quota is already spent). Model slugs below were
+# confirmed via `python experiments/list_models.py` on 2026-06-15:
+#   Cerebras (this account) offers only: gpt-oss-120b, zai-glm-4.7  (no Llama 70B).
+# So the capable tutor runs on Cerebras gpt-oss-120b; the weak student on Groq 8B.
+roles:
+  tutor:                 # capable; SAME model for ConvTutor and PedTutor
+    provider: cerebras
+    model: gpt-oss-120b
+    temperature: 0.4
+    max_tokens: 600      # trimmed for calibration frugality
+  student:               # genuinely weak. NOTE: openai/gpt-oss-20b was tried and
+                         # is a REASONING model — it solved 10/10 hard problems
+                         # (100% cold), far too strong. Llama-3.1-8B is the weakest
+                         # capable English-math model on free tier. Final run keeps this
+                         # weak Llama-3.1-8B student; difficulty re-verified there.
+    provider: groq
+    model: llama-3.1-8b-instant
+    temperature: 0.8
+    max_tokens: 400
+  judge:                 # third config (refined in Step 6; not used in calibration)
+    provider: cerebras
+    model: gpt-oss-120b
+    temperature: 0.1
+    max_tokens: 400

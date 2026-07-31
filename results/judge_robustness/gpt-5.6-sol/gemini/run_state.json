@@ -1,0 +1,82 @@
+{
+  "state": "complete",
+  "timestamp_utc": "2026-07-20T07:54:04Z",
+  "complete": true,
+  "base": "gemini",
+  "rubrics": [
+    "helpfulness",
+    "pedagogy"
+  ],
+  "reps": 3,
+  "backend": "live",
+  "units": 442,
+  "promoted_outputs": [
+    "per_turn.csv",
+    "per_session.csv",
+    "per_replicate.csv",
+    "metrics_summary.json",
+    "judge_inference.json",
+    "policy_adjusted.json",
+    "completeness.json",
+    "provenance.json",
+    "helpfulness_detail.json",
+    "pedagogy_detail.json"
+  ],
+  "cache_stamps": {
+    "helpfulness": {
+      "schema_version": "cross-judge-1",
+      "instrument": "helpfulness",
+      "backend": "live",
+      "provider": "openrouter",
+      "endpoint": "https://openrouter.ai/api/v1",
+      "provider_routing": {
+        "provider": {
+          "order": [
+            "openai"
+          ],
+          "allow_fallbacks": false
+        }
+      },
+      "requested_model": "openai/gpt-5.6-sol",
+      "returned_model": "openai/gpt-5.6-sol",
+      "reasoning_effort": "medium",
+      "temperature_behavior": "omitted",
+      "max_completion_tokens": 2048,
+      "seed_policy": "seeded(base=0,+rep)",
+      "reps": 3,
+      "rubric_text_sha256": "3258f0297f8e41c86f05dc1ada4b1ba8bdf661638186accd54ef29734cc0b30c",
+      "system_prompt_sha256": "cd37c9c7a870e3e8f355be160752a62ba0fe6a2391ebb82248a6b07be0fc01bf",
+      "user_template_sha256": "306cfbc72d2ad4628ab47fc40cba5c46657726b0f916377aeba99e5686a0b2e5",
+      "parser_code_sha256": "d161ea2d8d367881f370f61c09b7a3bb114ba2c4eb47c183d987c8e10df1f8dc",
+      "plan_freeze": "8e85836603f6e983bc7df1e71e1924ce1bd52c40"
+    },
+    "pedagogy": {
+      "schema_version": "cross-judge-1",
+      "instrument": "pedagogy",
+      "backend": "live",
+      "provider": "openrouter",
+      "endpoint": "https://openrouter.ai/api/v1",
+      "provider_routing": {
+        "provider": {
+          "order": [
+            "openai"
+          ],
+          "allow_fallbacks": false
+        }
+      },
+      "requested_model": "openai/gpt-5.6-sol",
+      "returned_model": "openai/gpt-5.6-sol",
+      "reasoning_effort": "medium",
+      "temperature_behavior": "omitted",
+      "max_completion_tokens": 2048,
+      "seed_policy": "seeded(base=0,+rep)",
+      "reps": 3,
+      "rubric_text_sha256": "901f2fb274c7b93d5cc1a57c4629d8c78c327d861100a2ee8cac51de10fb7362",
+      "system_prompt_sha256": "a8990e3699be09e8ae2d686422037a722d825d37c79e7bee6f0db82d63b5c895",
+      "user_template_sha256": "49ef8357fe5747c8d7022aeb30bb1ba6df8b8897c709f913f1b6eb4eb7d907d2",
+      "parser_code_sha256": "ce0324b3151a28623ceabb5cdf23b959f7709ec95e055f4ee150a69e55aef60c",
+      "plan_freeze": "8e85836603f6e983bc7df1e71e1924ce1bd52c40"
+    }
+  },
+  "note": "Complete promoted set. Consumers must require state == 'complete' and cache stamps matching these before reporting or packaging these outputs."
+}

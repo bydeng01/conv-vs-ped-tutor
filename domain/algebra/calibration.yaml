@@ -1,0 +1,108 @@
+# CANDIDATE CALIBRATION BATCH (v3 — HARD SETUP) — not the final problem set.
+#
+# Purpose: find a family whose SETUP genuinely defeats the weak student
+# (Llama-3.1-8B). v2's linear-relationship family was too easy — the student set
+# up the equations correctly and only "failed" because of an ask-nudge (now
+# removed). These are mixture/concentration and relative-motion problems: the
+# student's stated weakness ("identify the underlying relationship in rate/work/
+# mixture problems") bites here. Solving stays linear once set up.
+#
+# Used for a cold-only mini-test (student alone, ask-nudge reverted). If cold lands
+# ~20-40% AND the failures are genuine SETUP failures (read transcripts), the
+# frozen 19 get authored in the winning sub-family. All answers sympy-verified.
+
+problems:
+  # ---- mixture / concentration ----
+  - id: mix-1
+    role: training
+    topic: mixture
+    prompt: >
+      How many liters of a 40% acid solution must be added to 8 liters of a 10%
+      acid solution to produce a 30% acid solution?
+    canonical_answer: 16.0
+    leakage:
+      numeric_form: ["16"]
+      solution_form: ["add 16", "sixteen liters"]
+
+  - id: mix-2
+    role: training
+    topic: mixture
+    prompt: >
+      How many liters of water (0% acid) must be added to 12 liters of a 30% acid
+      solution to dilute it to a 20% acid solution?
+    canonical_answer: 6.0
+    leakage:
+      numeric_form: ["6"]
+      solution_form: ["add 6", "six liters"]
+
+  - id: mix-3
+    role: training
+    topic: mixture
+    prompt: >
+      A 30% alcohol solution is mixed with a 70% alcohol solution to make 40
+      liters of a 45% alcohol solution. How many liters of the 30% solution are
+      used?
+    canonical_answer: 25.0
+    leakage:
+      numeric_form: ["25"]
+      solution_form: ["25 liters of the 30"]
+
+  - id: mix-4
+    role: training
+    topic: mixture
+    prompt: >
+      How many liters of a 50% acid solution must be added to 18 liters of a 20%
+      acid solution to produce a 32% acid solution?
+    canonical_answer: 12.0
+    leakage:
+      numeric_form: ["12"]
+      solution_form: ["add 12", "twelve liters"]
+
+  # ---- relative motion ----
+  - id: move-1
+    role: training
+    topic: relative_motion
+    prompt: >
+      Two cyclists start at the same point and ride in opposite directions. One
+      rides 4 mph faster than the other. After 3 hours they are 60 miles apart.
+      What is the speed of the slower cyclist, in mph?
+    canonical_answer: 8.0
+    leakage:
+      numeric_form: ["8"]
+      solution_form: ["slower cyclist is 8", "eight mph"]
+
+  - id: move-2
+    role: training
+    topic: relative_motion
+    prompt: >
+      A car leaves a town traveling at 50 mph. Two hours later a second car leaves
+      the same town in the same direction at 70 mph. How many hours after the
+      second car leaves will it catch up to the first car?
+    canonical_answer: 5.0
+    leakage:
+      numeric_form: ["5"]
+      solution_form: ["after 5 hours", "five hours"]
+
+  - id: move-3
+    role: training
+    topic: relative_motion
+    prompt: >
+      A boat travels 36 miles downstream in the same time it travels 24 miles
+      upstream. The boat's speed in still water is 10 mph. What is the speed of the
+      current, in mph?
+    canonical_answer: 2.0
+    leakage:
+      numeric_form: ["2"]
+      solution_form: ["current is 2", "two mph"]
+
+  - id: move-4
+    role: training
+    topic: relative_motion
+    prompt: >
+      Two trains are 300 miles apart and travel toward each other. One train is 20
+      mph faster than the other. They meet after 3 hours. What is the speed of the
+      slower train, in mph?
+    canonical_answer: 40.0
+    leakage:
+      numeric_form: ["40"]
+      solution_form: ["slower train is 40", "forty mph"]

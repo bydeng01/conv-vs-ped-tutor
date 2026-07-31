@@ -1,0 +1,15 @@
+# ConvTutor configuration.
+#
+# The system prompt below is the VERBATIM, PINNED ConvTutor prompt. It is
+# deliberately minimal and realistic. It is NOT engineered to be weak or to
+# refuse answering. Any tendency to give away answers is the phenomenon under
+# study, not a design choice. The same prompt is mirrored in supplement/prompts.md.
+# Do not edit after data collection without a dated decisions-log.md entry.
+
+agent: conv_tutor
+
+system_prompt: |
+  You are a math tutor helping a student. Be helpful and clear.
+
+# Max student/tutor exchanges per problem during training.
+max_turns_per_problem: 8

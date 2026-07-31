@@ -1,0 +1,620 @@
+{
+  "analysis": "matched visible-turn-budget compute-fairness pass (paper-plan \u00a710)",
+  "rule": "K = per-(problem,replicate) min of in-window visible tutor-turn counts; truncate both conditions to the first K tutor turns and the student turns up to the response to the K-th turn (frozen 2026-06-26 before this result was read).",
+  "provenance": {
+    "freeze_tag": "confirmatory-freeze",
+    "freeze_commit": "1a12b566bb825ff91359fb7c526e24b161ae38d3",
+    "analysis_commit": "52a68c66c4b7350d0bff523696565895d30ee6d4",
+    "analysis_commit_dirty": true,
+    "n_run_ids": 20,
+    "run_ids": [
+      "conf-s0-conv-r0",
+      "conf-s0-conv-r1",
+      "conf-s0-conv-r2",
+      "conf-s0-conv-r3",
+      "conf-s0-conv-r4",
+      "conf-s0-conv-r5",
+      "conf-s0-conv-r6",
+      "conf-s0-conv-r7",
+      "conf-s0-conv-r8",
+      "conf-s0-conv-r9",
+      "conf-s0-ped-r0",
+      "conf-s0-ped-r1",
+      "conf-s0-ped-r2",
+      "conf-s0-ped-r3",
+      "conf-s0-ped-r4",
+      "conf-s0-ped-r5",
+      "conf-s0-ped-r6",
+      "conf-s0-ped-r7",
+      "conf-s0-ped-r8",
+      "conf-s0-ped-r9"
+    ],
+    "n_replicates_loaded": 10,
+    "scipy": "1.17.1",
+    "statsmodels": "0.14.6"
+  },
+  "realized_counts": {
+    "per_condition": {
+      "conv": {
+        "n_conversations": 10,
+        "inwindow_visible_tutor_turns": {
+          "mean": 13.5,
+          "median": 11.5,
+          "ci95": [
+            10.3,
+            17.1
+          ],
+          "n": 10
+        },
+        "model_calls": {
+          "mean": 67.8,
+          "median": 67.5,
+          "ci95": [
+            67.3,
+            68.4
+          ],
+          "n": 10
+        },
+        "tutor_tokens": {
+          "mean": 20761.7,
+          "median": 20208.0,
+          "ci95": [
+            19260.6475,
+            22649.535
+          ],
+          "n": 10
+        },
+        "total_tokens": {
+          "mean": 269089.9,
+          "median": 258081.5,
+          "ci95": [
+            252643.77,
+            289303.8
+          ],
+          "n": 10
+        }
+      },
+      "ped": {
+        "n_conversations": 10,
+        "inwindow_visible_tutor_turns": {
+          "mean": 22.3,
+          "median": 23.0,
+          "ci95": [
+            21.0,
+            23.5
+          ],
+          "n": 10
+        },
+        "model_calls": {
+          "mean": 91.6,
+          "median": 91.5,
+          "ci95": [
+            91.2,
+            92.0
+          ],
+          "n": 10
+        },
+        "tutor_tokens": {
+          "mean": 30075.8,
+          "median": 30550.5,
+          "ci95": [
+            28598.7925,
+            31482.102499999997
+          ],
+          "n": 10
+        },
+        "total_tokens": {
+          "mean": 187484.8,
+          "median": 189964.0,
+          "ci95": [
+            175901.0075,
+            199038.7425
+          ],
+          "n": 10
+        }
+      }
+    },
+    "turn_count_gap_ped_minus_conv": {
+      "conv_mean": 13.5,
+      "ped_mean": 22.3,
+      "mean_diff": 8.8,
+      "median_diff": 11.0,
+      "ci95": [
+        4.6,
+        12.6
+      ],
+      "n_pairs": 10,
+      "n_ped_gt_conv": 8
+    }
+  },
+  "matched_K_by_problem_replicate": {
+    "0|train-1": 4,
+    "0|train-2": 3,
+    "0|train-3": 4,
+    "0|train-4": 0,
+    "0|train-5": 0,
+    "0|train-6": 0,
+    "1|train-1": 4,
+    "1|train-2": 4,
+    "1|train-3": 4,
+    "1|train-4": 1,
+    "1|train-5": 1,
+    "1|train-6": 1,
+    "2|train-1": 3,
+    "2|train-2": 2,
+    "2|train-3": 1,
+    "2|train-4": 1,
+    "2|train-5": 1,
+    "2|train-6": 1,
+    "3|train-1": 3,
+    "3|train-2": 2,
+    "3|train-3": 1,
+    "3|train-4": 1,
+    "3|train-5": 0,
+    "3|train-6": 0,
+    "4|train-1": 4,
+    "4|train-2": 3,
+    "4|train-3": 2,
+    "4|train-4": 3,
+    "4|train-5": 2,
+    "4|train-6": 2,
+    "5|train-1": 4,
+    "5|train-2": 4,
+    "5|train-3": 4,
+    "5|train-4": 2,
+    "5|train-5": 2,
+    "5|train-6": 2,
+    "6|train-1": 4,
+    "6|train-2": 4,
+    "6|train-3": 1,
+    "6|train-4": 1,
+    "6|train-5": 1,
+    "6|train-6": 1,
+    "7|train-1": 4,
+    "7|train-2": 1,
+    "7|train-3": 1,
+    "7|train-4": 1,
+    "7|train-5": 1,
+    "7|train-6": 1,
+    "8|train-1": 4,
+    "8|train-2": 3,
+    "8|train-3": 4,
+    "8|train-4": 4,
+    "8|train-5": 4,
+    "8|train-6": 3,
+    "9|train-1": 4,
+    "9|train-2": 1,
+    "9|train-3": 1,
+    "9|train-4": 1,
+    "9|train-5": 1,
+    "9|train-6": 1
+  },
+  "inwindow_tutor_counts_by_problem_replicate": {
+    "conv|0|train-1": 4,
+    "conv|0|train-2": 3,
+    "conv|0|train-3": 4,
+    "conv|0|train-4": 0,
+    "conv|0|train-5": 0,
+    "conv|0|train-6": 0,
+    "conv|1|train-1": 4,
+    "conv|1|train-2": 4,
+    "conv|1|train-3": 4,
+    "conv|1|train-4": 1,
+    "conv|1|train-5": 1,
+    "conv|1|train-6": 1,
+    "conv|2|train-1": 3,
+    "conv|2|train-2": 2,
+    "conv|2|train-3": 1,
+    "conv|2|train-4": 1,
+    "conv|2|train-5": 1,
+    "conv|2|train-6": 1,
+    "conv|3|train-1": 3,
+    "conv|3|train-2": 2,
+    "conv|3|train-3": 1,
+    "conv|3|train-4": 1,
+    "conv|3|train-5": 0,
+    "conv|3|train-6": 0,
+    "conv|4|train-1": 4,
+    "conv|4|train-2": 3,
+    "conv|4|train-3": 2,
+    "conv|4|train-4": 4,
+    "conv|4|train-5": 4,
+    "conv|4|train-6": 4,
+    "conv|5|train-1": 4,
+    "conv|5|train-2": 4,
+    "conv|5|train-3": 4,
+    "conv|5|train-4": 2,
+    "conv|5|train-5": 2,
+    "conv|5|train-6": 2,
+    "conv|6|train-1": 4,
+    "conv|6|train-2": 4,
+    "conv|6|train-3": 1,
+    "conv|6|train-4": 1,
+    "conv|6|train-5": 1,
+    "conv|6|train-6": 1,
+    "conv|7|train-1": 4,
+    "conv|7|train-2": 1,
+    "conv|7|train-3": 1,
+    "conv|7|train-4": 1,
+    "conv|7|train-5": 1,
+    "conv|7|train-6": 1,
+    "conv|8|train-1": 4,
+    "conv|8|train-2": 4,
+    "conv|8|train-3": 4,
+    "conv|8|train-4": 4,
+    "conv|8|train-5": 4,
+    "conv|8|train-6": 4,
+    "conv|9|train-1": 4,
+    "conv|9|train-2": 1,
+    "conv|9|train-3": 1,
+    "conv|9|train-4": 1,
+    "conv|9|train-5": 1,
+    "conv|9|train-6": 1,
+    "ped|0|train-1": 4,
+    "ped|0|train-2": 4,
+    "ped|0|train-3": 4,
+    "ped|0|train-4": 4,
+    "ped|0|train-5": 4,
+    "ped|0|train-6": 4,
+    "ped|1|train-1": 4,
+    "ped|1|train-2": 4,
+    "ped|1|train-3": 4,
+    "ped|1|train-4": 4,
+    "ped|1|train-5": 4,
+    "ped|1|train-6": 3,
+    "ped|2|train-1": 4,
+    "ped|2|train-2": 4,
+    "ped|2|train-3": 4,
+    "ped|2|train-4": 4,
+    "ped|2|train-5": 4,
+    "ped|2|train-6": 4,
+    "ped|3|train-1": 4,
+    "ped|3|train-2": 4,
+    "ped|3|train-3": 4,
+    "ped|3|train-4": 4,
+    "ped|3|train-5": 4,
+    "ped|3|train-6": 4,
+    "ped|4|train-1": 4,
+    "ped|4|train-2": 4,
+    "ped|4|train-3": 3,
+    "ped|4|train-4": 3,
+    "ped|4|train-5": 2,
+    "ped|4|train-6": 2,
+    "ped|5|train-1": 4,
+    "ped|5|train-2": 4,
+    "ped|5|train-3": 4,
+    "ped|5|train-4": 4,
+    "ped|5|train-5": 3,
+    "ped|5|train-6": 4,
+    "ped|6|train-1": 4,
+    "ped|6|train-2": 4,
+    "ped|6|train-3": 4,
+    "ped|6|train-4": 4,
+    "ped|6|train-5": 4,
+    "ped|6|train-6": 4,
+    "ped|7|train-1": 4,
+    "ped|7|train-2": 4,
+    "ped|7|train-3": 4,
+    "ped|7|train-4": 3,
+    "ped|7|train-5": 3,
+    "ped|7|train-6": 1,
+    "ped|8|train-1": 4,
+    "ped|8|train-2": 3,
+    "ped|8|train-3": 4,
+    "ped|8|train-4": 4,
+    "ped|8|train-5": 4,
+    "ped|8|train-6": 3,
+    "ped|9|train-1": 4,
+    "ped|9|train-2": 3,
+    "ped|9|train-3": 4,
+    "ped|9|train-4": 4,
+    "ped|9|train-5": 4,
+    "ped|9|train-6": 3
+  },
+  "k0_dropped_cells": {
+    "n_cells": 5,
+    "cells": [
+      {
+        "replicate_id": "0",
+        "problem_id": "train-4",
+        "conv_inwindow_tutor_turns": 0,
+        "ped_inwindow_tutor_turns": 4
+      },
+      {
+        "replicate_id": "0",
+        "problem_id": "train-5",
+        "conv_inwindow_tutor_turns": 0,
+        "ped_inwindow_tutor_turns": 4
+      },
+      {
+        "replicate_id": "0",
+        "problem_id": "train-6",
+        "conv_inwindow_tutor_turns": 0,
+        "ped_inwindow_tutor_turns": 4
+      },
+      {
+        "replicate_id": "3",
+        "problem_id": "train-5",
+        "conv_inwindow_tutor_turns": 0,
+        "ped_inwindow_tutor_turns": 4
+      },
+      {
+        "replicate_id": "3",
+        "problem_id": "train-6",
+        "conv_inwindow_tutor_turns": 0,
+        "ped_inwindow_tutor_turns": 4
+      }
+    ]
+  },
+  "marginals_full_vs_matched": {
+    "P1_leakage": {
+      "full_window": {
+        "conv_mean": 0.4296176046176046,
+        "ped_mean": 0.0642512077294686,
+        "mean_diff_conv_minus_ped": 0.36536639688813605,
+        "diff_ci95": [
+          0.2169665011920447,
+          0.516362067883807
+        ],
+        "p_two_sided": 0.00390625,
+        "cliffs_delta_conv_vs_ped": 0.96,
+        "n": 10,
+        "n_conv_gt_ped": 9,
+        "n_ped_gt_conv": 1,
+        "significant_in_predicted_direction": true,
+        "direction_matches_prediction": true
+      },
+      "matched_budget": {
+        "conv_mean": 0.43010461760461755,
+        "ped_mean": 0.04097222222222222,
+        "mean_diff_conv_minus_ped": 0.38913239538239536,
+        "diff_ci95": [
+          0.24077380952380953,
+          0.5396825396825397
+        ],
+        "p_two_sided": 0.00390625,
+        "cliffs_delta_conv_vs_ped": 0.96,
+        "n": 10,
+        "n_conv_gt_ped": 9,
+        "n_ped_gt_conv": 1,
+        "significant_in_predicted_direction": true,
+        "direction_matches_prediction": true
+      },
+      "verdict": "holds under matched visible-turn budget",
+      "changed_under_matched_budget": false
+    },
+    "P2_helpfulness": {
+      "full_window": {
+        "conv_mean": 4.703114478114478,
+        "ped_mean": 4.796980965258998,
+        "mean_diff_conv_minus_ped": -0.09386648714451926,
+        "diff_ci95": [
+          -0.2509740135912907,
+          0.05775361596514346
+        ],
+        "p_two_sided": 0.16015625,
+        "cliffs_delta_conv_vs_ped": -0.1,
+        "n": 10,
+        "n_conv_gt_ped": 3,
+        "n_ped_gt_conv": 7,
+        "significant_in_predicted_direction": false,
+        "direction_matches_prediction": false
+      },
+      "matched_budget": {
+        "conv_mean": 4.723821548821548,
+        "ped_mean": 4.805586820586821,
+        "mean_diff_conv_minus_ped": -0.08176527176527193,
+        "diff_ci95": [
+          -0.22913257575757578,
+          0.05671975709475675
+        ],
+        "p_two_sided": 0.42578125,
+        "cliffs_delta_conv_vs_ped": -0.13,
+        "n": 10,
+        "n_conv_gt_ped": 3,
+        "n_ped_gt_conv": 6,
+        "significant_in_predicted_direction": false,
+        "direction_matches_prediction": false
+      },
+      "verdict": "holds under matched visible-turn budget",
+      "changed_under_matched_budget": false
+    },
+    "P3_independence": {
+      "full_window": {
+        "conv_mean": 0.579924944336709,
+        "ped_mean": 0.6561379310344828,
+        "mean_diff_conv_minus_ped": -0.07621298669777371,
+        "diff_ci95": [
+          -0.18887911313950867,
+          0.020639305713443686
+        ],
+        "p_two_sided": 0.375,
+        "cliffs_delta_conv_vs_ped": -0.22,
+        "n": 10,
+        "n_conv_gt_ped": 5,
+        "n_ped_gt_conv": 5,
+        "significant_in_predicted_direction": false,
+        "direction_matches_prediction": true
+      },
+      "matched_budget": {
+        "conv_mean": 0.5695454545454546,
+        "ped_mean": 0.6096753246753246,
+        "mean_diff_conv_minus_ped": -0.040129870129870106,
+        "diff_ci95": [
+          -0.1807402597402597,
+          0.08891991341991343
+        ],
+        "p_two_sided": 0.6953125,
+        "cliffs_delta_conv_vs_ped": -0.1,
+        "n": 10,
+        "n_conv_gt_ped": 6,
+        "n_ped_gt_conv": 4,
+        "significant_in_predicted_direction": false,
+        "direction_matches_prediction": true
+      },
+      "verdict": "holds (same direction/significance) but weakens under matched visible-turn budget",
+      "changed_under_matched_budget": false
+    }
+  },
+  "flagged_marginals": [],
+  "j2_matched_budget": {
+    "n_turns": 256,
+    "J2_supported": true,
+    "leak_to_helpfulness": {
+      "operative_method": "mixed_effects",
+      "operative_significant_in_predicted_direction": true,
+      "n_leaky": 57,
+      "n_nonleaky": 199,
+      "leaky_mean": 4.9415204678362565,
+      "nonleaky_mean": 4.656616415410386,
+      "cluster_within_rep_effect": 0.26385526104824353,
+      "cluster_p": 0.00390625,
+      "cluster_n_rep": 10,
+      "mixed_available": true,
+      "mixed_coef": 0.2952954956074227,
+      "mixed_p": 0.0002441087014584427,
+      "mixed_ci95": [
+        0.13752251089664824,
+        0.45306848031819713
+      ]
+    },
+    "leak_to_next_independence": {
+      "operative_method": "mixed_effects",
+      "operative_significant_in_predicted_direction": true,
+      "n_leaky": 57,
+      "n_nonleaky": 199,
+      "leaky_mean": 0.3684210526315789,
+      "nonleaky_mean": 0.7185929648241206,
+      "cluster_within_rep_effect": -0.38440854661907303,
+      "cluster_p": 0.01953125,
+      "cluster_n_rep": 10,
+      "mixed_available": true,
+      "mixed_coef": -0.3549181494569213,
+      "mixed_p": 7.508896914749837e-08,
+      "mixed_ci95": [
+        -0.4842517153336924,
+        -0.2255845835801502
+      ]
+    }
+  },
+  "j2_full_window": {
+    "n_turns": 358,
+    "J2_supported": true,
+    "leak_to_helpfulness": {
+      "operative_method": "mixed_effects",
+      "operative_significant_in_predicted_direction": true,
+      "n_leaky": 66,
+      "n_nonleaky": 292,
+      "leaky_mean": 4.949494949494949,
+      "nonleaky_mean": 4.672374429223744,
+      "cluster_within_rep_effect": 0.27900744997871413,
+      "cluster_p": 0.001953125,
+      "cluster_n_rep": 10,
+      "mixed_available": true,
+      "mixed_coef": 0.30284651232690507,
+      "mixed_p": 9.107285510187757e-06,
+      "mixed_ci95": [
+        0.16908015051626585,
+        0.4366128741375443
+      ]
+    },
+    "leak_to_next_independence": {
+      "operative_method": "mixed_effects",
+      "operative_significant_in_predicted_direction": true,
+      "n_leaky": 66,
+      "n_nonleaky": 292,
+      "leaky_mean": 0.3333333333333333,
+      "nonleaky_mean": 0.7294520547945206,
+      "cluster_within_rep_effect": -0.42092069711897295,
+      "cluster_p": 0.00390625,
+      "cluster_n_rep": 10,
+      "mixed_available": true,
+      "mixed_coef": -0.3856199457005318,
+      "mixed_p": 5.637215532543803e-12,
+      "mixed_ci95": [
+        -0.49533875227106783,
+        -0.2759011391299958
+      ]
+    }
+  },
+  "j2_leaky_cell_sizes_by_condition": {
+    "full_window": {
+      "conv": {
+        "leaky": 52,
+        "nonleaky": 83
+      },
+      "ped": {
+        "leaky": 14,
+        "nonleaky": 209
+      },
+      "pooled": {
+        "leaky": 66,
+        "nonleaky": 292
+      },
+      "ped_leaky": 14
+    },
+    "matched_budget": {
+      "conv": {
+        "leaky": 51,
+        "nonleaky": 77
+      },
+      "ped": {
+        "leaky": 6,
+        "nonleaky": 122
+      },
+      "pooled": {
+        "leaky": 57,
+        "nonleaky": 199
+      },
+      "ped_leaky": 6
+    },
+    "ped_leaky_min_for_adequate_power": 10,
+    "ped_leaky_underpowered_under_matched_budget": true,
+    "note": "Frozen J2 pools conv+ped (condition NOT a covariate, \u00a710); leakage correlates with condition, so the pooled leaky cell is mostly conv. The ped-leaky cell is reported here descriptively and is NOT used to re-spec J2."
+  },
+  "cost_normalized_per_1k_tutor_tok": {
+    "leaky_turns_per_1k_tutor_tok": {
+      "n": 10,
+      "n_conv_gt_ped": 10,
+      "n_ped_gt_conv": 0,
+      "conv_mean": 0.25684797718128094,
+      "ped_mean": 0.0454440573615256,
+      "mean_diff_conv_minus_ped": 0.2114039198197554,
+      "median_diff": 0.21466230239742223,
+      "diff_ci95": [
+        0.1305110962668304,
+        0.2973774602814055
+      ],
+      "wilcoxon_W": 0.0,
+      "p_two_sided": 0.001953125,
+      "cliffs_delta_conv_vs_ped": 0.92,
+      "predicted_sign": 1,
+      "direction_matches_prediction": true,
+      "significant_in_predicted_direction": true,
+      "raw_was_significant": true,
+      "flips_under_normalization": false
+    },
+    "independent_turns_per_1k_tutor_tok": {
+      "n": 10,
+      "n_conv_gt_ped": 2,
+      "n_ped_gt_conv": 8,
+      "conv_mean": 0.5458348457919737,
+      "ped_mean": 0.6159693504425003,
+      "mean_diff_conv_minus_ped": -0.07013450465052667,
+      "median_diff": -0.08909845127256077,
+      "diff_ci95": [
+        -0.21990259952329408,
+        0.12423848074342082
+      ],
+      "wilcoxon_W": 12.0,
+      "p_two_sided": 0.130859375,
+      "cliffs_delta_conv_vs_ped": -0.6,
+      "predicted_sign": -1,
+      "direction_matches_prediction": true,
+      "significant_in_predicted_direction": false,
+      "raw_was_significant": false,
+      "flips_under_normalization": false
+    }
+  },
+  "note": "Read-only over the frozen results/logs at freeze 1a12b56. Reuses the frozen per-turn leakage flags, the CACHED per-turn helpfulness (judge NOT re-run), and the frozen independence regex. Same \u00a710 inference as the primary (paired two-sided Wilcoxon, Cliff's delta, conversation-level CIs). Reported regardless of outcome (\u00a711); K is the single pairwise minimum, not tuned."
+}

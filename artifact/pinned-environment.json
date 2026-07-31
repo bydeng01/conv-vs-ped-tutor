@@ -1,0 +1,23 @@
+{
+  "analysis_hardware": {
+    "cpu": "Apple M3 Pro, 11 cores",
+    "memory_gb": 18,
+    "operating_system": "macOS 14.6.1 arm64"
+  },
+  "freeze_commits": {
+    "confirmatory-freeze": "1a12b566bb825ff91359fb7c526e24b161ae38d3",
+    "crossmodel-gemini-freeze": "68ee3faf8d1370da15bb7f8ab1a87599389a7eb6",
+    "crossmodel-gpt-freeze": "644271b1e6e365a84d679a103beb08f0775e60ef"
+  },
+  "packages": {
+    "PyYAML": "6.0.3",
+    "anthropic": "0.109.2",
+    "langgraph": "1.2.5",
+    "numpy": "2.4.6",
+    "openai": "2.41.1",
+    "pandas": "3.0.3",
+    "scipy": "1.17.1",
+    "statsmodels": "0.14.6"
+  },
+  "python": "3.12.8"
+}

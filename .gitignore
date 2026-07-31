@@ -1,0 +1,63 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.ipynb_checkpoints/
+.DS_Store
+
+# Secrets
+.env
+
+# Local scratch (reference PDFs etc.) -- not part of the experiment
+tmp/
+# Local scratch / working prompt files (not part of the release)
+execution-prompts*.md
+analysis-prompt*.md
+
+# Experiment outputs.
+logs/
+results/*
+!results/.gitkeep
+!results/*.final.csv
+!results/README.md
+# Tracked analysis outputs (full release): the primary base, both cross-model
+# bases, and the ablation -- per-session/turn/replicate tables, metric summaries,
+# inference verdicts, and per-rep judge detail, so every headline number
+# re-derives from the public repo via analysis/run_inference.py.
+!results/confirmatory/
+!results/confirmatory_gpt/
+!results/confirmatory_gemini/
+!results/ablation/
+!results/condition_adjusted_sensitivity/
+# ...but not the judge re-run caches (redundant with the *_detail.json files).
+results/confirmatory/*_cache.json
+results/confirmatory_gpt/*_cache.json
+results/confirmatory_gemini/*_cache.json
+results/ablation/*_cache.json
+# Second-judge (GPT-5.6 Sol) robustness audit: track the machine-readable result files
+# (input manifests, protected-primary hashes, plan/preflight, detail/CSV/analysis/
+# provenance/completeness, and the cross-judge comparison), but keep the per-rep score
+# CACHES, the raw provider WIRE logs, and lock/temp files controlled. The caches and wire
+# logs ship in the submission artifact and are pinned by gpt-judge-wire-log-manifest.sha256.
+!results/judge_robustness/
+results/judge_robustness/**/cache/
+results/judge_robustness/**/wire/
+results/judge_robustness/**/tmp.*
+# Cumulative spend ledger: operational run state, rewritten on every provider call. It must NOT
+# be tracked -- a resumed paid run would otherwise dirty the tracked tree and be refused by the
+# live freeze gate. Its content is copied into provenance.json at promotion, and the file itself
+# still ships in the submission artifact for auditability.
+results/judge_robustness/**/spend_ledger.json
+analysis/figures/*
+!analysis/figures/.gitkeep
+# the figure GENERATORS are analysis code and ship in the reviewer artifact, so they
+# must be under version control; the rendered outputs above stay ignored.
+!analysis/figures/*.py
+analysis/figures/*.prev-*.py
+dist/
+
+# Local assistant/editor notes (not part of the release)
+CLAUDE.md

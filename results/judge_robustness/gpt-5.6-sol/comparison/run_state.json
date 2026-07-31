@@ -1,0 +1,224 @@
+{
+  "state": "complete",
+  "complete": true,
+  "bases": [
+    "sonnet",
+    "gpt",
+    "gemini"
+  ],
+  "declared_family_size": 3,
+  "comparison_sha256": "1e77287c9cdd6566a3a58d3ab0c16a403eae4d86ddf5d6d6046a510cc86810f5",
+  "inputs": {
+    "sonnet": {
+      "gpt_dir": "results/judge_robustness/gpt-5.6-sol/sonnet",
+      "opus_dir": "results/confirmatory",
+      "files": {
+        "opus/per_turn.csv": "c0f0c1d8273dd6ed3bb09f52c6695d96954155e2e78f5cac652b7195aa3096be",
+        "opus/helpfulness_detail.json": "57dc671c2e8568970221b977143003ab065701f44d812366b151b5aedb4db68c",
+        "gpt/helpfulness_detail.json": "69c8abe55ff4db8daa9928e3dd0a6628571307b64103b65554d9a703e9828c21",
+        "opus/pedagogy_detail.json": "7f839c009befa7ff3abc5ae436247657083017fe9c777986006ab7caffe91da4",
+        "gpt/pedagogy_detail.json": "407cae2ec092477f4ead7caca95aeb2ae434d736d8f35912071495705b3b0ddf",
+        "gpt/policy_adjusted.json": "72aa63a001e927fffb23cf5dcabfc732ab534fa20952bc75f587080e5f06af59",
+        "gpt/run_state.json": "f96905a5a29193ed5f94717f57ecfd32cb7fb5e4fb48282b54e207b9d9edf14f",
+        "gpt/input_manifest.jsonl": "d3b7f589e197206acec0f828c8b990f4340181914ad191474c9f34fefa87b9c6"
+      },
+      "cache_stamps": {
+        "helpfulness": {
+          "schema_version": "cross-judge-1",
+          "instrument": "helpfulness",
+          "backend": "live",
+          "provider": "openrouter",
+          "endpoint": "https://openrouter.ai/api/v1",
+          "provider_routing": {
+            "provider": {
+              "order": [
+                "openai"
+              ],
+              "allow_fallbacks": false
+            }
+          },
+          "requested_model": "openai/gpt-5.6-sol",
+          "returned_model": "openai/gpt-5.6-sol",
+          "reasoning_effort": "medium",
+          "temperature_behavior": "omitted",
+          "max_completion_tokens": 2048,
+          "seed_policy": "seeded(base=0,+rep)",
+          "reps": 3,
+          "rubric_text_sha256": "3258f0297f8e41c86f05dc1ada4b1ba8bdf661638186accd54ef29734cc0b30c",
+          "system_prompt_sha256": "cd37c9c7a870e3e8f355be160752a62ba0fe6a2391ebb82248a6b07be0fc01bf",
+          "user_template_sha256": "306cfbc72d2ad4628ab47fc40cba5c46657726b0f916377aeba99e5686a0b2e5",
+          "parser_code_sha256": "d161ea2d8d367881f370f61c09b7a3bb114ba2c4eb47c183d987c8e10df1f8dc",
+          "plan_freeze": "8e85836603f6e983bc7df1e71e1924ce1bd52c40"
+        },
+        "pedagogy": {
+          "schema_version": "cross-judge-1",
+          "instrument": "pedagogy",
+          "backend": "live",
+          "provider": "openrouter",
+          "endpoint": "https://openrouter.ai/api/v1",
+          "provider_routing": {
+            "provider": {
+              "order": [
+                "openai"
+              ],
+              "allow_fallbacks": false
+            }
+          },
+          "requested_model": "openai/gpt-5.6-sol",
+          "returned_model": "openai/gpt-5.6-sol",
+          "reasoning_effort": "medium",
+          "temperature_behavior": "omitted",
+          "max_completion_tokens": 2048,
+          "seed_policy": "seeded(base=0,+rep)",
+          "reps": 3,
+          "rubric_text_sha256": "901f2fb274c7b93d5cc1a57c4629d8c78c327d861100a2ee8cac51de10fb7362",
+          "system_prompt_sha256": "a8990e3699be09e8ae2d686422037a722d825d37c79e7bee6f0db82d63b5c895",
+          "user_template_sha256": "49ef8357fe5747c8d7022aeb30bb1ba6df8b8897c709f913f1b6eb4eb7d907d2",
+          "parser_code_sha256": "ce0324b3151a28623ceabb5cdf23b959f7709ec95e055f4ee150a69e55aef60c",
+          "plan_freeze": "8e85836603f6e983bc7df1e71e1924ce1bd52c40"
+        }
+      }
+    },
+    "gpt": {
+      "gpt_dir": "results/judge_robustness/gpt-5.6-sol/gpt",
+      "opus_dir": "results/confirmatory_gpt",
+      "files": {
+        "opus/per_turn.csv": "e9ea84db273d2c7378da3a2893b53459743c52a81501f098a72f86092f016826",
+        "opus/helpfulness_detail.json": "c13b3683ac976b5f454771dd412e05cf94750900815d1cd22add15953b483d51",
+        "gpt/helpfulness_detail.json": "2db7a3b984d97566abec619b85142329b745c38d02f45fa340b68fc411987125",
+        "opus/pedagogy_detail.json": "fc513b760623a0ecf04a07ec2a9cd0798eed5ea86ef23eb64ae554063e5b2c02",
+        "gpt/pedagogy_detail.json": "083ff6c86b80ccd47cf110b1e09aa635c56c78bd87389462c7ee4530dc5fef18",
+        "gpt/policy_adjusted.json": "2f9132d5d7e46ed7268efc08669960f6ea346f8fff96aad3b0cac586afafa079",
+        "gpt/run_state.json": "7feeb4c4866f9e71433c899f2feaae28e448fcda079e9530b6dff92a5f1c76fe",
+        "gpt/input_manifest.jsonl": "e0ea20ca2116b9b4265da19c20915c7b43917f69d7a2092f72497846f30f0b2f"
+      },
+      "cache_stamps": {
+        "helpfulness": {
+          "schema_version": "cross-judge-1",
+          "instrument": "helpfulness",
+          "backend": "live",
+          "provider": "openrouter",
+          "endpoint": "https://openrouter.ai/api/v1",
+          "provider_routing": {
+            "provider": {
+              "order": [
+                "openai"
+              ],
+              "allow_fallbacks": false
+            }
+          },
+          "requested_model": "openai/gpt-5.6-sol",
+          "returned_model": "openai/gpt-5.6-sol",
+          "reasoning_effort": "medium",
+          "temperature_behavior": "omitted",
+          "max_completion_tokens": 2048,
+          "seed_policy": "seeded(base=0,+rep)",
+          "reps": 3,
+          "rubric_text_sha256": "3258f0297f8e41c86f05dc1ada4b1ba8bdf661638186accd54ef29734cc0b30c",
+          "system_prompt_sha256": "cd37c9c7a870e3e8f355be160752a62ba0fe6a2391ebb82248a6b07be0fc01bf",
+          "user_template_sha256": "306cfbc72d2ad4628ab47fc40cba5c46657726b0f916377aeba99e5686a0b2e5",
+          "parser_code_sha256": "d161ea2d8d367881f370f61c09b7a3bb114ba2c4eb47c183d987c8e10df1f8dc",
+          "plan_freeze": "8e85836603f6e983bc7df1e71e1924ce1bd52c40"
+        },
+        "pedagogy": {
+          "schema_version": "cross-judge-1",
+          "instrument": "pedagogy",
+          "backend": "live",
+          "provider": "openrouter",
+          "endpoint": "https://openrouter.ai/api/v1",
+          "provider_routing": {
+            "provider": {
+              "order": [
+                "openai"
+              ],
+              "allow_fallbacks": false
+            }
+          },
+          "requested_model": "openai/gpt-5.6-sol",
+          "returned_model": "openai/gpt-5.6-sol",
+          "reasoning_effort": "medium",
+          "temperature_behavior": "omitted",
+          "max_completion_tokens": 2048,
+          "seed_policy": "seeded(base=0,+rep)",
+          "reps": 3,
+          "rubric_text_sha256": "901f2fb274c7b93d5cc1a57c4629d8c78c327d861100a2ee8cac51de10fb7362",
+          "system_prompt_sha256": "a8990e3699be09e8ae2d686422037a722d825d37c79e7bee6f0db82d63b5c895",
+          "user_template_sha256": "49ef8357fe5747c8d7022aeb30bb1ba6df8b8897c709f913f1b6eb4eb7d907d2",
+          "parser_code_sha256": "ce0324b3151a28623ceabb5cdf23b959f7709ec95e055f4ee150a69e55aef60c",
+          "plan_freeze": "8e85836603f6e983bc7df1e71e1924ce1bd52c40"
+        }
+      }
+    },
+    "gemini": {
+      "gpt_dir": "results/judge_robustness/gpt-5.6-sol/gemini",
+      "opus_dir": "results/confirmatory_gemini",
+      "files": {
+        "opus/per_turn.csv": "67cc270300c25b7d64ae35cb314c14a1ff43c92efb8bd1c894da1e8ab1df4a83",
+        "opus/helpfulness_detail.json": "57c86b64ec2bdef9759c90a6bb52a44b25b30d75ccea3a9fbd1d5ad0f0fa4f9f",
+        "gpt/helpfulness_detail.json": "19602dd5aeacaae6cc05b9cf5c3d905707554933269ce04c69bf127065dcf8d1",
+        "opus/pedagogy_detail.json": "aeb58feb38674a2e0901e041e52a6ef890e32ad789e154ceb946afa85901bd71",
+        "gpt/pedagogy_detail.json": "80812f62ebdefe9e4de8206b0a682bcccc7b2a58cca4dd16f3a51625d888392e",
+        "gpt/policy_adjusted.json": "2f917ad8c36684ae994c7a77e821e920c07a320c3f076131a5ecd60f2b077c0d",
+        "gpt/run_state.json": "995cababe223de05885bec0906f22cf8cff51be923e1b21c26bc6f29c1d55fe4",
+        "gpt/input_manifest.jsonl": "38b5532c14d081fd10bbe0a040fce0e2230a74ff740c9e0fa488593a24da017a"
+      },
+      "cache_stamps": {
+        "helpfulness": {
+          "schema_version": "cross-judge-1",
+          "instrument": "helpfulness",
+          "backend": "live",
+          "provider": "openrouter",
+          "endpoint": "https://openrouter.ai/api/v1",
+          "provider_routing": {
+            "provider": {
+              "order": [
+                "openai"
+              ],
+              "allow_fallbacks": false
+            }
+          },
+          "requested_model": "openai/gpt-5.6-sol",
+          "returned_model": "openai/gpt-5.6-sol",
+          "reasoning_effort": "medium",
+          "temperature_behavior": "omitted",
+          "max_completion_tokens": 2048,
+          "seed_policy": "seeded(base=0,+rep)",
+          "reps": 3,
+          "rubric_text_sha256": "3258f0297f8e41c86f05dc1ada4b1ba8bdf661638186accd54ef29734cc0b30c",
+          "system_prompt_sha256": "cd37c9c7a870e3e8f355be160752a62ba0fe6a2391ebb82248a6b07be0fc01bf",
+          "user_template_sha256": "306cfbc72d2ad4628ab47fc40cba5c46657726b0f916377aeba99e5686a0b2e5",
+          "parser_code_sha256": "d161ea2d8d367881f370f61c09b7a3bb114ba2c4eb47c183d987c8e10df1f8dc",
+          "plan_freeze": "8e85836603f6e983bc7df1e71e1924ce1bd52c40"
+        },
+        "pedagogy": {
+          "schema_version": "cross-judge-1",
+          "instrument": "pedagogy",
+          "backend": "live",
+          "provider": "openrouter",
+          "endpoint": "https://openrouter.ai/api/v1",
+          "provider_routing": {
+            "provider": {
+              "order": [
+                "openai"
+              ],
+              "allow_fallbacks": false
+            }
+          },
+          "requested_model": "openai/gpt-5.6-sol",
+          "returned_model": "openai/gpt-5.6-sol",
+          "reasoning_effort": "medium",
+          "temperature_behavior": "omitted",
+          "max_completion_tokens": 2048,
+          "seed_policy": "seeded(base=0,+rep)",
+          "reps": 3,
+          "rubric_text_sha256": "901f2fb274c7b93d5cc1a57c4629d8c78c327d861100a2ee8cac51de10fb7362",
+          "system_prompt_sha256": "a8990e3699be09e8ae2d686422037a722d825d37c79e7bee6f0db82d63b5c895",
+          "user_template_sha256": "49ef8357fe5747c8d7022aeb30bb1ba6df8b8897c709f913f1b6eb4eb7d907d2",
+          "parser_code_sha256": "ce0324b3151a28623ceabb5cdf23b959f7709ec95e055f4ee150a69e55aef60c",
+          "plan_freeze": "8e85836603f6e983bc7df1e71e1924ce1bd52c40"
+        }
+      }
+    }
+  },
+  "note": "Complete promoted comparison. Consumers must require state == 'complete' and input hashes matching the base outputs packaged alongside it."
+}

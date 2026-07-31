@@ -1,0 +1,176 @@
+name: CI
+
+# What this job is for, and what it deliberately is not for.
+#
+# The claim this repository makes is that its headline numbers re-derive from the tracked
+# tables without contacting a model provider. That claim is checkable in about three
+# minutes on a machine with no API keys, so it is checked on every push.
+#
+# It does NOT re-run the experiment. Tutor responses and uncached judge scores require paid
+# provider access and the recorded model identifiers; no amount of CI reproduces those.
+# Nothing here spends money or needs a secret, and the workflow has no `secrets:` access by
+# design -- if a step ever appears to need one, that step belongs somewhere else.
+#
+# Numeric comparisons run in --science-only mode. Crossed mixed-effects fits are not
+# bit-portable across BLAS implementations: the packaged references were fit on macOS/arm64
+# (Accelerate) and GitHub's runners are Linux/x86_64 (OpenBLAS), which moves coefficients in
+# the third decimal and random-effect variances by up to 0.007, while leaving every verdict
+# label, coefficient sign, and significance call identical. Asserting bit equality here
+# would produce a permanently red badge that says nothing about the science. The exact
+# checkpoints still exist and still run -- inside the pinned environment, where they mean
+# something (see tools/test_condition_adjusted_sensitivity.py).
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  reproduce:
+    name: reproduce (py${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        # 3.12 is the pinned analysis version (artifact/pinned-environment.json). 3.11 is
+        # here because the README advertises 3.11+, and an advertised version that nothing
+        # runs is a claim, not a fact.
+        python-version: ["3.11", "3.12"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Record the environment
+        run: |
+          python -c "import platform, sys; print(sys.version); print(platform.platform())"
+          python -c "import numpy; numpy.show_config()" || true
+          pip list
+
+      # The test files are standalone scripts, not pytest modules: each calls sys.exit()
+      # at module scope, so `pytest tools/` aborts with INTERNALERROR during collection.
+      # They are run the way they are written. Checks whose input is the gitignored raw
+      # transcript set report SKIP and are tallied separately -- a clone cannot silently
+      # look like it exercised the reconstruction gates.
+      - name: Test suite
+        run: |
+          mkdir -p /tmp/testlogs
+          failed=""
+          for f in tools/test_*.py; do
+            log="/tmp/testlogs/$(basename "$f").log"
+            echo "::group::$f"
+            # Not `python "$f" | tee`: a pipeline reports tee's status, so every test would
+            # look like it passed.
+            if python "$f" > "$log" 2>&1; then cat "$log"; echo "-> PASS"
+            else cat "$log"; echo "-> FAIL"; failed="$failed $f"; fi
+            echo "::endgroup::"
+          done
+          if [ -n "$failed" ]; then
+            # Reprint failures OUTSIDE the collapsed groups and into the job summary. A
+            # summary that only names the file makes the reader expand a 107-check log to
+            # find the one line that matters.
+            for f in $failed; do
+              log="/tmp/testlogs/$(basename "$f").log"
+              echo "::error file=$f::$f failed"
+              echo "================================ $f ================================"
+              grep -E "FAIL|Error|Traceback|Exception|^\[" "$log" | tail -40 || true
+              echo "-------------------------------- tail --------------------------------"
+              tail -40 "$log"
+              {
+                echo "<details><summary><code>$f</code></summary>"; echo
+                echo '```'; tail -60 "$log"; echo '```'
+                echo "</details>"
+              } >> "$GITHUB_STEP_SUMMARY"
+            done
+            exit 1
+          fi
+          echo "all test scripts passed"
+
+      # tools/verify_problems.py re-solves the problem set symbolically instead of trusting
+      # the answers recorded in the YAML. Every metric in the paper is computed against
+      # those answers, so this is the check that sits underneath all the others -- and it
+      # costs seven seconds.
+      - name: Verify the problem set independently
+        run: python tools/verify_problems.py
+
+      # The one pytest-style test in the tree lives outside tools/ and so is not picked up
+      # by the loop above. It is run explicitly rather than by widening the glob, because
+      # pointing pytest at tools/ aborts collection: those files sys.exit() at module scope.
+      - name: Figure regression test
+        run: python -m pytest analysis/figures/test_fig2_dissociation.py -q
+
+      - name: Re-derive inference from the tracked tables
+        run: |
+          set -euo pipefail
+          rm -rf reproduced && mkdir -p reproduced
+          cp -R results/confirmatory          reproduced/sonnet
+          cp -R results/confirmatory_gpt      reproduced/gpt
+          cp -R results/confirmatory_gemini   reproduced/gemini
+
+          python analysis/run_inference.py reproduced/sonnet \
+            --freeze-tag confirmatory-freeze \
+            --freeze-commit 1a12b566bb825ff91359fb7c526e24b161ae38d3
+          python analysis/run_inference.py reproduced/gpt \
+            --freeze-tag crossmodel-gpt-freeze \
+            --freeze-commit 644271b1e6e365a84d679a103beb08f0775e60ef
+          python analysis/run_inference.py reproduced/gemini \
+            --freeze-tag crossmodel-gemini-freeze \
+            --freeze-commit 68ee3faf8d1370da15bb7f8ab1a87599389a7eb6
+
+      - name: Verdicts match the published tables
+        run: |
+          set -euo pipefail
+          for base in sonnet:confirmatory gpt:confirmatory_gpt gemini:confirmatory_gemini; do
+            python tools/compare_inference.py \
+              "results/${base#*:}/inference.json" "reproduced/${base%%:*}/inference.json" \
+              --science-only --rel-tol 0.05
+          done
+
+      - name: Post hoc policy-adjusted sensitivity
+        run: |
+          set -euo pipefail
+          python analysis/condition_adjusted_sensitivity.py \
+            --output reproduced/condition-adjusted.json \
+            --latex-output reproduced/condition-adjusted-values.tex
+          python tools/compare_condition_adjusted.py \
+            results/condition_adjusted_sensitivity/analysis.json \
+            reproduced/condition-adjusted.json
+
+      - name: Descriptive ablation
+        run: python analysis/ablation_analysis.py results/ablation
+
+      - name: No credentials, home paths, or emails in the tracked tree
+        run: python tools/scan_sensitive.py
+
+      - name: Confirm nothing reached a provider
+        # Belt and braces: every step above is supposed to be offline. If a code change ever
+        # makes one of them fall through to a live call, it would do so silently on a runner
+        # with no keys set -- most likely as an authentication error swallowed by a retry
+        # loop. A written wire log is the observable trace of that, so its absence is
+        # asserted rather than assumed.
+        run: |
+          if find reproduced -name 'wire*' -o -name '*_wire*' | grep -q .; then
+            echo "FAIL: a wire log was produced -- something attempted a provider call"
+            exit 1
+          fi
+          echo "no wire logs: the whole run was offline"

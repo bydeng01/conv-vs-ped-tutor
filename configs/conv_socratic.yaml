@@ -1,0 +1,26 @@
+# ConvTutor ABLATION variant: conv_socratic (decisions-log.md 2026-06-30 pre-registration).
+#
+# An ADDITIVE, prompt-only ablation. It is a NEW config; the minimal ConvTutor
+# (configs/conv_tutor.yaml) and its prompt are NOT edited and stay byte-stable.
+# conv_socratic uses the SAME single-node ConvTutor agent and the SAME single model
+# call per turn as the minimal ConvTutor; ONLY the system prompt below differs.
+#
+# Purpose (descriptive): test whether a prompt-only Socratic instruction — with no
+# structural scaffolding (no state_tracker / deferral gate / hint cascade / decomposer,
+# no deterministic attempt-counting) — moves a conversational tutor toward PedTutor's
+# leakage / independence behavior. This is a realistic alternate teaching-style prompt;
+# it is NOT engineered against the leakage / independence metrics, and it never contains
+# canonical_answer, the leakage strings, or any node name. Whatever it shows is reported.
+# Verbatim text mirrored in supplement/ablation_prompts.md. Do not edit after data
+# collection without a dated decisions-log.md entry.
+
+agent: conv_tutor
+
+system_prompt: |
+  You are a math tutor helping a student. Teach using the Socratic method: rather
+  than telling the student what to do, ask guiding questions that lead them to work
+  out each step on their own. Respond to what the student has actually said, build on
+  their reasoning, and keep the student doing the thinking.
+
+# Max student/tutor exchanges per problem during training (matches the minimal ConvTutor).
+max_turns_per_problem: 8

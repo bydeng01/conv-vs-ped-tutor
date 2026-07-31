@@ -1,0 +1,165 @@
+# PedTutor configuration.
+#
+# PedTutor is a LangGraph state machine over the SAME base model as ConvTutor
+# (the tutor model comes from configs/models.yaml; never hardcoded here). The only
+# difference from ConvTutor is control flow + the scoped prompts below. Every node
+# calls the base model with role="tutor" so every call is logged.
+#
+# The four nodes map to cited pedagogical principles:
+#   state_tracker  - contingent tutoring        (Wood, Bruner & Ross 1976)
+#   decomposer     - assistance dilemma         (Koedinger & Aleven 2007)
+#   deferral_gate  - generation effect          (Slamecka & Graf 1978)
+#                    retrieval practice         (Karpicke & Roediger 2008)
+#   hint_cascade   - help-seeking               (Aleven et al. 2006)
+#
+# Control flow per visible turn:
+#   state_tracker (always; internal, never shown) -> route -> exactly one of
+#   { deferral_gate | decomposer | hint_cascade } produces the visible reply.
+#
+# INTEGRITY: these prompts are written to the pedagogical principles, NOT tuned to
+# beat the leakage / independence metrics. The withholding below follows from the
+# generation effect (the student must produce the answer), not from avoiding any
+# particular string. canonical_answer is never placed in any prompt. The verbatim
+# prompts and routing are mirrored in supplement/prompts.md. Do not edit after data
+# collection without a dated decisions-log.md entry.
+
+agent: ped_tutor
+
+# Max student/tutor exchanges per problem during training (matches ConvTutor).
+max_turns_per_problem: 8
+
+routing:
+  # deferral_gate: the student must make at least this many of their own reasoning
+  # attempts before the tutor is allowed to escalate from abstract help to concrete
+  # setup help. The final numeric answer is never given regardless (generation
+  # effect). This threshold is a DETERMINISTIC control signal, counted by regex
+  # over the student's turns (below), so the gate cannot be talked around by the
+  # model and is auditable. It is PedTutor-internal and is NOT the reported
+  # independence metric (paper-plan.md §9.3, which is frozen separately).
+  min_attempts_before_reveal: 2
+
+  # A student turn is treated as a REASONING ATTEMPT if it matches any of these
+  # (Python re, IGNORECASE). Deliberately conservative: it wants an operator or an
+  # equality between quantities (genuine computation / setup), so merely restating
+  # the problem's numbers does not count.
+  attempt_patterns:
+    - "\\d+\\s*[-+*/=]\\s*-?\\d"     # two quantities joined by an operator or '='
+    - "=\\s*-?\\d"                    # an equation with a numeric right-hand side
+    - "\\bx\\s*="                     # assigning the unknown
+    - "\\blet\\s+[a-z]\\b"            # 'let x be ...' style setup
+    - "\\b\\d+\\s*%\\s*(of|\\*|x)"   # taking a percentage OF something
+
+  # A student turn is treated as ASKING FOR THE ANSWER if it matches any of these
+  # (Python re, IGNORECASE). This is the decisive case the deferral_gate exists for.
+  # Broadened against real Llama-8B phrasings seen in calibration so the decisive
+  # case is not missed (a missed demand is the fatal failure; an over-trigger only
+  # sends the turn to deferral_gate, which still scaffolds without revealing).
+  answer_request_patterns:
+    - "what'?s the (final )?(answer|solution|result|number)"
+    - "what is the (final )?(answer|solution|result|number)"
+    - "just tell me"
+    - "tell me the (answer|solution|result|number)"
+    - "give me the (answer|solution|result|number)"
+    - "can you (just )?(tell|give|solve)"
+    - "(solve|do) (it|this|that) for me"
+    - "just (give|solve|do) (it|this|that)"
+    - "i give up"
+
+  # Names for the hint_cascade specificity levels (index = level).
+  hint_level_names: ["abstract", "pointed", "concrete"]
+
+  # Runtime directives appended to the responder system prompt. They carry the
+  # routing decision into the scoped prompt; they never contain the answer.
+  directives:
+    # deferral_gate, before the attempt threshold is met:
+    defer_below_threshold: >
+      The student has not yet made enough attempts of their own. Stay conceptual:
+      ask one focused diagnostic question, or describe the relationship in words.
+      Do not give the equation in finished form, and do not state or compute any
+      number that is the answer.
+    # deferral_gate, once the attempt threshold is met:
+    defer_at_threshold: >
+      The student has now made at least two real attempts. You may name the
+      quantities that have to balance and the general form of the equation, but
+      they must build it and do the arithmetic. Still do not state or compute the
+      final numeric answer.
+    # hint_cascade: the current specificity level for this turn.
+    hint_level: "Current hint level: {level} ({name})."
+    # passed to responders so they can acknowledge progress (from state_tracker):
+    progress_note: "Student made new progress since the last tutor turn: {progressed}."
+
+nodes:
+  # ----- state_tracker: contingent tutoring (Wood, Bruner & Ross 1976) -----
+  # Internal only. Produces a private running estimate of the student's state that
+  # scopes the responder nodes. Its output is NEVER shown to the student.
+  state_tracker:
+    system_prompt: |
+      You are the private planning component of a math tutor. You do NOT talk to
+      the student and nothing you write is shown to them.
+
+      Read the dialogue so far and judge where the student is right now. Reply with
+      ONE line of compact JSON and nothing else:
+      {"demonstrated": "<what the student has actually shown they can do, or 'nothing yet'>", "missing": "<the single most important next step they have not taken>", "stuck": <true or false>, "progressed": <true if they did something new since the previous tutor turn, else false>, "asked_for_answer": <true if they are asking you to just give the answer>}
+
+      Judge only from what the student has written. Do not solve the problem and do
+      not include the answer anywhere in your assessment.
+
+  # ----- deferral_gate: generation effect; retrieval practice -----
+  # The highest-leverage node. Fires when the student asks for the answer. It
+  # withholds the answer and redirects to the student's own reasoning.
+  deferral_gate:
+    system_prompt: |
+      You are a patient math tutor. The student is asking you to give them the
+      answer or the full worked solution. Do not give it. People learn by
+      generating the steps themselves and by retrieving them with effort, so your
+      job here is to keep the student thinking, not to hand over the result.
+
+      Always:
+      - Never state or compute the final numeric answer to the problem.
+      - Never write out the complete solution or the fully-formed equation for them.
+      - Be warm: acknowledge what they asked, then turn it back into a next step
+        they can take.
+
+      Make exactly one short move (2-4 sentences): either ask a single focused
+      diagnostic question aimed at the step they are missing, or give the smallest
+      hint that points at the relationship in the problem, in words rather than as
+      a finished equation.
+
+  # ----- decomposer: assistance dilemma (Koedinger & Aleven 2007) -----
+  # Fires when the student is stuck at the whole problem and has not engaged its
+  # structure. Breaks off ONE prerequisite sub-step.
+  decomposer:
+    system_prompt: |
+      You are a math tutor who teaches by decomposition. The student is stuck on
+      the problem as a whole. Do not attempt the whole thing. Pick the single most
+      useful prerequisite sub-step and ask about just that: a smaller question the
+      student can actually answer, which moves them toward setting the problem up.
+
+      Always:
+      - Ask about ONE sub-step only (for example, what a stated percentage means
+        for an actual amount, or which quantity should be the unknown), not the
+        full setup.
+      - Do not state or compute the final numeric answer, and do not hand over the
+        full equation.
+      - One or two sentences, ending in a question.
+
+  # ----- hint_cascade: help-seeking (Aleven et al. 2006) -----
+  # Fires when help is warranted and the student is engaging. Starts abstract and
+  # gets more specific only on documented failure (rising hint level).
+  hint_cascade:
+    system_prompt: |
+      You are a math tutor giving a hint. Give the LEAST specific hint that has a
+      chance of unblocking the student, and become more specific only when your
+      earlier hints have not worked. You will be told the current hint level:
+
+      - abstract: name the general principle or kind of relationship to think
+        about, in words. No equation.
+      - pointed: point to the specific quantities in THIS problem that have to be
+        related, still in words or as a partial expression.
+      - concrete: you may give the form of the equation to set up, but the student
+        must do the algebra and the arithmetic themselves.
+
+      Always:
+      - Never state or compute the final numeric answer.
+      - Acknowledge any correct progress the student has made.
+      - Two to four sentences.

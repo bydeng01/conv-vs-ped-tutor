@@ -1,0 +1,90 @@
+{
+  "resolved": {
+    "epistemic_status": "prospectively specified post hoc cross-judge robustness analysis over frozen transcripts",
+    "timestamp_utc": "2026-07-20T04:30:50Z",
+    "requested_model": "openai/gpt-5.6-sol",
+    "provider": "openrouter",
+    "endpoint": "https://openrouter.ai/api/v1",
+    "provider_routing": {
+      "provider": {
+        "order": [
+          "openai"
+        ],
+        "allow_fallbacks": false
+      }
+    },
+    "reasoning_effort": "medium",
+    "temperature": "omitted from request",
+    "max_completion_tokens": 2048,
+    "backend": "live",
+    "openai_sdk_version": "2.41.1",
+    "sdk_max_retries": 0,
+    "max_transport_attempts_per_call": 5,
+    "seed_supported": true,
+    "temperature_omitted": true,
+    "token_field": "max_completion_tokens",
+    "returned_model": [
+      "openai/gpt-5.6-sol"
+    ],
+    "response_model_consistent": true,
+    "finish_reasons": [
+      "stop",
+      "stop"
+    ],
+    "parser_ok": true,
+    "usage_logged": true,
+    "degraded_responses": {},
+    "system_fingerprint": null,
+    "system_fingerprints_seen": [
+      "None"
+    ],
+    "fingerprint_drift_detectable": false,
+    "served_provider": "OpenAI",
+    "served_providers_seen": [
+      "OpenAI"
+    ],
+    "request_contract_sha256": "baaa43b15e7baf783fe2f413ec30c7170147b64a584ba6b3a782d4c5e716dc76",
+    "preflight_freeze_commit": "8e85836603f6e983bc7df1e71e1924ce1bd52c40",
+    "implementation_commit": "8e85836603f6e983bc7df1e71e1924ce1bd52c40"
+  },
+  "calls": [
+    {
+      "instrument": "helpfulness",
+      "parsed_ok": true,
+      "parsed_overall": 5,
+      "seed_sent": true,
+      "transient_retries": 0,
+      "requested_model": "openai/gpt-5.6-sol",
+      "returned_model": "openai/gpt-5.6-sol",
+      "response_id": "gen-1784521851-H3hNTujcamOM9Gk0jSSl",
+      "system_fingerprint": null,
+      "served_provider": "OpenAI",
+      "finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 628,
+        "completion_tokens": 24,
+        "reasoning_tokens": 0
+      },
+      "text": "{\"clarity\":5,\"responsiveness\":5,\"helpfulness\":5,\"overall\":5}"
+    },
+    {
+      "instrument": "pedagogy",
+      "parsed_ok": true,
+      "parsed_overall": 5,
+      "seed_sent": true,
+      "transient_retries": 0,
+      "requested_model": "openai/gpt-5.6-sol",
+      "returned_model": "openai/gpt-5.6-sol",
+      "response_id": "gen-1784521852-LpPVvqiAUzrF5Wzz8f14",
+      "system_fingerprint": null,
+      "served_provider": "OpenAI",
+      "finish_reason": "stop",
+      "usage": {
+        "prompt_tokens": 864,
+        "completion_tokens": 33,
+        "reasoning_tokens": 0
+      },
+      "text": "{\"scaffolding\":5,\"productive_struggle\":5,\"assistance_calibration\":5,\"elicitation\":5,\"overall\":5}"
+    }
+  ]
+}

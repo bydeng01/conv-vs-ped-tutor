@@ -1,0 +1,27 @@
+# Keep the build context small and the image free of local state.
+.git
+.github
+__pycache__
+*.py[cod]
+.venv
+venv
+.DS_Store
+.env
+
+# ~100 MB of raw transcripts and ~7 MB of built archives. Neither is needed by the offline
+# analysis, which reads only the tracked tables under results/.
+logs/
+dist/
+tmp/
+reproduced/
+
+# Rendered figures are build outputs; the generators under analysis/figures/*.py are copied.
+analysis/figures/*.pdf
+analysis/figures/*.svg
+analysis/figures/*.png
+analysis/figures/*.tiff
+
+# Manuscript sources are not inputs to the analysis.
+AI4EDU/
+supplement/
+*.tex

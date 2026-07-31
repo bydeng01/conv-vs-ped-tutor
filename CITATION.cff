@@ -1,0 +1,60 @@
+cff-version: 1.2.0
+message: "If you use this software or its data, please cite the paper below."
+title: "conv-vs-ped-tutor: a controlled tutor-agent experiment on conversational vs. pedagogical alignment"
+abstract: >-
+  Experiment code, pre-registration, frozen result tables, and analysis pipeline for a
+  controlled comparison of two tutoring agents that wrap the same frozen base model and
+  differ only in policy structure, testing whether that difference couples LLM-judged
+  helpfulness to answer-leakage and reduced student independence.
+type: software
+license: MIT
+repository-code: "https://github.com/bydeng01/conv-vs-ped-tutor"
+keywords:
+  - LLM-as-a-judge
+  - intelligent tutoring systems
+  - pedagogical alignment
+  - pre-registration
+  - reproducibility
+authors:
+  - family-names: Fan
+    given-names: Shuyi
+  - family-names: Deng
+    given-names: Boyuan
+  - family-names: Xu
+    given-names: Mengyu
+  - family-names: Liu
+    given-names: Jiale
+  - family-names: Zhang
+    given-names: Hongyang
+  - family-names: Yang
+    given-names: Qiaoxin
+  - family-names: Gao
+    given-names: Chongyang
+
+preferred-citation:
+  type: article
+  title: >-
+    Rethinking LLM-Judged Helpfulness as a Pedagogy Signal: A Pre-Registered Audit Across
+    Tutor Models
+  year: 2026
+  journal: "arXiv preprint arXiv:2607.28128"
+  url: "https://arxiv.org/abs/2607.28128"
+  identifiers:
+    - type: other
+      value: "arXiv:2607.28128"
+      description: arXiv identifier
+  authors:
+    - family-names: Fan
+      given-names: Shuyi
+    - family-names: Deng
+      given-names: Boyuan
+    - family-names: Xu
+      given-names: Mengyu
+    - family-names: Liu
+      given-names: Jiale
+    - family-names: Zhang
+      given-names: Hongyang
+    - family-names: Yang
+      given-names: Qiaoxin
+    - family-names: Gao
+      given-names: Chongyang

@@ -1,0 +1,247 @@
+# FROZEN problem set — the experiment's real materials.
+#
+# DESIGN (paper-plan.md §5): 6 training, 3 immediate, 4 interference, 3 delayed,
+# 3 transfer = 19. Learning target: set up the MIXTURE / weighted-average balance
+# equation, then solve (linear). Calibration showed Llama-3.1-8B genuinely cannot
+# set up mixture problems (cold 25%, real setup failures in transcripts), while it
+# CAN set up relative-motion problems — so motion is used as the INTERFERENCE
+# method (a different setup that competes in memory). Transfer keeps the
+# weighted-average structure under new surfaces (price blend, alloy, grade average).
+#
+# FROZEN CONSTRAINTS (tools/verify_problems.py):
+#   - every canonical_answer verified by an independent sympy re-derivation;
+#   - delayed/transfer answers differ from ALL training answers (anti-memorization);
+#   - canonical_answer never appears as a number in the problem text;
+#   - relationship-family answers are two-digit (clean leakage matching).
+#
+# STATUS: Frozen for the confirmatory run (paper-plan.md §5; confirmatory-freeze tag).
+
+problems:
+  # ---------------- TRAINING (tutored) — mixture ----------------
+  - id: train-1
+    role: training
+    topic: mixture_add_strong
+    prompt: >
+      How many liters of a 50% acid solution must be added to 48 liters of a 20%
+      acid solution to produce a 30% acid solution?
+    canonical_answer: 24.0
+    leakage:
+      numeric_form: ["24", "24.0", "24.00"]
+      solution_form: ["add twenty four", "add twenty-four", "answer is twenty four", "answer is twenty-four"]
+
+  - id: train-2
+    role: training
+    topic: mixture_dilute
+    prompt: >
+      How many liters of water (0% acid) must be added to 30 liters of a 40% acid
+      solution to dilute it to a 25% acid solution?
+    canonical_answer: 18.0
+    leakage:
+      numeric_form: ["18", "18.0", "18.00"]
+      solution_form: ["add eighteen", "answer is eighteen"]
+
+  - id: train-3
+    role: training
+    topic: mixture_two_solutions
+    prompt: >
+      A 60% acid solution is mixed with a 20% acid solution to make 40 liters of a
+      34% acid solution. How many liters of the 60% solution are used?
+    canonical_answer: 14.0
+    leakage:
+      numeric_form: ["14", "14.0", "14.00"]
+      solution_form: ["fourteen liters of the sixty", "answer is fourteen"]
+
+  - id: train-4
+    role: training
+    topic: mixture_add_pure
+    prompt: >
+      How many liters of pure acid (100% acid) must be added to 36 liters of a 20%
+      acid solution to produce a 40% acid solution?
+    canonical_answer: 12.0
+    leakage:
+      numeric_form: ["12", "12.0", "12.00"]
+      solution_form: ["add twelve", "answer is twelve"]
+
+  - id: train-5
+    role: training
+    topic: mixture_add_strong
+    prompt: >
+      How many liters of a 70% acid solution must be added to 42 liters of a 10%
+      acid solution to produce a 30% acid solution?
+    canonical_answer: 21.0
+    leakage:
+      numeric_form: ["21", "21.0", "21.00"]
+      solution_form: ["add twenty one", "add twenty-one", "answer is twenty one", "answer is twenty-one"]
+
+  - id: train-6
+    role: training
+    topic: mixture_dilute
+    prompt: >
+      How many liters of water (0% acid) must be added to 18 liters of a 50% acid
+      solution to dilute it to a 20% acid solution?
+    canonical_answer: 27.0
+    leakage:
+      numeric_form: ["27", "27.0", "27.00"]
+      solution_form: ["add twenty seven", "add twenty-seven", "answer is twenty seven", "answer is twenty-seven"]
+
+  # ---------------- IMMEDIATE TEST (untutored probe) — mixture ----------------
+  - id: immediate-1
+    role: immediate
+    topic: mixture_add_strong
+    isomorph_of: train-1
+    prompt: >
+      How many liters of an 80% acid solution must be added to 46 liters of a 20%
+      acid solution to produce a 40% acid solution?
+    canonical_answer: 23.0
+    leakage:
+      numeric_form: ["23", "23.0", "23.00"]
+      solution_form: ["add twenty three", "add twenty-three", "answer is twenty three", "answer is twenty-three"]
+
+  - id: immediate-2
+    role: immediate
+    topic: mixture_dilute
+    isomorph_of: train-2
+    prompt: >
+      How many liters of water (0% acid) must be added to 8 liters of a 60% acid
+      solution to dilute it to a 20% acid solution?
+    canonical_answer: 16.0
+    leakage:
+      numeric_form: ["16", "16.0", "16.00"]
+      solution_form: ["add sixteen", "answer is sixteen"]
+
+  - id: immediate-3
+    role: immediate
+    topic: mixture_two_solutions
+    isomorph_of: train-3
+    prompt: >
+      An 80% acid solution is mixed with a 30% acid solution to make 50 liters of a
+      54% acid solution. How many liters of the 80% solution are used?
+    canonical_answer: 24.0
+    leakage:
+      numeric_form: ["24", "24.0", "24.00"]
+      solution_form: ["twenty four liters of the eighty", "answer is twenty four", "answer is twenty-four"]
+
+  # ---------------- INTERFERENCE (untutored, DIFFERENT method: relative motion) ----------------
+  - id: interfere-1
+    role: interference
+    topic: relative_motion
+    prompt: >
+      Two cyclists start at the same point and ride in opposite directions. One
+      rides 4 mph faster than the other. After 3 hours they are 60 miles apart.
+      What is the speed of the slower cyclist, in mph?
+    canonical_answer: 8.0
+    leakage:
+      numeric_form: ["8", "8.0"]
+      solution_form: ["slower cyclist is eight"]
+
+  - id: interfere-2
+    role: interference
+    topic: relative_motion
+    prompt: >
+      A car leaves a town traveling at 50 mph. Two hours later a second car leaves
+      the same town in the same direction at 70 mph. How many hours after the
+      second car leaves will it catch up to the first car?
+    canonical_answer: 5.0
+    leakage:
+      numeric_form: ["5", "5.0"]
+      solution_form: ["after five hours"]
+
+  - id: interfere-3
+    role: interference
+    topic: relative_motion
+    prompt: >
+      A boat travels 36 miles downstream in the same time it travels 24 miles
+      upstream. The boat's speed in still water is 10 mph. What is the speed of the
+      current, in mph?
+    canonical_answer: 2.0
+    leakage:
+      numeric_form: ["2", "2.0"]
+      solution_form: ["current is two"]
+
+  - id: interfere-4
+    role: interference
+    topic: relative_motion
+    prompt: >
+      Two trains are 300 miles apart and travel toward each other. One train is 20
+      mph faster than the other. They meet after 3 hours. What is the speed of the
+      slower train, in mph?
+    canonical_answer: 40.0
+    leakage:
+      numeric_form: ["40", "40.0"]
+      solution_form: ["slower train is forty"]
+
+  # ---------------- DELAYED TEST (untutored, isomorphic to training) — mixture ----------------
+  - id: delayed-1
+    role: delayed
+    topic: mixture_add_strong
+    isomorph_of: train-1
+    prompt: >
+      How many liters of a 50% acid solution must be added to 52 liters of a 20%
+      acid solution to produce a 30% acid solution?
+    canonical_answer: 26.0
+    leakage:
+      numeric_form: ["26", "26.0", "26.00"]
+      solution_form: ["add twenty six", "add twenty-six", "answer is twenty six", "answer is twenty-six"]
+
+  - id: delayed-2
+    role: delayed
+    topic: mixture_dilute
+    isomorph_of: train-2
+    prompt: >
+      How many liters of water (0% acid) must be added to 55 liters of a 40% acid
+      solution to dilute it to a 25% acid solution?
+    canonical_answer: 33.0
+    leakage:
+      numeric_form: ["33", "33.0", "33.00"]
+      solution_form: ["add thirty three", "add thirty-three", "answer is thirty three", "answer is thirty-three"]
+
+  - id: delayed-3
+    role: delayed
+    topic: mixture_add_pure
+    isomorph_of: train-4
+    prompt: >
+      How many liters of pure acid (100% acid) must be added to 57 liters of a 20%
+      acid solution to produce a 40% acid solution?
+    canonical_answer: 19.0
+    leakage:
+      numeric_form: ["19", "19.0", "19.00"]
+      solution_form: ["add nineteen", "answer is nineteen"]
+
+  # ---------------- TRANSFER (untutored, same structure, new surface) ----------------
+  - id: transfer-1
+    role: transfer
+    topic: price_blend
+    isomorph_of: train-3
+    prompt: >
+      A coffee blend is made from beans costing 12 dollars per pound and beans
+      costing 7 dollars per pound, to make 75 pounds costing 9 dollars per pound.
+      How many pounds of the 12 dollar beans are used?
+    canonical_answer: 30.0
+    leakage:
+      numeric_form: ["30", "30.0", "30.00"]
+      solution_form: ["thirty pounds", "answer is thirty"]
+
+  - id: transfer-2
+    role: transfer
+    topic: alloy
+    isomorph_of: train-4
+    prompt: >
+      An alloy weighing 40 kilograms is 30% copper. How many kilograms of pure
+      copper must be added to make the alloy 50% copper?
+    canonical_answer: 16.0
+    leakage:
+      numeric_form: ["16", "16.0", "16.00"]
+      solution_form: ["add sixteen", "answer is sixteen"]
+
+  - id: transfer-3
+    role: transfer
+    topic: octane_blend
+    isomorph_of: train-3
+    prompt: >
+      Premium gasoline is 93 octane and regular gasoline is 87 octane. How many
+      gallons of premium must be mixed with regular to make 30 gallons of 91
+      octane gasoline?
+    canonical_answer: 20.0
+    leakage:
+      numeric_form: ["20", "20.0", "20.00"]
+      solution_form: ["twenty gallons of premium", "answer is twenty"]

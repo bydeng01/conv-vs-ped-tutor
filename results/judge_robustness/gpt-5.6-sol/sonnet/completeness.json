@@ -1,0 +1,143 @@
+{
+  "epistemic_status": "post hoc judge robustness",
+  "analysis": "prospectively specified post hoc cross-judge robustness analysis over frozen transcripts",
+  "primary_judge": "Claude Opus 4.8",
+  "robustness_judge": "GPT-5.6 Sol (gpt-5.6-sol)",
+  "base": "sonnet",
+  "original_transcript_freeze": {
+    "confirmatory-freeze": "1a12b566bb825ff91359fb7c526e24b161ae38d3"
+  },
+  "second_judge_plan_freeze": {
+    "judge-robustness-openrouter-freeze": "8e85836603f6e983bc7df1e71e1924ce1bd52c40"
+  },
+  "requested_model": "openai/gpt-5.6-sol",
+  "returned_model": "openai/gpt-5.6-sol",
+  "request_parameters": {
+    "reasoning_effort": "medium",
+    "temperature": "omitted",
+    "max_completion_tokens": 2048,
+    "seed_policy": "seeded(base=0,+rep)",
+    "reps": 3,
+    "provider": "openrouter",
+    "endpoint": "https://openrouter.ai/api/v1",
+    "provider_routing": {
+      "provider": {
+        "order": [
+          "openai"
+        ],
+        "allow_fallbacks": false
+      }
+    }
+  },
+  "backend": "live",
+  "score_source": "GPT-5.6 Sol judge calls",
+  "reps": 3,
+  "complete": true,
+  "per_rubric": {
+    "helpfulness": {
+      "n_turns": 358,
+      "planned_ratings": 1074,
+      "valid_ratings": 1074,
+      "expected_valid": 1074,
+      "all_turns_have_full_valid_reps": true,
+      "turns_missing_valid_reps": [],
+      "n_turns_incomplete": 0,
+      "parse_retries": 0,
+      "parse_failures": 0,
+      "degraded_responses": 0,
+      "system_fingerprints": {
+        "None": 1074
+      },
+      "served_providers": {
+        "OpenAI": 1074
+      },
+      "transport_retries": 0,
+      "cache_hits": 14,
+      "provider_calls": 1060,
+      "valid_rep_rate": 1.0,
+      "by_condition": {
+        "conv": {
+          "planned": 405,
+          "valid": 405
+        },
+        "ped": {
+          "planned": 669,
+          "valid": 669
+        }
+      }
+    },
+    "pedagogy": {
+      "n_turns": 358,
+      "planned_ratings": 1074,
+      "valid_ratings": 1074,
+      "expected_valid": 1074,
+      "all_turns_have_full_valid_reps": true,
+      "turns_missing_valid_reps": [],
+      "n_turns_incomplete": 0,
+      "parse_retries": 0,
+      "parse_failures": 0,
+      "degraded_responses": 0,
+      "system_fingerprints": {
+        "None": 1074
+      },
+      "served_providers": {
+        "OpenAI": 1074
+      },
+      "transport_retries": 0,
+      "cache_hits": 0,
+      "provider_calls": 1074,
+      "valid_rep_rate": 1.0,
+      "by_condition": {
+        "conv": {
+          "planned": 405,
+          "valid": 405
+        },
+        "ped": {
+          "planned": 669,
+          "valid": 669
+        }
+      }
+    }
+  },
+  "served_provider_attestation": {
+    "frozen_at_preflight": "OpenAI",
+    "routing_pin": {
+      "provider": {
+        "order": [
+          "openai"
+        ],
+        "allow_fallbacks": false
+      }
+    },
+    "observed": {
+      "OpenAI": 2148
+    },
+    "ratings_without_attestation": 0,
+    "spans_multiple_providers": false,
+    "disagrees_with_frozen": false,
+    "problems": [],
+    "all_ratings_same_provider": true
+  },
+  "budget": {
+    "max_provider_calls": 2363,
+    "http_attempts_used": 2134,
+    "http_attempts_lifetime": 2154,
+    "responses_evaluated": 2134,
+    "accepted_ratings": 2134,
+    "attempts_per_response": 1.0,
+    "accept_rate": 1.0,
+    "ceiling_counts": "every HTTP request, including transport retries; CUMULATIVE across invocations (resuming does not replenish it)",
+    "breaker_warmup_responses": 60,
+    "breaker_min_accept_rate": 0.5,
+    "spend_ledger": {
+      "ledger": "results/judge_robustness/gpt-5.6-sol/sonnet/spend_ledger.json",
+      "provider": "openrouter",
+      "authorized_total_lifetime": 2363,
+      "http_attempts_before_this_run": 20,
+      "http_attempts_this_run": 2134,
+      "http_attempts_total": 2154,
+      "remaining": 209,
+      "prior_invocations": 4
+    }
+  }
+}

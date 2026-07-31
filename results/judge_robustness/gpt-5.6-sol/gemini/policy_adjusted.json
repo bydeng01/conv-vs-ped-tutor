@@ -1,0 +1,203 @@
+{
+  "epistemic_status": "post hoc judge robustness",
+  "analysis": "condition-adjusted leakage sensitivity on GPT-5.6 Sol scores",
+  "primary_judge": "Claude Opus 4.8",
+  "robustness_judge": "GPT-5.6 Sol (gpt-5.6-sol)",
+  "base": "gemini",
+  "original_transcript_freeze": {
+    "crossmodel-gemini-freeze": "68ee3faf8d1370da15bb7f8ab1a87599389a7eb6"
+  },
+  "second_judge_plan_freeze": {
+    "judge-robustness-openrouter-freeze": "8e85836603f6e983bc7df1e71e1924ce1bd52c40"
+  },
+  "requested_model": "openai/gpt-5.6-sol",
+  "returned_model": "openai/gpt-5.6-sol",
+  "request_parameters": {
+    "reasoning_effort": "medium",
+    "temperature": "omitted",
+    "max_completion_tokens": 2048,
+    "seed_policy": "seeded(base=0,+rep)",
+    "reps": 3,
+    "provider": "openrouter",
+    "endpoint": "https://openrouter.ai/api/v1",
+    "provider_routing": {
+      "provider": {
+        "order": [
+          "openai"
+        ],
+        "allow_fallbacks": false
+      }
+    }
+  },
+  "backend": "live",
+  "score_source": "GPT-5.6 Sol judge calls",
+  "formula": "{outcome} ~ leaks_i + C(condition)",
+  "eligible_conditions": [
+    "conv",
+    "ped"
+  ],
+  "note": "leak->helpfulness is GPT-specific; leak->next_turn_independence is the DETERMINISTIC (judge-invariant) leg, included for completeness.",
+  "sample": {
+    "rows_read": 442,
+    "rows_analyzed": 442,
+    "condition_counts": {
+      "conv": 215,
+      "ped": 227
+    },
+    "excluded_condition_counts": {},
+    "n_replicates": 10,
+    "n_problems": 6
+  },
+  "models": {
+    "helpfulness": {
+      "formula": "helpfulness ~ leaks_i + C(condition)",
+      "model": "linear mixed model; crossed replicate and problem random intercepts as variance components over one dummy group; maximum likelihood",
+      "reml": false,
+      "groups": "single dummy group (_grp = 1)",
+      "re_formula": "0",
+      "vc_formula": {
+        "replicate": "0 + C(replicate_id)",
+        "problem": "0 + C(problem_id)"
+      },
+      "optimizer_sequence": [
+        "lbfgs",
+        "bfgs",
+        "cg",
+        "powell"
+      ],
+      "selected_optimizer": "powell",
+      "converged": true,
+      "optimizer_history": [
+        {
+          "fopt": -0.30269212128050343,
+          "direc": [
+            [
+              1.0,
+              0.0
+            ],
+            [
+              0.0,
+              1.0
+            ]
+          ],
+          "iterations": 2,
+          "fcalls": 83,
+          "warnflag": 0,
+          "converged": true,
+          "allvecs": [
+            [
+              -0.0657592537055776,
+              -0.07387968697901501
+            ],
+            [
+              -2.0503185242382038e-05,
+              -0.15662068744364704
+            ],
+            [
+              -2.0503292409497962e-05,
+              -0.15663587039568722
+            ]
+          ]
+        }
+      ],
+      "warnings": [
+        "Maximum Likelihood optimization failed to converge. Check mle_retvals",
+        "Retrying MixedLM optimization with bfgs",
+        "Maximum Likelihood optimization failed to converge. Check mle_retvals",
+        "Retrying MixedLM optimization with cg",
+        "Maximum Likelihood optimization failed to converge. Check mle_retvals",
+        "Retrying MixedLM optimization with powell",
+        "The MLE may be on the boundary of the parameter space."
+      ],
+      "coefficient": 0.0352458097363985,
+      "standard_error": 0.02942641513645728,
+      "confidence_interval_95": [
+        -0.022428904125182066,
+        0.09292052359797906
+      ],
+      "p_value": 0.23101010960737567,
+      "condition_coefficient_ped_vs_conv": -0.05651658999494363,
+      "variance_components": {
+        "problem": 1.3214508581522569e-11,
+        "replicate": 0.0007712341572157085,
+        "residual": 0.031434300922185264
+      },
+      "n_obs": 442
+    },
+    "next_turn_independence": {
+      "formula": "indep_i ~ leaks_i + C(condition)",
+      "model": "linear mixed model; crossed replicate and problem random intercepts as variance components over one dummy group; maximum likelihood",
+      "reml": false,
+      "groups": "single dummy group (_grp = 1)",
+      "re_formula": "0",
+      "vc_formula": {
+        "replicate": "0 + C(replicate_id)",
+        "problem": "0 + C(problem_id)"
+      },
+      "optimizer_sequence": [
+        "lbfgs",
+        "bfgs",
+        "cg",
+        "powell"
+      ],
+      "selected_optimizer": "powell",
+      "converged": true,
+      "optimizer_history": [
+        {
+          "fopt": 0.478200017411103,
+          "direc": [
+            [
+              1.0,
+              0.0
+            ],
+            [
+              0.0,
+              1.0
+            ]
+          ],
+          "iterations": 2,
+          "fcalls": 65,
+          "warnflag": 0,
+          "converged": true,
+          "allvecs": [
+            [
+              -0.19643531052582747,
+              0.32727767467595925
+            ],
+            [
+              0.00023652157265890983,
+              0.38962398084205885
+            ],
+            [
+              1.0996808134725142e-05,
+              0.3896684486922883
+            ]
+          ]
+        }
+      ],
+      "warnings": [
+        "Maximum Likelihood optimization failed to converge. Check mle_retvals",
+        "Retrying MixedLM optimization with bfgs",
+        "Maximum Likelihood optimization failed to converge. Check mle_retvals",
+        "Retrying MixedLM optimization with cg",
+        "Maximum Likelihood optimization failed to converge. Check mle_retvals",
+        "Retrying MixedLM optimization with powell",
+        "The MLE may be on the boundary of the parameter space."
+      ],
+      "coefficient": -0.6036559999755627,
+      "standard_error": 0.06696935688812412,
+      "confidence_interval_95": [
+        -0.7349135275440954,
+        -0.47239847240703003
+      ],
+      "p_value": 1.9883126786598337e-19,
+      "condition_coefficient_ped_vs_conv": -0.08083987473273099,
+      "variance_components": {
+        "problem": 1.759445871334113e-11,
+        "replicate": 0.02209190158857687,
+        "residual": 0.1454931728296691
+      },
+      "n_obs": 442
+    }
+  }
+}

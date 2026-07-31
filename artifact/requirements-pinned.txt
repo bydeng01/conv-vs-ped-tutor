@@ -1,0 +1,8 @@
+anthropic==0.109.2
+openai==2.41.1
+langgraph==1.2.5
+PyYAML==6.0.3
+numpy==2.4.6
+scipy==1.17.1
+pandas==3.0.3
+statsmodels==0.14.6

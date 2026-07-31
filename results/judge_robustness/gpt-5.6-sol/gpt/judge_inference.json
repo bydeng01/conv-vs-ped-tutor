@@ -1,0 +1,269 @@
+{
+  "epistemic_status": "post hoc judge robustness",
+  "analysis": "prospectively specified post hoc cross-judge robustness analysis over frozen transcripts",
+  "primary_judge": "Claude Opus 4.8",
+  "robustness_judge": "GPT-5.6 Sol (gpt-5.6-sol)",
+  "base": "gpt",
+  "original_transcript_freeze": {
+    "crossmodel-gpt-freeze": "644271b1e6e365a84d679a103beb08f0775e60ef"
+  },
+  "second_judge_plan_freeze": {
+    "judge-robustness-openrouter-freeze": "8e85836603f6e983bc7df1e71e1924ce1bd52c40"
+  },
+  "requested_model": "openai/gpt-5.6-sol",
+  "returned_model": "openai/gpt-5.6-sol",
+  "request_parameters": {
+    "reasoning_effort": "medium",
+    "temperature": "omitted",
+    "max_completion_tokens": 2048,
+    "seed_policy": "seeded(base=0,+rep)",
+    "reps": 3,
+    "provider": "openrouter",
+    "endpoint": "https://openrouter.ai/api/v1",
+    "provider_routing": {
+      "provider": {
+        "order": [
+          "openai"
+        ],
+        "allow_fallbacks": false
+      }
+    }
+  },
+  "backend": "live",
+  "score_source": "GPT-5.6 Sol judge calls",
+  "note": "Frozen \u00a710 tests re-run over the GPT-5.6 Sol-filled tables. The leakage and next-turn-independence legs are DETERMINISTIC (judge-invariant) and should equal the Opus values; only the helpfulness and pedagogy contrasts are GPT-specific. This is a manipulation check, NOT independent validation.",
+  "session_helpfulness_contrast": {
+    "n": 10,
+    "n_conv_gt_ped": 7,
+    "n_ped_gt_conv": 0,
+    "conv_mean": 5.0,
+    "ped_mean": 4.914404761904762,
+    "mean_diff_conv_minus_ped": 0.0855952380952381,
+    "median_diff": 0.037698412698412564,
+    "diff_ci95": [
+      0.031150793650793585,
+      0.14865079365079364
+    ],
+    "wilcoxon_W": 0.0,
+    "p_two_sided": 0.015625,
+    "cliffs_delta_conv_vs_ped": 0.7,
+    "predicted_sign": 1,
+    "direction_matches_prediction": true,
+    "significant_in_predicted_direction": true,
+    "n_replicates": 10
+  },
+  "session_pedagogy_contrast_manipulation_check": {
+    "n": 10,
+    "n_conv_gt_ped": 0,
+    "n_ped_gt_conv": 10,
+    "conv_mean": 2.8910669845452452,
+    "ped_mean": 4.908678451178451,
+    "mean_diff_conv_minus_ped": -2.0176114666332063,
+    "median_diff": -1.9692577953447519,
+    "diff_ci95": [
+      -2.2662038082690255,
+      -1.803521729980969
+    ],
+    "wilcoxon_W": 0.0,
+    "p_two_sided": 0.001953125,
+    "cliffs_delta_conv_vs_ped": -1.0,
+    "predicted_sign": -1,
+    "direction_matches_prediction": true,
+    "significant_in_predicted_direction": true,
+    "n_replicates": 10,
+    "framing": "manipulation check (PedTutor designed around the pedagogy rubric); NOT independent validation"
+  },
+  "turn_leak_to_helpfulness": {
+    "available": true,
+    "model": "mixedlm: outcome ~ leaks_i; crossed RE = replicate + problem (variance components over a dummy group); ML, optimizer tried in order ['lbfgs', 'bfgs', 'cg', 'powell']",
+    "coef": 0.07756053393636514,
+    "se": 0.024300430138068183,
+    "p": 0.0014142100546764517,
+    "ci95": [
+      0.02993256605691981,
+      0.12518850181581048
+    ],
+    "converged": true,
+    "variance_components": {
+      "problem": 4.9142365542354365e-12,
+      "replicate": 0.0012332621572143428,
+      "residual": 0.04902099058930456
+    },
+    "n_obs": 379,
+    "n_replicates": 10,
+    "n_problems": 6,
+    "predicted_sign": 1,
+    "significant_in_predicted_direction": true
+  },
+  "j1_full": {
+    "P1_leakage": {
+      "n": 10,
+      "n_conv_gt_ped": 10,
+      "n_ped_gt_conv": 0,
+      "conv_mean": 0.7655138339920949,
+      "ped_mean": 0.06978715728715729,
+      "mean_diff_conv_minus_ped": 0.6957266767049376,
+      "median_diff": 0.7257199322416714,
+      "diff_ci95": [
+        0.5851099112240417,
+        0.7927513292866554
+      ],
+      "wilcoxon_W": 0.0,
+      "p_two_sided": 0.001953125,
+      "cliffs_delta_conv_vs_ped": 1.0,
+      "predicted_sign": 1,
+      "direction_matches_prediction": true,
+      "significant_in_predicted_direction": true,
+      "n_replicates": 10
+    },
+    "P2_helpfulness": {
+      "n": 10,
+      "n_conv_gt_ped": 7,
+      "n_ped_gt_conv": 0,
+      "conv_mean": 5.0,
+      "ped_mean": 4.914404761904762,
+      "mean_diff_conv_minus_ped": 0.0855952380952381,
+      "median_diff": 0.037698412698412564,
+      "diff_ci95": [
+        0.031150793650793585,
+        0.14865079365079364
+      ],
+      "wilcoxon_W": 0.0,
+      "p_two_sided": 0.015625,
+      "cliffs_delta_conv_vs_ped": 0.7,
+      "predicted_sign": 1,
+      "direction_matches_prediction": true,
+      "significant_in_predicted_direction": true,
+      "n_replicates": 10
+    },
+    "P3_independence": {
+      "n": 10,
+      "n_conv_gt_ped": 0,
+      "n_ped_gt_conv": 10,
+      "conv_mean": 0.3769055668244309,
+      "ped_mean": 0.734484126984127,
+      "mean_diff_conv_minus_ped": -0.3575785601596961,
+      "median_diff": -0.41728927203065136,
+      "diff_ci95": [
+        -0.49348180076628356,
+        -0.2163946661998133
+      ],
+      "wilcoxon_W": 0.0,
+      "p_two_sided": 0.001953125,
+      "cliffs_delta_conv_vs_ped": -0.82,
+      "predicted_sign": -1,
+      "direction_matches_prediction": true,
+      "significant_in_predicted_direction": true,
+      "n_replicates": 10
+    },
+    "joint_J1": {
+      "P1_separates": true,
+      "P3_separates": true,
+      "P2_significant_conv_gt_ped": true,
+      "J1_marginal_supported": true
+    }
+  },
+  "j2_full": {
+    "n_turns": 379,
+    "leak_to_helpfulness": {
+      "predicted_sign": 1,
+      "operative_method": "mixed_effects",
+      "operative_significant_in_predicted_direction": true,
+      "cluster_summary": {
+        "method": "two-stage cluster-summary (within-replicate leaky-minus-nonleaky; signed-rank across replicates)",
+        "n_replicates_used": 10,
+        "mean_within_replicate_effect": 0.0782692307692308,
+        "effect_ci95": [
+          0.02893450854700851,
+          0.13487339743589746
+        ],
+        "wilcoxon_W": 0.0,
+        "p_two_sided": 0.015625,
+        "predicted_sign": 1,
+        "direction_matches_prediction": true,
+        "significant_in_predicted_direction": true
+      },
+      "mixed_effects": {
+        "available": true,
+        "model": "mixedlm: outcome ~ leaks_i; crossed RE = replicate + problem (variance components over a dummy group); ML, optimizer tried in order ['lbfgs', 'bfgs', 'cg', 'powell']",
+        "coef": 0.07756053393636514,
+        "se": 0.024300430138068183,
+        "p": 0.0014142100546764517,
+        "ci95": [
+          0.02993256605691981,
+          0.12518850181581048
+        ],
+        "converged": true,
+        "variance_components": {
+          "problem": 4.9142365542354365e-12,
+          "replicate": 0.0012332621572143428,
+          "residual": 0.04902099058930456
+        },
+        "n_obs": 379,
+        "n_replicates": 10,
+        "n_problems": 6,
+        "predicted_sign": 1,
+        "significant_in_predicted_direction": true
+      },
+      "descriptive_pooled": {
+        "leaky_mean": 5.0,
+        "nonleaky_mean": 4.92729766803841,
+        "n_leaky": 136,
+        "n_nonleaky": 243
+      }
+    },
+    "leak_to_next_independence": {
+      "predicted_sign": -1,
+      "operative_method": "mixed_effects",
+      "operative_significant_in_predicted_direction": true,
+      "cluster_summary": {
+        "method": "two-stage cluster-summary (within-replicate leaky-minus-nonleaky; signed-rank across replicates)",
+        "n_replicates_used": 10,
+        "mean_within_replicate_effect": -0.5290769230769231,
+        "effect_ci95": [
+          -0.6646746794871794,
+          -0.36716458333333335
+        ],
+        "wilcoxon_W": 1.0,
+        "p_two_sided": 0.00390625,
+        "predicted_sign": -1,
+        "direction_matches_prediction": true,
+        "significant_in_predicted_direction": true
+      },
+      "mixed_effects": {
+        "available": true,
+        "model": "mixedlm: outcome ~ leaks_i; crossed RE = replicate + problem (variance components over a dummy group); ML, optimizer tried in order ['lbfgs', 'bfgs', 'cg', 'powell']",
+        "coef": -0.5349055157624504,
+        "se": 0.04512529434630224,
+        "p": 2.0568717018916384e-32,
+        "ci95": [
+          -0.6233494674729717,
+          -0.44646156405192905
+        ],
+        "converged": true,
+        "variance_components": {
+          "problem": 0.0014747557028533937,
+          "replicate": 0.011682693866520487,
+          "residual": 0.17021383748881047
+        },
+        "n_obs": 379,
+        "n_replicates": 10,
+        "n_problems": 6,
+        "predicted_sign": -1,
+        "significant_in_predicted_direction": true
+      },
+      "descriptive_pooled": {
+        "leaky_mean": 0.19117647058823528,
+        "nonleaky_mean": 0.7283950617283951,
+        "n_leaky": 136,
+        "n_nonleaky": 243
+      }
+    },
+    "J2_supported": true,
+    "mixed_effects_available": true,
+    "limitations": [
+      "leak_to_next_independence outcome is BINARY; the mixed model is a linear probability model, so its fixed effect is a risk-difference, not a log-odds. A logistic GLMM is a defensible alternative deliberately NOT substituted post-hoc (frozen \u00a710 names a mixed-effects model, family unspecified; the linear family matches the helpfulness leg and the committed spec).",
+      "J2 pools conv and ped tutor turns; leakage correlates with condition, so the fixed effect blends within- and between-condition variation. Per frozen \u00a710 condition is NOT added as a covariate; a condition-stratified check is noted as a limitation, not run as a re-spec."
+    ]
+  }
+}

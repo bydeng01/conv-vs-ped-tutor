@@ -1,0 +1,60 @@
+# CROSS-MODEL EXTENSION config -- GPT tutor base (Phase 1).
+#
+# This is configs/models.yaml with ONLY the tutor role changed to a GPT base, per the
+# pre-registered extension (decisions-log.md 2026-06-27; paper-plan.md §12). The student,
+# the judge, their providers, the tutor sampling budget, and the backend are IDENTICAL to
+# the primary -- run_confirmatory.py's `tutor_only_drift` guard REFUSES this config if any
+# of those differ, so the base swap is the only change.
+#
+# TUTOR MODEL PIN (decisions-log.md 2026-06-27, point 1): the `model` id below is the PINNED
+# base for this run -- OpenAI's current flagship general-purpose chat model (NOT a reasoning /
+# mini / nano variant), selected by the deterministic rule BEFORE this base's leakage gate and
+# recorded in the dated pin record. It is never re-selected after any leakage rate or
+# P1/P2/P3/J1/J2 outcome. To reproduce, use it as-is; it can be confirmed against the vendor
+# list (`python experiments/list_models.py` with OPENAI_API_KEY set).
+#
+# Needs OPENAI_API_KEY (tutor) in addition to the primary's ANTHROPIC_API_KEY (judge) and
+# OPENROUTER_API_KEY (student). The GPT tutor routes through the existing OpenAI-compatible
+# client path (agents/model_client.py `_complete_openai`).
+
+provider: anthropic          # global default (the judge uses it); unchanged from the primary
+providers:
+  anthropic:
+    api_key_env: ANTHROPIC_API_KEY
+  cerebras:
+    base_url: https://api.cerebras.ai/v1
+    api_key_env: CEREBRAS_API_KEY
+  groq:
+    base_url: https://api.groq.com/openai/v1
+    api_key_env: GROQ_API_KEY
+  openrouter:
+    base_url: https://openrouter.ai/api/v1
+    api_key_env: OPENROUTER_API_KEY
+  openai:                    # NEW: the GPT tutor's provider (OpenAI-compatible path)
+    base_url: https://api.openai.com/v1
+    api_key_env: OPENAI_API_KEY
+
+roles:
+  tutor:                      # the ONLY change vs the primary: a GPT base, same budget
+    provider: openai
+    model: gpt-5.5-2026-04-23   # PINNED id (see header + dated pin record)
+    temperature: 0.4          # identical to the primary tutor (held constant; only the model changes)
+    max_tokens: 1024          # identical to the primary tutor (sent as max_completion_tokens for gpt-5.x via the model_client fallback)
+    extra_body:               # reasoning_effort goes via extra_body: model_client forwards only extra_body, not a top-level field
+      reasoning_effort: none  # GPT base = none (§12; vendor minimum is none for gpt-5.x). Disables thinking for a fair chat comparison.
+  student:                    # IDENTICAL to the primary -- do not change (OpenRouter -> Groq Llama-8B)
+    provider: openrouter
+    model: meta-llama/llama-3.1-8b-instruct
+    temperature: 0.8
+    max_tokens: 512
+    extra_body:
+      provider:
+        order: ["Groq"]
+        allow_fallbacks: false
+  judge:                      # IDENTICAL to the primary -- do not change (Opus, default sampling)
+    provider: anthropic
+    model: claude-opus-4-8
+    temperature: null
+    max_tokens: 512
+
+backend: live
