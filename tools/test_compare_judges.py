@@ -126,6 +126,38 @@ def build_base(root: Path, base: str, opus_fn, gpt_fn, leak_fn):
     return str(opus_dir.relative_to(REPO_ROOT)), str(gpt_dir.relative_to(REPO_ROOT))
 
 
+# ---------------------------------------------------- non-degenerate rating fixtures
+#
+# Every fixture feeding a SUCCESSFUL compare() must vary within condition. Constant
+# ratings make score_difference an exact function of condition (-1 on every conv turn,
+# +1 on every ped turn), so C(condition) explains the outcome completely: the interaction
+# fit's residual scale collapses to ~2e-32, the standard error on leaks_i comes back nan,
+# and compare() correctly refuses to publish a Holm family holding a non-finite p.
+#
+# Whether that scale lands on exact zero (-> nan -> refusal) or on a denormal (-> a finite
+# but meaningless p; this fixture produced 0.157 on one machine) is floating-point luck
+# that varies by platform and package build. A constant fixture is therefore a coin flip,
+# not a test -- and the coin came up differently on CI than on the author's laptop.
+#
+# The wobble below is keyed on (replicate + problem) mod 3 rather than on either alone, so
+# the crossed replicate/problem variance components cannot absorb it and a genuine residual
+# survives (scale ~0.22, se ~0.19). Ratings stay within 1..5 and the ped-minus-conv contrast
+# is still exactly +2, so structural assertions are unaffected.
+
+
+def opus_ratings(inst, cond, rep, pid, ti):
+    """Primary-judge ratings: flat by condition. The wobble lives on the GPT side."""
+    return [4, 4, 4] if cond == "conv" else [3, 3, 3]
+
+
+def gpt_ratings(inst, cond, rep, pid, ti):
+    """Robustness-judge ratings whose MEDIAN varies within condition. See the note above."""
+    wobble = (rep + {"p1": 0, "p2": 1, "p3": 2}[pid]) % 3 == 0
+    if cond == "conv":
+        return [3, 4, 4] if wobble else [3, 4, 3]   # median 4 or 3
+    return [4, 5, 5] if wobble else [4, 4, 5]       # median 5 or 4
+
+
 # ------------------------------------------------------------------ pure-function tests
 def test_quadratic_weighted_kappa():
     print("\n[quadratic-weighted kappa]")
@@ -266,7 +298,16 @@ def test_interaction_and_dod_and_formula():
             leak = (rep % 2 == 0)
             bump = 1 if leak else 0
             base = 3 if cond == "conv" else 4
-            return [base + bump, base + bump, min(5, base + bump)]
+            # The -1 wobble is what makes this fit well posed. Without it,
+            # score_difference is an exact function of (condition, leaks_i) -- the two
+            # regressors -- so the residual collapses to ~2e-32 and se/p come back nan.
+            # The checks below only assert that coef/se/p/ci are PRESENT, so a nan fit
+            # satisfied them silently: this test looked green while measuring nothing.
+            # See the note above build_base. The +1 leakage bump the fixture exists to
+            # create is preserved; the wobble only breaks the exact determinism.
+            wob = -1 if (rep + {"p1": 0, "p2": 1, "p3": 2}[pid]) % 3 == 0 else 0
+            m = max(1, base + bump + wob)
+            return [m, m, m]
 
         odir, gdir = build_base(root, "sonnet", opus_fn, gpt_fn, lambda c, r, p, t: r % 2 == 0)
         recs = C.load_aligned("sonnet", odir, gdir, "helpfulness")
@@ -292,28 +333,7 @@ def test_compare_end_to_end_and_same_family():
     with tempfile.TemporaryDirectory(dir=REPO_ROOT) as td:
         root = Path(td)
 
-        def of(inst, cond, rep, pid, ti):
-            return [4, 4, 4] if cond == "conv" else [3, 3, 3]
-
-        # The GPT medians WOBBLE within condition, and that is load-bearing.
-        #
-        # With constant ratings, score_difference is exactly -1 on every conv turn and +1 on
-        # every ped turn, so C(condition) explains the outcome completely. The interaction
-        # fit's residual scale collapses to ~2e-32, the standard error on leaks_i comes back
-        # nan, and compare() then correctly refuses to publish a Holm family containing a
-        # non-finite p. Whether that scale lands on exact zero (nan) or on a denormal (a
-        # finite but meaningless p) is floating-point luck that varies by platform, which is
-        # how this fixture passed locally for a long time and then failed in CI.
-        #
-        # The wobble is keyed on (replicate + problem) mod 3 rather than on either alone, so
-        # the crossed replicate/problem variance components cannot absorb it and a genuine
-        # residual survives (scale ~0.22). Ratings stay in 1..5, and the ped-minus-conv
-        # contrast is still exactly +2, so every structural assertion below is unchanged.
-        def gf(inst, cond, rep, pid, ti):
-            wobble = (rep + {"p1": 0, "p2": 1, "p3": 2}[pid]) % 3 == 0
-            if cond == "conv":
-                return [3, 4, 4] if wobble else [3, 4, 3]   # median 4 or 3
-            return [4, 5, 5] if wobble else [4, 4, 5]       # median 5 or 4
+        of, gf = opus_ratings, gpt_ratings
 
         pairs = []
         for base in ("sonnet", "gpt", "gemini"):
@@ -542,8 +562,7 @@ def test_degraded_analysis_blocks_the_comparison():
     failed/non-converged fit and still write a report, silently shrinking the Holm family."""
     print("\n[O4: a missing or failed declared test blocks the comparison]")
     import shutil
-    of = lambda i, c, r, p, t: [4, 4, 4] if c == "conv" else [3, 3, 3]      # noqa: E731
-    gf = lambda i, c, r, p, t: [3, 4, 3] if c == "conv" else [4, 4, 5]      # noqa: E731
+    of, gf = opus_ratings, gpt_ratings   # NOT constant -- see the note above build_base
     out = REPO_ROOT / "results/judge_robustness/gpt-5.6-sol/_test_degraded/comparison"
 
     def run(mutate=None, drop_policy_for=None):
@@ -703,8 +722,7 @@ def test_failed_comparison_leaves_no_publishable_report():
     bases."""
     print("\n[R4-F4: comparison publication is transactional and input-bound]")
     import shutil
-    of = lambda i, c, r, p, t: [4, 4, 4] if c == "conv" else [3, 3, 3]      # noqa: E731
-    gf = lambda i, c, r, p, t: [3, 4, 3] if c == "conv" else [4, 4, 5]      # noqa: E731
+    of, gf = opus_ratings, gpt_ratings   # NOT constant -- see the note above build_base
     out = REPO_ROOT / "results/judge_robustness/gpt-5.6-sol/_t_cmp_tx/comparison"
     if out.parent.exists():
         shutil.rmtree(out.parent)
@@ -789,8 +807,7 @@ def test_source_mutation_during_comparison_blocks_publication():
     accept it."""
     print("\n[R8-F2: inputs are snapshotted before analysis and re-verified before promotion]")
     import shutil
-    of = lambda i, c, r, p, t: [4, 4, 4] if c == "conv" else [3, 3, 3]      # noqa: E731
-    gf = lambda i, c, r, p, t: [3, 4, 3] if c == "conv" else [4, 4, 5]      # noqa: E731
+    of, gf = opus_ratings, gpt_ratings   # NOT constant -- see the note above build_base
     out = REPO_ROOT / "results/judge_robustness/gpt-5.6-sol/_t_mutate/comparison"
     shutil.rmtree(out.parent, ignore_errors=True)
 
