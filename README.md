@@ -26,10 +26,23 @@ about a minute:
 
 ```bash
 pip install -r requirements.txt
-python analysis/run_inference.py results/confirmatory                             # primary base
-python analysis/run_inference.py results/confirmatory_gpt    --freeze-tag crossmodel-gpt-freeze
-python analysis/run_inference.py results/confirmatory_gemini --freeze-tag crossmodel-gemini-freeze
+
+python analysis/run_inference.py results/confirmatory \
+  --freeze-tag confirmatory-freeze \
+  --freeze-commit 1a12b566bb825ff91359fb7c526e24b161ae38d3        # primary base
+python analysis/run_inference.py results/confirmatory_gpt \
+  --freeze-tag crossmodel-gpt-freeze \
+  --freeze-commit 644271b1e6e365a84d679a103beb08f0775e60ef
+python analysis/run_inference.py results/confirmatory_gemini \
+  --freeze-tag crossmodel-gemini-freeze \
+  --freeze-commit 68ee3faf8d1370da15bb7f8ab1a87599389a7eb6
 ```
+
+Each pre-registration freeze commit is passed explicitly, matching what CI, the Dockerfile,
+and [`artifact/README.md`](./artifact/README.md) already do. The freeze tags themselves are
+not published, so `--freeze-tag` alone would not resolve in a clone; the commit is the
+authoritative binding and is also recorded in every `metrics_summary.json` (`freeze_heads`)
+and `inference.json` (`provenance.freeze_commit`). Do not drop these flags.
 
 Verdicts print to stdout and land in each directory's `inference.json`. CI runs exactly this
 on every push. Collecting *new* runs is the only thing that needs provider access — see
@@ -159,7 +172,9 @@ wire log was produced.
 The tracked per-base tables are sufficient; no model calls:
 
 ```bash
-python analysis/run_inference.py results/confirmatory              # + _gpt, _gemini
+python analysis/run_inference.py results/confirmatory \
+  --freeze-tag confirmatory-freeze \
+  --freeze-commit 1a12b566bb825ff91359fb7c526e24b161ae38d3   # and _gpt / _gemini per Quickstart
 python analysis/condition_adjusted_sensitivity.py                  # post hoc, additive
 python analysis/ablation_analysis.py results/ablation              # descriptive
 ```
