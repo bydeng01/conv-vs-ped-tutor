@@ -151,8 +151,9 @@ and **before** recording the pin. Do not proceed on a CHECK.
       differs) and `protocol_knob_drift` (domain / conditions / replicates / base-seed / turns)
       both pass.
 - [ ] **Record the pin** in a **separate, immutable per-vendor pin record** — a dated
-      `decisions-log.md` addendum with the `list_models.py` evidence and the smoke result. Copy the
-      skeleton from [`PIN-RECORD-TEMPLATE.md`](PIN-RECORD-TEMPLATE.md) and fill every field.
+      `decisions-log.md` addendum with the `list_models.py` evidence and the smoke result. Follow
+      the two filled records already in `decisions-log.md` — "2026-06-28 — Cross-model base PIN
+      RECORD: OpenAI base (gpt) — IMMUTABLE" and its Gemini counterpart — field for field.
 - [ ] **No reselection.** Once recorded, the id is frozen for that base: **never re-selected after
       any leakage or outcome information is observed.**
 
