@@ -16,12 +16,26 @@ RESULT_BLOCKS = ("verdict", "j1", "j2", "accuracy", "cost_normalized")
 # compared exactly.
 RENDERED_VERDICT_FIELDS = ("effect", "ci", "p")
 
-# Random-effect variances are nuisance parameters of the J2 fits, several of them near the
-# zero boundary, and they are the least portable numbers in the file: the same package
-# versions on a different BLAS move a 9.2e-4 problem variance to 3.9e-4 (57% relative, 5e-4
-# absolute) while the fixed effect it sits under moves in the third decimal and every
-# verdict is unchanged. Relative tolerance is the wrong instrument near zero, so under
-# --science-only these leaves also get an absolute allowance.
+# Everything a crossed mixed-effects fit produces -- coef, se, ci95, p, and the random-effect
+# variance components -- comes out of the same iterative optimizer and is not bit-portable
+# across BLAS/toolchain/Python-ABI combinations. Relative tolerance is the wrong instrument
+# for small-magnitude leaves here (a small absolute wobble is a large relative one near
+# zero), so under --science-only the whole mixed_effects sub-tree gets an absolute allowance
+# instead of pure rel_tol. Observed drift so far, all scientifically inert (no verdict
+# changed, no significance call flipped):
+#   - variance components: same pinned deps, macOS/Accelerate vs Linux/OpenBLAS, up to 0.0072
+#     absolute (one boundary variance moved 1.1e-10 -> 6.5e-3).
+#   - gemini leak_to_helpfulness (docker run, exact pinned deps): coef/ci95/p all shifted;
+#     largest was p at 0.018 absolute (0.129 -> 0.147; not significant on either side).
+#   - sonnet leak_to_next_independence.se (GitHub Actions, py3.11, floating requirements.txt,
+#     py3.12 clean): 0.0035 absolute, ~6% relative -- enough to clear rel_tol=0.05 alone,
+#     which is what originally caught this before mixed_effects leaves were covered here.
+# This cannot hide a real conclusion flip: verdict[...]'s claim/significance fields are a
+# separate part of the JSON and are always compared exactly (see RENDERED_VERDICT_FIELDS
+# above), never touched by this. The `converged`/`available` booleans and the `model` string
+# inside mixed_effects are also always exact -- bools and strings never reach the numeric
+# tolerance branch below.
+MIXED_EFFECTS_KEY = "mixed_effects"
 VARIANCE_KEY = "variance_components"
 
 
@@ -33,7 +47,7 @@ def _compare(left, right, path: str, failures: list[str], abs_tol: float, rel_to
         return
     if isinstance(left, (int, float)) and isinstance(right, (int, float)):
         tol = abs_tol
-        if variance_abs_tol and VARIANCE_KEY in path:
+        if variance_abs_tol and (VARIANCE_KEY in path or MIXED_EFFECTS_KEY in path):
             tol = max(tol, variance_abs_tol)
         if not math.isclose(float(left), float(right), rel_tol=rel_tol, abs_tol=tol):
             failures.append(f"{path}: {left!r} != {right!r}")
@@ -75,10 +89,11 @@ def main() -> None:
              "implementations, so coefficients move in the third decimal while every "
              "verdict label, sign, and significance call is unchanged.")
     parser.add_argument(
-        "--variance-abs-tol", type=float, default=0.02,
-        help="absolute allowance for random-effect variance components under "
-             "--science-only (default 0.02; the largest cross-BLAS drift observed is 0.007). "
-             "Ignored without --science-only.")
+        "--variance-abs-tol", type=float, default=0.03,
+        help="absolute allowance for mixed-effects fit outputs (coef/se/ci95/p and "
+             "random-effect variance components) under --science-only. Default 0.03; the "
+             "largest cross-platform drift observed on any of those fields so far is 0.018 "
+             "(a p-value, gemini leak_to_helpfulness). Ignored without --science-only.")
     args = parser.parse_args()
     expected = json.loads(args.expected.read_text())
     actual = json.loads(args.actual.read_text())
