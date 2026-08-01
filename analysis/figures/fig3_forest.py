@@ -363,7 +363,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--verify", action="store_true",
                         help="load and strictly validate inputs without rendering")
     parser.add_argument("--sync-manuscript", action="store_true",
-                        help="copy the rendered PDF to AI4EDU/Figures and verify byte identity")
+                        help="copy the rendered PDF to manuscript/Figures and verify byte identity")
     args = parser.parse_args(argv)
 
     repo_root = args.repo_root.resolve()
@@ -382,7 +382,7 @@ def main(argv: list[str] | None = None) -> int:
         print(f"wrote {kind:7s} {path}")
 
     if args.sync_manuscript:
-        destination = repo_root / "AI4EDU/Figures" / f"{STEM}.pdf"
+        destination = repo_root / "manuscript/Figures" / f"{STEM}.pdf"
         destination.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(paths["pdf"], destination)
         source_hash = _sha256(paths["pdf"])

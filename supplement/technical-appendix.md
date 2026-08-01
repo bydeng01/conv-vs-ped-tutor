@@ -1,6 +1,6 @@
 # Technical appendix — details moved out of the main paper in the 2026-07-09 page-limit revision
 
-The 2026-07-09 revision trimmed AnonymousSubmission2027.tex to the AAAI-27 page limit.
+The 2026-07-09 revision trimmed the main manuscript to its page limit.
 Nothing below changes a result; every item is either a value relocated from the main text
 (with its provenance) or a disclosure that the 7-page version compresses. Sources are the
 frozen `results/` outputs and `decisions-log.md`, both packaged in this artifact; every value
@@ -110,7 +110,7 @@ effects of leakage or demonstrated reward-training outcomes.
 
 ## 7. Reproducibility details (environment, sampling parameters, seeds, instrument selection)
 
-Added 2026-07-27 alongside the AAAI-27 reproducibility checklist. Nothing here changes a
+Added 2026-07-27 alongside the submission's reproducibility checklist. Nothing here changes a
 result; every value is read from `configs/models*.yaml`, `artifact/pinned-environment.json`,
 `paper-plan.md` §6, or `decisions-log.md`, all packaged in this artifact.
 

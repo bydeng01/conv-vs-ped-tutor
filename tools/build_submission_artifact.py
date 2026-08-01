@@ -19,8 +19,8 @@ from importlib.metadata import version
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-ARCHIVE_ROOT = "conv-vs-ped-tutor-aaai27-artifact"
-DEFAULT_OUTPUT = Path("dist/conv-vs-ped-tutor-aaai27-artifact.tar.gz")
+ARCHIVE_ROOT = "conv-vs-ped-tutor-artifact"
+DEFAULT_OUTPUT = Path("dist/conv-vs-ped-tutor-artifact.tar.gz")
 TOP_LEVEL = (
     "LICENSE",
     "README.md",

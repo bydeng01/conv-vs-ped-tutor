@@ -322,12 +322,12 @@ def test_pdf_embeds_no_fallback_font(tmp_path):
 
 def test_sync_manuscript_is_byte_identical(tmp_path):
     repo = _make_repo(tmp_path)
-    (repo / "AI4EDU/Figures").mkdir(parents=True, exist_ok=True)
+    (repo / "manuscript/Figures").mkdir(parents=True, exist_ok=True)
     out = repo / "analysis/figures"
     assert fig2.main(["--repo-root", str(repo), "--output-dir", str(out),
                       "--sync-manuscript"]) == 0
     assert (out / f"{fig2.STEM}.pdf").read_bytes() == \
-           (repo / "AI4EDU/Figures" / f"{fig2.STEM}.pdf").read_bytes()
+           (repo / "manuscript/Figures" / f"{fig2.STEM}.pdf").read_bytes()
 
 
 def test_runs_from_other_cwd(tmp_path, monkeypatch):

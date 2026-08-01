@@ -3,7 +3,7 @@
 Draft text for the methods and limitations sections, covering the second-judge robustness
 audit's transport. Companion to `cross-judge-amendment-openrouter-2026-07-20.md`.
 
-**Claim discipline applies** (see the AAAI-27 framing decision): state what held without
+**Claim discipline applies** (see the framing decision in `decisions-log.md`): state what held without
 understating it, and state what weakened without softening it. Both directions are accuracy
 failures.
 

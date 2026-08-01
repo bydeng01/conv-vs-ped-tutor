@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Supplementary Figure S1 -- conceptual design, protocol, and measurement window.
 
-Drawn at final print size (7.0 in = AAAI two-column text width) and included at
+Drawn at final print size (7.0 in = the two-column text width) and included at
 width=\\textwidth, so the scale factor is 1.0 and every label renders at its
-nominal point size. No label is below 9 pt (AAAI figure-text floor). Total height
+nominal point size. No label is below 9 pt (the figure-text floor). Total height
 is held under 5 in so that the figure plus its caption stays inside LaTeX's
 two-column top-float fraction and the float lands near its first reference.
 

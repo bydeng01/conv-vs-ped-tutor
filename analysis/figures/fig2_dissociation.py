@@ -46,7 +46,7 @@ Computed here (the frozen pipeline reports no Opus pedagogy contrast):
     figure and Table 1a cannot drift apart silently.
 
 Outputs (stem fig2_dissociation): editable-text PDF, editable SVG, PNG, TIFF.
-With --sync-manuscript the PDF is copied to AI4EDU/Figures and byte-verified.
+With --sync-manuscript the PDF is copied to manuscript/Figures and byte-verified.
 Backend: Python / matplotlib. Deterministic: identical inputs give identical
 bytes for all four outputs.
 """
@@ -131,7 +131,7 @@ FAMILY_COLOR = {"conv": BLUE, "ped": ORANGE}
 FAMILY_MARKER = {"conv": "o", "ped": "s"}       # shape carries family (greyscale-safe)
 FAMILY_MS = {"o": 6.2, "s": 5.6}                # visually matched areas
 
-# Frozen checkpoints: (gap, two-sided p). Mirrors AI4EDU/values_sol.tex and
+# Frozen checkpoints: (gap, two-sided p). Mirrors manuscript/values_sol.tex and
 # Table 1a. A data or estimator change must fail here, not redraw silently.
 CHECKPOINTS = {
     "sonnet": {"opus_help": (-0.093866, 0.16015625),
@@ -537,7 +537,7 @@ def main(argv=None) -> int:
     for kind in ("pdf", "svg", "png", "tiff"):
         print("wrote %-5s %s" % (kind, paths[kind]))
     if args.sync_manuscript:
-        dst = repo_root / "AI4EDU/Figures" / f"{STEM}.pdf"
+        dst = repo_root / "manuscript/Figures" / f"{STEM}.pdf"
         dst.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(paths["pdf"], dst)
         if _sha(paths["pdf"]) != _sha(dst):

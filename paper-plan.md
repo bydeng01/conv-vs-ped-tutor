@@ -31,8 +31,8 @@
 > `metric-amendment-2026-06-19.md`. Pre-confirmatory; see `decisions-log.md`.
 
 Working title: *Measuring Evaluator–Process Coupling in LLM Tutors: When
-Helpfulness, Answer Leakage, and Student Independence Diverge*. Target: a main
-venue (PENDING — not yet chosen); the AAAI 2027 AI4EDU Workshop is the fallback.
+Helpfulness, Answer Leakage, and Student Independence Diverge*. Target venue:
+PENDING — not yet chosen.
 Companion to the position paper *Conversational Alignment Is Not Pedagogical
 Alignment*.
 

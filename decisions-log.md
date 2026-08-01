@@ -1489,8 +1489,9 @@ diagnostic of **evaluator–process coupling and its divergence** — when
 annotator-perceived helpfulness, answer-leakage, and student independence agree vs.
 diverge — with **J2 the headline result** within the pre-registered J1+J2 framework.
 Edits, all in `paper-plan.md`: the title/venue line (working title *Measuring
-Evaluator–Process Coupling in LLM Tutors…*; target = a main venue, PENDING; AAAI 2027
-AI4EDU Workshop demoted to fallback; position paper kept as the companion); a §1
+Evaluator–Process Coupling in LLM Tutors…*; target = a main venue, PENDING; a workshop
+demoted to fallback [venue names redacted for public release]; position paper kept as
+the companion); a §1
 "Empirical contribution" statement; a §11 paragraph making the "J2 holds while
 session-level P2/J1 diverge" pattern an explicit, reportable finding (the divergence is
 itself informative). One wording reconciliation in §4 — "The headline is supported only
@@ -3398,3 +3399,33 @@ pointer to an amendment "§C" that does not exist. One assertion the handoff did
 passing VACUOUSLY — `len(...) > 0` satisfied by 63 unrelated live artifacts whether or not the
 fixture under test did anything — and was repaired by scoping it to the fixture. Recompute before
 believing, including from a document written an hour ago.
+
+### 2026-08-01 — Pre-release scrub: internal docs removed, venue references redacted
+**Context:** Preparing the repository for public release. Two classes of content were present
+that should not ship: internal working documents superseded by the authoritative runbook, and
+references naming the target venue — which the submission's double-blind policy requires the
+non-anonymous public material not to name.
+**Decision:** (a) Removed `experiments/CROSSMODEL-HANDOFF.md` (duplicated `experiments/RUN.md`,
+and its commands branched from a freeze tag that never existed) and
+`experiments/PIN-RECORD-TEMPLATE.md` (a blank skeleton — the filled pin records are the
+2026-06-28 entries in this log); `RUN.md`'s pin-acceptance checklist now points at those filled
+records instead. (b) Redacted venue names from `paper-plan.md`, `supplement/technical-appendix.md`,
+`supplement/second-judge-transport-disclosure.md`, `analysis/figures/gen_supp_fig1.py`, the
+2026-06-26 positioning entry above, and the archive name in `tools/build_submission_artifact.py`.
+(c) Renamed the manuscript output directory from its venue-named path to `manuscript/` across the
+figure scripts, their test, and `.dockerignore`.
+**Reason:** Presentation and packaging only. No harness, prompt, problem, rubric, metric,
+sampling rule, result, or verdict is touched; no value under `results/` changes. The redactions
+remove venue identity, not content — what was decided, and why, is unchanged and still legible.
+**Also fixed (real bug):** `analysis/figures/gen_sol_values.py` wrote its LaTeX macro file with
+`Path.write_text` but never created the parent directory, and the manuscript directory is not
+tracked — so the script raised `FileNotFoundError` on any fresh clone after completing all of its
+computation. Added `out.parent.mkdir(parents=True, exist_ok=True)`.
+**Validation:** `tools/scan_sensitive.py` PASS (211 files, 8 patterns, 0 findings); every relative
+link in every tracked `.md` resolves; all touched Python compiles; the manuscript-sync test in
+`analysis/figures/test_fig2_dissociation.py` (run by CI) was moved in lockstep with the code path
+it exercises.
+**Affects:** `paper-plan.md`, `supplement/technical-appendix.md`,
+`supplement/second-judge-transport-disclosure.md`, `tools/build_submission_artifact.py`,
+`analysis/figures/{gen_supp_fig1,gen_sol_values,fig2_dissociation,fig3_forest,test_fig2_dissociation}.py`,
+`.dockerignore`, `experiments/RUN.md`, `decisions-log.md`.
