@@ -188,37 +188,6 @@ judge caches that are too large to track — and `python artifact/verify_artifac
 received copy against its manifest. See [`artifact/README.md`](./artifact/README.md) for
 construction, integrity checks, and offline reconstruction.
 
-### Numerical portability
-
-The re-derivation reproduces every **verdict**, coefficient **sign**, and **significance**
-call on any machine. It does not reproduce every **digit**, and pinning package versions does
-not make it.
-
-The crossed mixed-effects fits in `analysis/inferential.py` and
-`analysis/condition_adjusted_sensitivity.py` depend on which BLAS NumPy and SciPy link
-against. Published analyses ran on macOS 14.6.1 / Apple M3 Pro (Accelerate). The *same*
-pinned package set on Linux/x86_64 (OpenBLAS) gives:
-
-| | published (macOS/arm64) | rerun (Linux/x86_64) | conclusion changes? |
-|---|---|---|---|
-| GPT base, J2 helpfulness coefficient | −0.313 | −0.321 | no |
-| GPT base, J2 helpfulness *p* | 5.06e−10 | 2.42e−10 | no |
-| Sonnet policy-adjusted helpfulness *p* | 9.6e−10 | 1.2e−11 | no |
-| GPT policy-adjusted problem variance | 1.1e−10 (boundary) | 6.5e−3 | no |
-
-Random-effect variances are the least portable numbers here — several sit near the zero
-boundary, where a different optimizer path lands somewhere else entirely. The fixed effects
-that carry the argument move in the third decimal. This is why
-`artifact/pinned-environment.json` records the OS and CPU alongside the package versions, and
-why the comparators have two modes:
-
-- **`--science-only`** (`tools/compare_inference.py`) and `tools/compare_condition_adjusted.py`
-  assert the conclusions and the numbers behind them. **Use these off the pinned platform.**
-  CI and Docker run these.
-- **Without those flags** they assert bit equality — correct only inside the pinned
-  environment. `tools/test_condition_adjusted_sensitivity.py` detects the environment and
-  skips its exact checkpoints outside it rather than failing.
-
 ### Docker
 
 ```bash
@@ -228,8 +197,9 @@ docker run --rm conv-vs-ped-tutor
 
 Pins Python 3.12.8 and the exact direct dependencies, and fails the build if either drifted.
 It makes the analysis reproducible **between users**; it does **not** reproduce the paper's
-digits, for the reason above — it is Linux/OpenBLAS. Matching the published values exactly
-requires macOS on Apple silicon with `artifact/requirements-pinned.txt`.
+digits — Docker is Linux/OpenBLAS, whereas the published values were computed on macOS/Apple
+silicon. Verdicts, signs, and significance still reproduce on any platform; matching the exact
+digits requires macOS on Apple silicon with `artifact/requirements-pinned.txt`.
 
 ## Citation
 
