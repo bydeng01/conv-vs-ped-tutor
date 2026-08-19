@@ -31,8 +31,7 @@
 > `metric-amendment-2026-06-19.md`. Pre-confirmatory; see `decisions-log.md`.
 
 Working title: *Measuring Evaluator–Process Coupling in LLM Tutors: When
-Helpfulness, Answer Leakage, and Student Independence Diverge*. Target venue:
-PENDING — not yet chosen.
+Helpfulness, Answer Leakage, and Student Independence Diverge*.
 Companion to the position paper *Conversational Alignment Is Not Pedagogical
 Alignment*.
 

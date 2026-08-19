@@ -131,8 +131,9 @@ def _scrub(text: str) -> str:
 
     Provider errors echo back an account-scoped id (OpenRouter puts `user_...` in its 404
     body). That id is not a credential, but it is a durable handle that links this repo to
-    the account that produced it -- which breaks anonymous review. Everything this script
-    writes is a published artifact, so redact at the point of capture, not afterwards.
+    the account that produced it -- an identity link that must stay out of published
+    output. Everything this script writes is a published artifact, so redact at the
+    point of capture, not afterwards.
     """
     return _ACCOUNT_HANDLE.sub("<redacted-account-handle>", text)
 

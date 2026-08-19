@@ -168,7 +168,7 @@ REQUIRED_BASE_OUTPUTS = (
 #   (B) PRE-BUILD, repo-side: tools/test_cross_judge_audit.py asserts
 #       REQUIRED_ARTIFACT_PATHS <= collect_payload(), so a defective archive fails at TEST time
 #       and is never built.
-#   (C) IN-ARCHIVE: the presence check below, which is what a reviewer actually runs.
+#   (C) IN-ARCHIVE: the presence check below, which is what a recipient actually runs.
 #
 # IT IS A FLOOR, NOT AN EQUALITY. Gaining an ordinary file requires no edit here; only promoting
 # something to load-bearing does. An exact match against the payload would put this list in the
@@ -178,7 +178,7 @@ REQUIRED_ARTIFACT_PATHS = (
     # -- the verifier's own inputs and the manifest it checks -------------------------------
     "ARTIFACT-MANIFEST.sha256",
     "artifact/verify_artifact.py",
-    # -- documents a reviewer must receive ---------------------------------------------------
+    # -- documents a recipient must receive --------------------------------------------------
     "LICENSE",
     "README.md",
     "requirements.txt",
@@ -203,7 +203,7 @@ REQUIRED_ARTIFACT_PATHS = (
     "supplement/prompts.md",
     "supplement/ablation_prompts.md",
     "supplement/second-judge-transport-disclosure.md",
-    # Overflow from the 2026-07-09 page-limit trim; the paper points reviewers at it, and its
+    # Overflow from the 2026-07-09 length trim; the paper points readers at it, and its
     # sections 2 and 6 exist in no other packaged document.
     "supplement/technical-appendix.md",
     # -- headline result surfaces every reported number re-derives from ----------------------
@@ -236,7 +236,7 @@ def live_judge_pass_present(root: Path = None) -> bool:
 
 
 def missing_required_failures() -> list[str]:
-    """Files a reviewer MUST receive, checked for PRESENCE.
+    """Files a recipient MUST receive, checked for PRESENCE.
 
     This is the only check here that can detect a build-time omission. Note it deliberately
     tests the extracted TREE, not the manifest: a file absent from both (the exact defect this
@@ -709,7 +709,7 @@ def main() -> None:
     n_required = len(REQUIRED_ARTIFACT_PATHS) + (
         len(REQUIRED_AFTER_LIVE_JUDGE_PASS) if live_judge_pass_present() else 0)
     print(f"PASS required-file inventory: all {n_required} documents, instruments, and result "
-          "surfaces a reviewer must receive are present"
+          "surfaces a recipient must receive are present"
           + ("" if live_judge_pass_present() else " (pre-live: post-live surfaces not yet due)"))
     print("PASS artifact payload manifest: every extracted file is covered and matches")
     print("PASS embedded raw-log manifests: Sonnet, GPT, and Gemini hashes match")

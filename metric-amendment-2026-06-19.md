@@ -3,7 +3,7 @@
 **Status: FROZEN 2026-06-19 — post-pilot, pre-confirmatory.** No confirmatory data has been
 collected (the pilots are non-inferential, paper-plan §10). This document amends the
 relevant parts of `paper-plan.md` §9/§10/§11; once the confirmatory run begins it freezes
-with them. Prompted by an external reviewer and the pilot; none of it is tuned toward a
+with them. Prompted by external feedback and the pilot; none of it is tuned toward a
 result (see the integrity note).
 
 ## 1. Answer-phase evaluation window (stopping rule)
@@ -76,7 +76,7 @@ outcome**, with conversation-level results and uncertainty — not pooled turn-l
 ## Integrity note
 
 Post-pilot, pre-confirmatory; frozen before any confirmatory data. The window rule was
-proposed by an external reviewer and **demonstrably does not rescue P2** in the pilot (the
+proposed by external feedback and **demonstrably does not rescue P2** in the pilot (the
 ConvTutor−PedTutor helpfulness gap goes −0.60 → −0.30 under the window — smaller but still
 reversed), so it is not a result-favoring adjustment. Recorded in `decisions-log.md`
 2026-06-19.

@@ -3102,7 +3102,7 @@ def test_packaged_docs_do_not_dangle():
 def test_required_artifact_inventory_is_satisfiable():
     """Anchor layer (B) for the verifier's positive presence inventory.
 
-    `artifact/verify_artifact.py:REQUIRED_ARTIFACT_PATHS` lists what a reviewer MUST receive,
+    `artifact/verify_artifact.py:REQUIRED_ARTIFACT_PATHS` lists what a recipient MUST receive,
     and is checked inside an extracted artifact. That is layer (C) -- necessary, but it only
     fires AFTER a defective archive has been built and possibly shipped. This is the repo-side
     half: it asserts the inventory is a SUBSET of what the builder actually packages, so

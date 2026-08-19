@@ -18,7 +18,7 @@ OpenRouter routing verification -- 2026-07-20T08:00:30Z
   PASS  order_selects_provider: order=['azure'] served by 'Azure' vs order=['openai'] served by 'OpenAI'; routing follows `order`
 
 [3] NEGATIVE CONTROL -- a bogus tag must be refused
-  PASS  bogus_tag_refused: refused (NotFoundError: Error code: 404 - {'error': {'message': 'No endpoints found for openai/gpt-5.6-sol.', 'code': 404}, 'user_id': 'user_<redacted-for-anonymous-review>'})
+  PASS  bogus_tag_refused: refused (NotFoundError: Error code: 404 - {'error': {'message': 'No endpoints found for openai/gpt-5.6-sol.', 'code': 404}, 'user_id': '<redacted-account-handle>'})
 
 [4] MISCASE PROBE -- documents what a 404 proves
     A valid-but-miscased tag returning the SAME error as a bogus one means 404 shows

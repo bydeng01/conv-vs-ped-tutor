@@ -447,15 +447,15 @@ renumbering should leave the cold baseline ~unchanged (re-check recommended).
 then Step 4 (PedTutor + the tutor-sees-the-problem fix).
 
 ### 2026-06-15 — independent second-person review: transfer-1 fixed + leakage hardened
-**Context:** an independent second reviewer confirmed all 19 answers and
+**Context:** an independent second-person review confirmed all 19 answers and
 found one MUST-FIX: transfer-1 was ratio-plus-PERIMETER (`2(x+3x)=232`), not
 structurally isomorphic to its `train-4` target (ratio-plus-DIFFERENCE,
-`4x−x=42`). The independent reviewer also applied low-risk leakage hardening directly.
-**Decision:** (1) Applied the reviewer's proposed transfer-1 rewrite (maintainer
+`4x−x=42`). The same review also applied low-risk leakage hardening directly.
+**Decision:** (1) Applied the review's proposed transfer-1 rewrite (maintainer
 approved): "length is 4 times its width; its length is 87 units greater than its
 width" → `4x−x=87` → width 29 (answer unchanged, geometry surface kept, now a
 true ratio-difference isomorph of train-4). Updated `tools/verify_problems.py`
-re-derivation; all checks pass. (2) Accepted the reviewer's applied fixes: spelled-out
+re-derivation; all checks pass. (2) Accepted the review's applied fixes: spelled-out
 `solution_form` phrases (catch word-form reveals the digit matcher would miss),
 `.0`/`.00` numeric variants, and a `protocol/leakage.py` matcher tweak so a
 sentence-final period after a number counts while `12` still rejects `120`/`12.5`.
@@ -464,7 +464,7 @@ Verified by unit checks.
 The leakage changes strengthen P6 measurement and are pre-data, so permissible;
 the matcher is now considered FINAL and frozen.
 **IMPORTANT re-check needed:** the probe-cold 22% read was on rev-1 numbers. The
-set has since been fully renumbered (rev 2 two-digit answers + the reviewer's transfer-1),
+set has since been fully renumbered (rev 2 two-digit answers + the review's transfer-1),
 so a fresh cold-only run on the CURRENT 19 is required before freezing.
 **Affects:** `domain/algebra/problems.yaml`, `tools/verify_problems.py`,
 `protocol/leakage.py`. **Next:** cold re-check on current 19 → freeze →
@@ -617,12 +617,12 @@ deferral_gate/hint_cascade are what create the P1/P3 separation. Then metrics
 (independence ratio) + judge (helpfulness), then the ConvTutor-vs-PedTutor run.
 
 ### 2026-06-15 — independent review of the reframe; tightened to a JOINT coupling claim
-**Context:** an independent hostile-reviewer pass judged the reframe "honest enough to
-build on, but not review-proof." Central must-fix: P1 (leakage) and P3
+**Context:** an independent adversarial review judged the reframe "honest enough to
+build on, but not yet airtight." Central must-fix: P1 (leakage) and P3
 (independence) are partly true-by-construction (PedTutor is built to withhold), so
 they can't be the standalone headline; the non-trivial claim is the CONJUNCTION —
 the behavior the evaluator rewards is the behavior that suppresses independent work.
-**Decision (accepted the reviewer's must-fixes; applied to `paper-plan.md`):**
+**Decision (accepted the review's must-fixes; applied to `paper-plan.md`):**
   - Primary claim is now the **joint evaluator–process coupling** (J1: paired
     Conv−Ped differences in helpfulness>0, leakage>0, independence<0 all hold; J2:
     within-data, leakage couples + with helpfulness and − with next-turn
@@ -637,10 +637,10 @@ the behavior the evaluator rewards is the behavior that suppresses independent w
   - §11 falsification: removed the file-drawer ("publish without empirical
     section") → the empirical section ALWAYS reports the result, incl. a failed/
     inconclusive operationalization; added significance thresholds for the joint claim.
-  - The independent reviewer separately applied 3 low-risk consistency fixes (calibration vs
+  - The same review separately applied 3 low-risk consistency fixes (calibration vs
     confirmatory data; judge-dependence wording; §10 unit-of-analysis) + its own log entry.
 **Reason:** these changes make the claim falsifiable on its live components (P2, J2)
-rather than tautological, and remove the file-drawer — review-defensible.
+rather than tautological, and remove the file-drawer — defensible.
 **Note:** historical entries above using old labels P4/P6 (accuracy-primary era) are
 SUPERSEDED by the §4 reframe; kept as history.
 **Affects:** `paper-plan.md` (§ header, 2, 4, 9, 10, 11). **Next:** Step 4 — PedTutor.
@@ -1390,8 +1390,8 @@ filler / `stop_on_commit` question (the other open issue), then re-pilot under t
 design and freeze.
 
 ### 2026-06-19 — Metric amendment & frozen analysis spec (answer-phase window; construct rename)
-**Context:** External-reviewer comment on the ConvTutor filler (the other open issue). Rather
-than `stop_on_commit` at generation time, the reviewer proposed computing all metrics on text
+**Context:** An external comment on the ConvTutor filler (the other open issue). Rather
+than `stop_on_commit` at generation time, it proposed computing all metrics on text
 **up to the end of the answer phase**, plus several analysis-plan tightenings. Resolves the
 filler issue (B) and supersedes the Option 1/Option 2 framing in `m2-decision-brief.md`.
 **Decision:** Adopted, frozen post-pilot / pre-confirmatory, and written up in
@@ -1412,7 +1412,7 @@ regardless of outcome with conversation-level uncertainty.
 **Reason:** Locks the measurement before collecting more data, which protects the confirmatory
 run from post-hoc-adjustment accusations. The window is the right measurement on principle
 (post-commit chit-chat isn't tutoring) and — critically — **does not rescue P2** in the pilot
-(gap −0.60 → −0.30, still reversed), so it is not result-favoring; the external-reviewer
+(gap −0.60 → −0.30, still reversed), so it is not result-favoring; the external
 provenance reinforces that.
 **Alternatives considered:** `stop_on_commit` at generation (rejected as primary — needs a
 re-run and risks editing ConvTutor's minimal prompt / its *emergent* leakage story; may be
@@ -1488,9 +1488,8 @@ the confirmatory run.
 diagnostic of **evaluator–process coupling and its divergence** — when
 annotator-perceived helpfulness, answer-leakage, and student independence agree vs.
 diverge — with **J2 the headline result** within the pre-registered J1+J2 framework.
-Edits, all in `paper-plan.md`: the title/venue line (working title *Measuring
-Evaluator–Process Coupling in LLM Tutors…*; target = a main venue, PENDING; a workshop
-demoted to fallback [venue names redacted for public release]; position paper kept as
+Edits, all in `paper-plan.md`: the title line (working title *Measuring
+Evaluator–Process Coupling in LLM Tutors…*; the position paper kept as
 the companion); a §1
 "Empirical contribution" statement; a §11 paragraph making the "J2 holds while
 session-level P2/J1 diverge" pattern an explicit, reportable finding (the divergence is
@@ -1512,7 +1511,7 @@ predictions (§4 — J1/J2/P1/P2/P3 definitions and directions), metric definiti
 and the analysis plan (§10) unchanged — §9 and §10 byte-identical (verified by diffing
 the pre-edit snapshot), the only §4 touch being the one wording swap above (no
 prediction, definition, or direction altered). **Baseline caveat for a freeze-diff
-reviewer:** `paper-plan.md` is an untracked/new file, so a diff against the LAST COMMIT
+review:** `paper-plan.md` is an untracked/new file, so a diff against the LAST COMMIT
 also shows the §9 answer-phase-window and §10 conversation-unit content — that is the
 EARLIER 2026-06-19 metric amendment (decided pre-confirmatory, logged that day; see
 `metric-amendment-2026-06-19.md` and the 2026-06-19 entries), captured by the same single
@@ -1528,7 +1527,7 @@ on J1 holding is fragile and reads as result-dependent. (b) relabel a divergent/
 J1 as support, or drop P2 from J1 — rejected outright (integrity). (c) reconcile
 "headline" purely in §1/§11 and leave §4 untouched — rejected; §4 would keep using
 "headline" for the joint claim, a residual internal contradiction.
-**Affects:** `paper-plan.md` (title/venue line, §1, §11; one §4 wording swap),
+**Affects:** `paper-plan.md` (title line, §1, §11; one §4 wording swap),
 `decisions-log.md`. **Next:** independent #0 review of this diff, then the
 confirmatory freeze commit (§4/§9/§10 unchanged).
 
@@ -1791,7 +1790,7 @@ report `converged=False` and it lands on **powell**, −0.3856, `converged=True`
 is convergence hygiene; it does not select an estimate.
 **Self-review:** an internal adversarial review (6 dimensions — read-only-upstream, frozen-spec
 exactness, conversation unit, statistics re-derived independently, no-result-chasing,
-provenance) returned **SHIP, zero must-fix**; the statistics reviewer reproduced every
+provenance) returned **SHIP, zero must-fix**; the statistics review reproduced every
 reported number to full float precision and confirmed the fixtures *pin* known values. The
 independent-review gate is still owed before any freeze commit.
 **Reason:** runs §10 exactly as frozen; the only model change is *toward* the spec
@@ -1801,7 +1800,7 @@ a post-hoc re-spec; disclosed as a limitation instead. (b) add `condition` as a 
 the J2 model — rejected (§10 forbids covariate-shopping; disclosed as a limitation).
 (c) force lbfgs convergence by tweaking the model — rejected; used a standard optimizer
 sequence and report the honest `converged` flag.
-**HOLD (workflow):** not committed — the the independent-review gate runs before any freeze
+**HOLD (workflow):** not committed — the independent-review gate runs before any freeze
 commit; must-fixes resolved first. The freeze tag stays at `1a12b56`.
 **Affects:** `analysis/inferential.py` (crossed `_crossed_mixedlm`, `verdict()`, J2
 limitations), `analysis/run_inference.py` (provenance + verdict table + richer J2 console),
@@ -1811,7 +1810,7 @@ gitignored). `requirements.txt` already pinned `statsmodels>=0.14.5` (prior entr
 ### 2026-06-26 — independent adversarial review of the §10 inference: MUST-FIX resolved; one nice-to-have DECLINED on freeze-discipline grounds
 **Context:** An independent adversarial review of the §10 inferential layer
 returned **NO-SHIP** on one must-fix plus two nice-to-haves. All six spec/integrity checks
-otherwise passed (the independent reviewer re-derived P1/P2/P3 and both J2 legs to match
+otherwise passed (the independent review re-derived P1/P2/P3 and both J2 legs to match
 `inference.json`). Resolving here before the freeze commit.
 **MUST-FIX — log byte-stability was not git-verifiable.** `logs/` is gitignored (by design —
 the confirmatory logs were *collected post-freeze* against freeze commit `1a12b56`, so they
@@ -1824,7 +1823,7 @@ exact log bytes the analysis consumed; anyone can re-verify with
 `find logs/conf-s0-* -type f | LC_ALL=C sort | xargs shasum -a 256`). Aggregate manifest hash
 `b0b4671b…`. Honest scope note: this makes log immutability verifiable **from this commit
 forward**; immutability between data collection and this manifest is operational (filesystem),
-not git-provable — stated openly so the limitation is on record (the reviewer's accepted option).
+not git-provable — stated openly so the limitation is on record (the accepted option).
 **The manifest must be committed for the guarantee to hold in a future checkout — the maintainer
 owns the commit (workflow: no auto-commit); until then the file is created-and-verified but
 untracked.**
@@ -1834,14 +1833,14 @@ difference Δ=−0.40 on the binary next-turn-independence outcome; the linear-p
 model recovers coef −0.444 (CI [−0.537, −0.352] brackets −0.40, converged), so the binary leg
 now PINS an estimate within tolerance, matching the continuous helpfulness leg (was
 sign/significance-only). Suite now **48 checks, all pass**.
-**NICE-TO-HAVE 2 (DECLINED — would violate freeze discipline).** the independent reviewer flagged the stale
+**NICE-TO-HAVE 2 (DECLINED — would violate freeze discipline).** the independent review flagged the stale
 comment `domain/algebra/problems.yaml:17` "STATUS: NOT frozen" and suggested updating it.
 **Not done, deliberately:** that line is **inside a FROZEN artifact**, and the freeze commit
 `1a12b56` itself contains the "NOT frozen" text (verified: `git show
 confirmatory-freeze:domain/algebra/problems.yaml` line 17 == the working-tree line; `git diff
 confirmatory-freeze..HEAD -- domain/algebra/problems.yaml` is empty). Editing even a comment
 there would break the verifiable byte-stability of the frozen problem set — the exact guarantee
-both the internal review and the independent reviewer relied on ("domain/ byte-stable vs confirmatory-freeze").
+both review passes relied on ("domain/ byte-stable vs confirmatory-freeze").
 Per the project conventions ("do not change … the problem set after data collection") and the freeze-immutability
 workflow, the cosmetic label is a documentation artifact, not experimental content. **Resolution:**
 the label is recorded here as STALE — the 19-problem set **was frozen** at tag
@@ -1856,7 +1855,7 @@ problems.yaml).
 confirm the must-fix is cleared.
 **Affects:** `confirmatory-log-manifest.sha256` (new; created & verified — the maintainer commits it),
 `tools/test_inferential.py` (+binary-leg estimate test, 48 checks), `decisions-log.md`,
-`.gitignore` (excludes the AI-execution `execution-prompts*.md` scratch files from the
+`.gitignore` (excludes local working notes from the
 open-source repo). **NOT touched:** `domain/algebra/problems.yaml` (frozen; stale label
 documented, not edited).
 
@@ -2021,7 +2020,7 @@ adversarial-review gate. The freeze tag stays at `1a12b56`.
 ### 2026-06-27 — Cross-model tutor-base extension (GPT / Gemini): PRE-REGISTERED + base-tagging infra (Phase 0; no runs yet)
 **Context:** the primary confirmatory result is on a SINGLE tutor base (Sonnet 4.6, freeze
 `1a12b56`). The coupling/divergence finding (J2 holds; session-level P2/J1 do not) is far more
-credible if it is tested on more than one base model — the breadth the venue wants. This entry
+credible if it is tested on more than one base model — the breadth the argument needs. This entry
 pre-registers a cross-model EXTENSION that re-runs the SAME experiment with ONLY the tutor model
 swapped, on additional bases, BEFORE any cross-model datum is collected. It is a strict extension:
 the Sonnet primary is **not re-run and not touched**; its artifacts stay byte-stable at `1a12b56`.
@@ -2184,7 +2183,7 @@ artifact or the §10 inference computation; the primary's recomputed metrics are
 **Context:** the independent adversarial-review gate was re-run on the round-1-hardened changeset
 and returned **needs-attention** again (5 findings: 4 high, 1 medium) — this time deeper paths where a
 guard existed but did not cover every route. The findings were evaluated; the "recommended set" was
-implemented (the realistic operator-accident paths) and two of the reviewer's sub-recommendations were
+implemented (the realistic operator-accident paths) and two of the review's sub-recommendations were
 trimmed as redundant/over-engineered (recorded below). Threat model: the operator is the maintainer, who
 *wants* integrity — guard against accidents (a forgotten flag, a tweaked knob, a stale dir), not an
 adversary fabricating data. Decision (with the maintainer): re-run cold,conv,ped per base (cold is
@@ -2224,7 +2223,7 @@ trimmed items slide toward defending against a researcher actively trying to fab
 returns — so only the cheap, realistic part was taken. Backward-compatible: the committed primary
 `metrics_summary.json` (no base/freeze_heads keys) still runs; recomputing the primary is
 byte-identical.
-**Alternatives considered:** implementing every reviewer sub-recommendation (file hashing, per-call resume
+**Alternatives considered:** implementing every review sub-recommendation (file hashing, per-call resume
 cross-check, base column in all CSVs) — rejected as redundant with the freeze guard / pooling guard or
 as over-engineering for a non-accident threat. Deferring any of 1–4 to Phase 1 — rejected: the guard
 must exist before the first base run.
@@ -2976,25 +2975,24 @@ the realized responder — rejected: it would hide the student-behaviour signal 
 what the rerouted-turn analysis wants; the realized responder is recoverable from the `node` tag. (d) Stubbing a
 dropped node to mimic the full agent — rejected: the drop must be genuine. (e) Adding a guard inside the frozen
 `run_inference` to refuse ablation rows — rejected: `run_inference` is byte-stable; contamination is prevented by
-the separate out dir + the runner Next message + the descriptive script's own non-ablation-dir refusal + reviewer
+the separate out dir + the runner Next message + the descriptive script's own non-ablation-dir refusal + review
 gate, not by editing frozen code. (f) Running `ped_no_tracker` without disclosing the call-count confound —
 rejected: the confound is disclosed for that variant specifically.
 
-**HOLD (workflow):** uncommitted. Independent independent adversarial-review gate (step 2) COMPLETE → **SHIP**
+**HOLD (workflow):** uncommitted. Independent adversarial-review gate (step 2) COMPLETE → **SHIP**
 (2026-06-30, independent review, 3 rounds; no literal angle-bracket tokens are written in THIS record, to keep
 the no-placeholder rule above satisfiable by a plain grep). Round 1: NO-SHIP, 2 MUST-FIX — (a) surviving
 angle-bracket placeholders (a literal-ellipsis placeholder in the pre-registration prose, and an
 angle-bracket freeze-hash placeholder in the runner usage docstring); (b) a pre-existing untracked
-working-prompt file (`analysis-prompt-crossmodel.md`) that would dirty a live freeze tree. Round 2: NO-SHIP,
+working file that would dirty a live freeze tree. Round 2: NO-SHIP,
 1 MUST-FIX — two further angle-bracket placeholders in test-file comments (`tools/test_ped_ablations.py`,
 `tools/test_run_confirmatory.py`). Round 3: **SHIP, no MUST-FIX** — exhaustive scan confirms ZERO angle-bracket
 placeholder in any new ablation file or any diff-added line; checks 1–7 all PASS. Fixes applied: reworded every
 placeholder to a concrete / curly-brace form (the pre-existing freeze-hash example placeholders in the runner
-docstring at HEAD are out of scope, unchanged, not in the diff); added `analysis-prompt*.md` to `.gitignore`
-(mirroring the existing `execution-prompts*.md` rule, so the stray file is ignored, not deleted); and
+docstring at HEAD are out of scope, unchanged, not in the diff); kept the stray working file out of the tree via a local `.gitignore` rule (ignored, not deleted); and
 (NICE-TO-HAVE) the `--freeze-commit` help now names the `ablation-freeze` fallback. One non-blocking
-NICE-TO-HAVE carried (declined as out of scope): making temp/log roots configurable for offline environmented test envs —
-a reviewer-environment constraint, not a code defect. ALL 11 offline suites green (650 passed, 0 failed), incl.
+NICE-TO-HAVE carried (declined as out of scope): making temp/log roots configurable for offline test environments —
+an environment constraint, not a code defect. ALL 11 offline suites green (650 passed, 0 failed), incl.
 the new `test_ped_ablations` (75) and `test_ablation_analysis` (19) and the extended `test_run_confirmatory`
 (164); the frozen primary cold/conv/ped recompute byte-identical (frozen source zero-diff vs HEAD;
 `confirmatory-log-manifest.sha256` verifies all 90 primary log files) and the frozen `run_inference` J1/J2 is
@@ -3172,7 +3170,7 @@ measurement artifact changed):
   pointers) so the ablation is not decisions-log-only.
 - **Untracked synthesis.** `results/CROSS-MODEL-SYNTHESIS.md` (still local-only): removed the
   leaked runner home-directory path (`/Users/<name>/Desktop/…`), corrected the now-stale "gitignored / results_dir points at the
-  runner's path" claim (the per-base outputs are tracked; tracked `results_dir` values are the anonymized
+  runner's path" claim (the per-base outputs are tracked; tracked `results_dir` values are the generic
   `results/confirmatory_<slug>`), and added the **symmetric robustness disclosure** for leak→helpfulness —
   reported on all three bases from the tracked `inference.json` `cluster_summary`: Sonnet mixed +0.303
   (p≈9e-6) / clustered signed-rank +0.279 (p=.002), both SIG-positive; GPT mixed −0.313 (p≈5e-10,
@@ -3183,9 +3181,8 @@ measurement artifact changed):
 - **Housekeeping.** Removed two stray 0-byte `results/ablation/tmp.lock.*_cache.json` flock leftovers;
   added `ablation-judge-log-manifest.sha256` pinning the two 2026-07-04 judge-log dirs.
 
-**Still owed (not done here):** the anonymous clean-history export (the git history and the
-`crossmodel-freeze` annotated-tag email are not anonymous) and the export-time `.gitignore` `CLAUDE.md`
-line — both are release-packaging steps, deliberately left for the lead. The three ConvTutor
+**Still owed (not done here):** the clean-history export and the export-time repository housekeeping
+— both are release-packaging steps, deliberately left for the lead. The three ConvTutor
 leakage-advisory moderator percentages (~52.5% / 62.5% / 8.3%) and the isolated-cold ~11% remain
 calibration/FINDINGS-sourced (not re-derivable from tracked artifacts); cite them as advisory. Committed
 tables were generated under Python ≤3.11; the current `.venv` (3.12) reproduces them to ≤1 ULP, with three
@@ -3357,7 +3354,7 @@ whole point: a generated inventory reproduces the bug, because omission requires
 silence is the default outcome. Demonstrated by building a real archive with the governing
 amendment dropped from the allowlist: the pre-fix verifier PASSES it, the current one FAILS.
 
-**A document outside version control was in reviewers' hands.** `supplement/technical-appendix.md`
+**A document outside version control was shipping in the artifact.** `supplement/technical-appendix.md`
 was untracked yet packaged (the builder walks the filesystem and consults git for nothing) and
 pinned in the in-archive manifest — so the repository could not reproduce its own artifact, and
 the file sat outside both version control and the freeze while shipping. Now tracked. The builder
@@ -3400,23 +3397,23 @@ passing VACUOUSLY — `len(...) > 0` satisfied by 63 unrelated live artifacts wh
 fixture under test did anything — and was repaired by scoping it to the fixture. Recompute before
 believing, including from a document written an hour ago.
 
-### 2026-08-01 — Pre-release scrub: internal docs removed, venue references redacted
+### 2026-08-01 — Pre-release scrub: internal docs removed, manuscript paths generalized
 **Context:** Preparing the repository for public release. Two classes of content were present
 that should not ship: internal working documents superseded by the authoritative runbook, and
-references naming the target venue — which the submission's double-blind policy requires the
-non-anonymous public material not to name.
+manuscript path and header references that named a specific output destination rather than a
+neutral one.
 **Decision:** (a) Removed `experiments/CROSSMODEL-HANDOFF.md` (duplicated `experiments/RUN.md`,
 and its commands branched from a freeze tag that never existed) and
 `experiments/PIN-RECORD-TEMPLATE.md` (a blank skeleton — the filled pin records are the
 2026-06-28 entries in this log); `RUN.md`'s pin-acceptance checklist now points at those filled
-records instead. (b) Redacted venue names from `paper-plan.md`, `supplement/technical-appendix.md`,
+records instead. (b) Generalized manuscript path and header references to neutral names in `paper-plan.md`, `supplement/technical-appendix.md`,
 `supplement/second-judge-transport-disclosure.md`, `analysis/figures/gen_supp_fig1.py`, the
 2026-06-26 positioning entry above, and the archive name in `tools/build_submission_artifact.py`.
-(c) Renamed the manuscript output directory from its venue-named path to `manuscript/` across the
+(c) Renamed the manuscript output directory to a neutral `manuscript/` path across the
 figure scripts, their test, and `.dockerignore`.
 **Reason:** Presentation and packaging only. No harness, prompt, problem, rubric, metric,
-sampling rule, result, or verdict is touched; no value under `results/` changes. The redactions
-remove venue identity, not content — what was decided, and why, is unchanged and still legible.
+sampling rule, result, or verdict is touched; no value under `results/` changes. The changes
+generalize path and header identity, not content — what was decided, and why, is unchanged and still legible.
 **Also fixed (real bug):** `analysis/figures/gen_sol_values.py` wrote its LaTeX macro file with
 `Path.write_text` but never created the parent directory, and the manuscript directory is not
 tracked — so the script raised `FileNotFoundError` on any fresh clone after completing all of its

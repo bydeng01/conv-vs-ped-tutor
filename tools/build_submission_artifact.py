@@ -86,9 +86,9 @@ def acceptable(path: Path) -> bool:
         path.is_file()
         and not path.is_symlink()
         # analysis/figures holds both the figure GENERATORS (.py -- analysis code, so a
-        # reviewer needs them) and their rendered outputs (.pdf/.png/.svg/.tiff -- the
+        # reader needs them) and their rendered outputs (.pdf/.png/.svg/.tiff -- the
         # manuscript already carries those, and they are megabytes). Ship the source only,
-        # minus the `.prev-` snapshots of superseded designs, which would leave a reviewer
+        # minus the `.prev-` snapshots of superseded designs, which would leave a reader
         # guessing which script drew the shipped figure.
         and not (relative.parts[:2] == ("analysis", "figures")
                  and (path.suffix != ".py" or ".prev-" in path.name))
@@ -302,12 +302,12 @@ def untracked_payload_paths(paths) -> list[Path]:
     The builder is deliberately filesystem-driven -- it walks `rglob` and consults git for
     nothing -- because the archive intentionally carries gitignored families (raw logs, score
     caches) that `git archive` would omit. The cost of that design is that any stray file
-    dropped into a source directory is swept silently into a reviewer artifact.
+    dropped into a source directory is swept silently into the packaged artifact.
 
-    That is not hypothetical: `supplement/technical-appendix.md` shipped to reviewers, and was
+    That is not hypothetical: `supplement/technical-appendix.md` shipped in the artifact, and was
     pinned in the in-archive manifest, while being untracked by any commit -- so the repository
     could not reproduce its own artifact, and the file sat outside both version control and the
-    freeze while being in reviewers' hands.
+    freeze while shipping.
 
     IGNORED is fine (that is the intended carve-out). TRACKED is fine. Neither is a stray."""
     import subprocess

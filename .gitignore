@@ -13,9 +13,6 @@ venv/
 
 # Local scratch (reference PDFs etc.) -- not part of the experiment
 tmp/
-# Local scratch / working prompt files (not part of the release)
-execution-prompts*.md
-analysis-prompt*.md
 
 # Experiment outputs.
 logs/
@@ -53,11 +50,8 @@ results/judge_robustness/**/tmp.*
 results/judge_robustness/**/spend_ledger.json
 analysis/figures/*
 !analysis/figures/.gitkeep
-# the figure GENERATORS are analysis code and ship in the reviewer artifact, so they
+# the figure GENERATORS are analysis code and ship in the release artifact, so they
 # must be under version control; the rendered outputs above stay ignored.
 !analysis/figures/*.py
 analysis/figures/*.prev-*.py
 dist/
-
-# Local assistant/editor notes (not part of the release)
-CLAUDE.md

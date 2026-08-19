@@ -130,7 +130,7 @@
       "served_provider": null,
       "returned_model": null,
       "usage": null,
-      "error": "NotFoundError: Error code: 404 - {'error': {'message': 'No endpoints found for openai/gpt-5.6-sol.', 'code': 404}, 'user_id': 'user_<redacted-for-anonymous-review>'}"
+      "error": "NotFoundError: Error code: 404 - {'error': {'message': 'No endpoints found for openai/gpt-5.6-sol.', 'code': 404}, 'user_id': '<redacted-account-handle>'}"
     },
     {
       "label": "miscase-OpenAI",
@@ -236,7 +236,7 @@
     },
     "bogus_tag_refused": {
       "pass": true,
-      "detail": "refused (NotFoundError: Error code: 404 - {'error': {'message': 'No endpoints found for openai/gpt-5.6-sol.', 'code': 404}, 'user_id': 'user_<redacted-for-anonymous-review>'})"
+      "detail": "refused (NotFoundError: Error code: 404 - {'error': {'message': 'No endpoints found for openai/gpt-5.6-sol.', 'code': 404}, 'user_id': '<redacted-account-handle>'})"
     },
     "miscase_documented": {
       "pass": true,

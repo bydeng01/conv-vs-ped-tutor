@@ -1,8 +1,8 @@
-# Technical appendix — details moved out of the main paper in the 2026-07-09 page-limit revision
+# Technical appendix — details moved out of the main paper in the 2026-07-09 revision
 
-The 2026-07-09 revision trimmed the main manuscript to its page limit.
+The 2026-07-09 revision moved supporting detail out of the main manuscript.
 Nothing below changes a result; every item is either a value relocated from the main text
-(with its provenance) or a disclosure that the 7-page version compresses. Sources are the
+(with its provenance) or a disclosure that the condensed main text compresses. Sources are the
 frozen `results/` outputs and `decisions-log.md`, both packaged in this artifact; every value
 below re-derives from them except where a line says otherwise.
 
@@ -51,7 +51,7 @@ All seven point estimates negative; bootstrap CI excludes zero in 5/7 (exception
 conv_socratic); with five usable replicates the smallest attainable two-sided signed-rank
 p is 2/2^5 = .0625.
 
-## 4. Items compressed in the 7-page version (full statements preserved here)
+## 4. Items compressed in the condensed main text (full statements preserved here)
 
 - Table 1's "Observed" column now gives qualitative verdicts only; every underlying
   statistic (means, deltas, exact p-values, CIs) remains in Table 2 and the Results text,
