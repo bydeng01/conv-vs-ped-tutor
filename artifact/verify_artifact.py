@@ -185,8 +185,7 @@ REQUIRED_ARTIFACT_PATHS = (
     "paper-plan.md",
     "metric-amendment-2026-06-19.md",
     "cross-judge-amendment-2026-07-19.md",
-    # The amendment GOVERNING the shipped second-judge ratings. This is the file whose omission
-    # motivated this whole check; it must never again be droppable in silence.
+    # Transport specification for the released second-judge scores.
     "cross-judge-amendment-openrouter-2026-07-20.md",
     # The only record of deviation from pre-registration, and the cited source for the advisory
     # leakage values in supplement/technical-appendix.md §1, which are NOT re-derivable from the

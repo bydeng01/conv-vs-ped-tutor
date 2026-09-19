@@ -101,7 +101,7 @@ From the per-session / per-replicate tables and the J1 preview (paper-plan.md §
 - **Costs acceptable** — `tutor_tokens` / `n_model_calls` per session within budget for
   the planned 10×3 run.
 
-## Decision (paper-plan.md §11) — and the rigor guardrails
+## Pilot decisions (paper-plan.md §11)
 
 - If a **manipulation check fails** (P1≈0 or P3≈0): the policies didn't separate — fix
   PedTutor (the `deferral_gate` is the lever) and re-run. **Do not** tune toward the
@@ -114,9 +114,9 @@ From the per-session / per-replicate tables and the J1 preview (paper-plan.md §
 
 ## Scope notes
 
-- This runbook + `experiments/run_pilot.py` are the **pilot** (R2). The **confirmatory**
-  10×3 run is R1's runner, which additionally tags `condition`/`replicate_id` on every
+- This runbook and `experiments/run_pilot.py` cover the pilot. The confirmatory
+  runner, `experiments/run_confirmatory.py`, additionally tags `condition`/`replicate_id` on every
   call (the pipeline reads those when present; otherwise it infers condition from the
   tutor component and pairs by seed, which is what the pilot relies on).
 - The inferential P2 test (paired Wilcoxon + Cliff's delta) and the J2 mixed-effects
-  coupling are Week 3 (paper-plan.md §10) — not part of the pilot.
+  coupling are specified in paper-plan.md §10 and run after confirmatory collection.

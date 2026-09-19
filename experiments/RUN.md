@@ -1,4 +1,4 @@
-# Confirmatory 10×3 run — live command sequence (R1)
+# Confirmatory 10×3 run
 
 The inferential run: **10 replicates × {cold, conv, ped}** through the frozen
 continuous protocol, paired by replicate id (paper-plan.md §10). Runs only **after
@@ -10,17 +10,12 @@ Models (`configs/models.yaml`): tutor = Anthropic Sonnet, student = OpenRouter�
 `llama-3.1-8b-instruct` (the calibration-validated weak serving), judge = Opus.
 Keys: `ANTHROPIC_API_KEY` (tutor + judge), `OPENROUTER_API_KEY` (student).
 
-## Rigor reminders (non-negotiable — paper-plan.md §11)
+## Before collection
 
-- **Freeze before data.** No prompt, problem, rubric, metric, config, or prediction
-  changes once this run begins. The runner refuses to start unless the tree is clean
-  and at the freeze commit.
-- **No result-chasing.** Do not tune anything toward an outcome. If a preflight gate
-  is CHECK, fix the cause on principle (e.g. PedTutor faithfulness, student serving),
-  never to move a number. If P2 comes out null/reversed, that is the result (§11).
-- **No answer leakage.** `canonical_answer` never reaches a live tutor/student/judge
-  prompt.
-- **Report regardless of outcome.** P1–P3 and J1/J2 are reported whatever they show.
+Freeze the prompts, problems, rubrics, metrics, configuration, and predictions before
+collection. The runner requires a clean tree at the freeze commit. Preflight failures
+require diagnosis before collection; results are reported under `paper-plan.md` §11.
+The prompt builders exclude `canonical_answer` from tutor, student, and judge inputs.
 
 ## Gate order
 
@@ -91,7 +86,7 @@ writes `pedagogy_detail.json` + `divergence_detail.json`; the shipped
 byte-for-byte. Judge calls are cached and kept out of the experiment's `calls.jsonl` /
 cost accounting.
 
-### 5. Inferential analysis (Week 3, paper-plan.md §10)
+### 5. Inferential analysis (paper-plan.md §10)
 
 J1 (paired Wilcoxon + Cliff's delta on leakage / helpfulness / independence), J2
 (mixed-effects coupling), accuracy descriptive + CIs, cost-normalized sensitivity.
@@ -99,7 +94,7 @@ Not part of this runner.
 
 ---
 
-## Cross-model base runs (Phase 1) — per base, after the primary
+## Cross-model base runs
 
 The cross-model extension (paper-plan.md §12) re-runs this **identical frozen protocol with
 only the tutor model swapped**, on additional bases (a current flagship OpenAI chat model; a

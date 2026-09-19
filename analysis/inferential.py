@@ -1,4 +1,4 @@
-"""Week-3 inferential analysis (paper-plan.md §10) — the FROZEN analysis plan, run
+"""Confirmatory inferential analysis (paper-plan.md §10) — the FROZEN analysis plan, run
 post-hoc over the compute_metrics output tables (per_replicate.csv, per_session.csv,
 per_turn.csv). Nothing here changes a frozen metric, window, or rubric; it only runs the
 pre-registered tests on the already-computed conversation summaries.
@@ -16,7 +16,7 @@ Implements §10 exactly:
   - Cost-normalized sensitivity: the J1 contrasts on per-1k-tutor-token outcomes; a
     marginal whose direction/significance flips under normalization is flagged (§10).
 
-No knob is tuned toward an outcome. Report P1-P3 / J1 / J2 regardless of result (§11).
+Outcome interpretation follows paper-plan.md §11.
 """
 from __future__ import annotations
 

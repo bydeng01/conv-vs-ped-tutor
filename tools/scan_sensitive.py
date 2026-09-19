@@ -1,12 +1,6 @@
-"""Scan the tracked tree for credentials, home paths, emails, and account identifiers.
+"""Scan tracked files for credentials, home paths, emails, and account identifiers.
 
-`artifact/verify_artifact.py` runs this scan over a built archive. That check cannot protect
-the repository, because it only ever runs on a tarball someone remembered to build -- and
-the public repository is the surface an accidental key actually leaks through. This runs the
-same patterns over the git-tracked files on every push, so the guard applies to the thing
-that is public rather than to the thing that is shipped.
-
-The patterns are IMPORTED from the verifier rather than restated, so the two cannot drift.
+Uses the patterns from artifact/verify_artifact.py; CI runs this over the tracked tree.
 
 Usage:
     python tools/scan_sensitive.py            # tracked files (requires git)
@@ -23,11 +17,7 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
-# Documentation shows readers what an export line looks like. `export ANTHROPIC_API_KEY=sk-...`
-# has to remain greppable as a key-shaped string or the setup instructions stop being
-# instructions -- so placeholders are allowed, and only where they are unmistakably
-# placeholders. This is deliberately narrow: an elision, an angle-bracket slot, or an
-# explicit redaction marker. A real key matches none of these.
+# Allow documentation placeholders such as elisions, bracketed slots, and redaction markers.
 PLACEHOLDER = re.compile(r"\.\.\.|<[^>]*>|redacted|your[-_]|YOUR[-_]|xxx|XXX|example", re.I)
 
 SKIP_SUFFIXES = {".png", ".jpg", ".jpeg", ".pdf", ".gz", ".zip", ".tar", ".pyc",

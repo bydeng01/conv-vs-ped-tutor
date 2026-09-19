@@ -757,7 +757,7 @@ def test_offline_cache_only_mock_cannot_be_promoted():
     check("every mock cache ENTRY is marked synthetic",
           all(v.get("synthetic") is True for v in blob["entries"].values()))
     check("offline-cache-only refuses a backend=mock cache", _offline_reconstruct(real))
-    # the exact promotion the review flagged: relabel ONLY the stamp backend
+    # Relabeling the stamp must not promote synthetic entries.
     _patch_cache(real, backend="live")
     check("relabelling stamp backend mock->live STILL refused (synthetic entries)",
           _offline_reconstruct(real))
@@ -900,7 +900,7 @@ def test_freeze_and_plan_guards():
     check("a preflight resolved for a different ENDPOINT is refused",
           not authorizes(dict(good, endpoint="https://api.openai.com/v1")))
 
-    # R5-F1: the resolved contract must be bound to the code, freeze, and SDK that produced it.
+    # Bind the resolved contract to its code, freeze, and SDK.
     check("a preflight resolved for a DIFFERENT request contract is refused",
           not authorizes(dict(good, request_contract_sha256="0" * 64)))
     check("a preflight with no recorded request contract is refused",
@@ -916,8 +916,7 @@ def _standin_freeze_ref(paths):
     """Build a stand-in commit containing `paths` (repo-relative) WITHOUT touching the real
     index, worktree, branches, or tags: a throwaway GIT_INDEX_FILE is populated with git add,
     written to a tree, and committed with git commit-tree. `git show <sha>:<path>` accepts the
-    raw commit SHA, so the freeze binding is exercised for real -- the production freeze tag
-    does not exist yet, and this session must not create it.
+    raw commit SHA, allowing the test to exercise freeze binding without a production tag.
 
     Returns the commit SHA, or None if git plumbing is unavailable.
     """
@@ -991,8 +990,7 @@ def test_plan_freeze_binding():
         plan_path.write_bytes(original)
     check("restoring the frozen bytes re-verifies", frozen_ok())
 
-    # (b) the exact bypass the review found: a NEW untracked plan under a non-canonical
-    # subdirectory of the allowed namespace, self-consistent and absent from the freeze.
+    # (b) Reject a self-consistent plan absent from the freeze, even in an allowed namespace.
     side = REPO_ROOT / "results/judge_robustness/gpt-5.6-sol/_t_side/sonnet"
     if side.parent.exists():
         shutil.rmtree(side.parent)
@@ -1179,9 +1177,9 @@ def test_incomplete_rerun_cannot_leave_stale_results_publishable():
 
 
 def test_live_preflight_is_gated_on_the_frozen_tree():
-    """R5-F1: `--preflight` makes real provider calls and FREEZES the transport contract the paid
-    batch inherits, but it returned before any freeze gate -- so a dirty, untagged checkout could
-    resolve a contract that a later frozen scoring run accepted."""
+    """Live preflight requires a clean checkout at the freeze commit before provider calls.
+
+    Its resolved transport contract is inherited by the paid batch."""
     print("\n[R5-F1: a LIVE preflight requires the frozen tree; mock preflight does not]")
     if not _raw_logs_present():
         skip("R5-F1: a LIVE preflight requires the frozen tree; mock preflight does ", RAW_LOG_NOTE)
@@ -1276,9 +1274,10 @@ def _raises_systemexit(fn, *a, **k):
 
 
 def test_preflight_and_production_apply_the_same_predicate():
-    """R5-F3: preflight dropped falsy finish reasons (so finish_reason=None was never a
-    violation) and checked only completion_tokens, while production also requires prompt_tokens.
-    A contract could pass preflight and then make every production response invalid."""
+    """Preflight rejects the same degraded responses as production scoring.
+
+    Cover missing finish reasons and prompt-token counts, which earlier preflight
+    checks omitted."""
     print("\n[R5-F3: preflight uses the production degraded-response predicate]")
     import inspect as _inspect
     src = _inspect.getsource(R.run_preflight)
@@ -1302,10 +1301,10 @@ def test_preflight_and_production_apply_the_same_predicate():
 
 
 def test_provider_call_budget_and_circuit_breaker():
-    """R5-F2: the authorized 7,074 calls were an expectation in a document, not an enforced
-    ceiling. With up to three attempts per rating, a systematic production failure could issue
-    21,222 completed billable responses across the whole corpus before completeness was ever
-    evaluated -- and nothing stopped it early."""
+    """Enforce the provider-call ceiling and stop repeated scoring failures early.
+
+    Retries can exceed the planned rating count, so completeness checks alone do
+    not bound spending."""
     print("\n[R5-F2: hard provider-call ceiling + early circuit breaker]")
     if not _raw_logs_present():
         skip("R5-F2: hard provider-call ceiling + early circuit breaker", RAW_LOG_NOTE)
@@ -1387,9 +1386,9 @@ def test_provider_call_budget_and_circuit_breaker():
 
 
 def test_spend_ceiling_is_cumulative_across_invocations():
-    """R8-F3: `score_base` built a fresh budget with the full allowance on EVERY invocation, so
-    the canary-then-resume workflow this project recommends silently re-authorized itself each
-    time. N resumes could spend N x the authorization while each process stayed under its cap."""
+    """Resumed scoring shares one cumulative provider-call allowance.
+
+    Starting a new process must not reset the allowance after a canary run."""
     print("\n[R8-F3: the spend ceiling is a LIFETIME authorization, carried across resumes]")
     if not _raw_logs_present():
         skip("R8-F3: the spend ceiling is a LIFETIME authorization, carried across r", RAW_LOG_NOTE)
@@ -1520,7 +1519,7 @@ def test_mock_rehearsal_spend_never_consumes_the_paid_allowance():
     check("...and a MOCK ledger symmetrically excludes explicitly-live rows",
           led_mock.prior_attempts == 2148 + 7)
 
-    # a live resume after live spend is still fully cumulative (R8 must keep holding)
+    # Live resumes retain the full prior spending count.
     write_ledger([{"pid": 1, "utc": "t", "backend": "live", "http_attempts": 40}])
     led = R._SpendLedger(p, 2363, live=True)
     check("live prior spend still counts in full", led.prior_attempts == 40)
@@ -1534,12 +1533,10 @@ def test_mock_rehearsal_spend_never_consumes_the_paid_allowance():
 
 
 def test_spend_ledger_fails_closed_when_untrustworthy():
-    """R9-F1: `_SpendLedger._load` swallowed every read/parse error and every non-object payload
-    and returned with `prior_attempts = 0` -- i.e. a fresh full lifetime allowance. The ledger is
-    gitignored (it must be, or a resumed paid run would dirty the tree and its own freeze gate
-    would refuse it), so neither the clean-tree gate nor protected-primary.sha256 covers it:
-    corrupting or deleting it was an untraceable way to re-authorize the batch. Being unable to
-    read the ledger is not evidence that nothing was spent."""
+    """Reject an unreadable or malformed spend ledger when prior live spending is evident.
+
+    Treating a load failure as zero spend would renew the full allowance. The ledger
+    is gitignored because scoring updates it while the tracked tree remains frozen."""
     print("\n[R9-F1: an untrustworthy spend ledger FAILS CLOSED, never replenishes]")
     if not _raw_logs_present():
         skip("R9-F1: an untrustworthy spend ledger FAILS CLOSED, never replenishes", RAW_LOG_NOTE)
@@ -1613,12 +1610,10 @@ def test_spend_ledger_fails_closed_when_untrustworthy():
 
 
 def test_cached_ratings_are_counted_in_backend_provenance():
-    """R9-F2: `system_fingerprint` is deliberately NOT in the cache stamp, so a backend rotation
-    does not invalidate paid ratings -- the amendment's stated compensating control is that every
-    fingerprint is 'recorded per cache entry and aggregated at run level'. The aggregation only
-    ever saw FRESH responses: the cache-hit path returned before touching the counters. A resume
-    (the workflow this project recommends) therefore reported a single backend while mixing two,
-    suppressing the `spans_multiple_backends` disclosure that is the entire point of the trade."""
+    """Include cached ratings in run-level backend provenance.
+
+    Fingerprints are excluded from the cache stamp to preserve paid scores across
+    backend changes; aggregating both cached and fresh entries exposes mixed backends."""
     print("\n[R9-F2: resumed cache hits are counted in run-level backend provenance]")
 
     def meta(fp):
@@ -1677,18 +1672,12 @@ def test_cached_ratings_are_counted_in_backend_provenance():
 
 
 def test_ledger_evidence_scan_is_exact_and_recovery_text_is_true():
-    """R9b: the fixes for R9-F1 introduced two defects of their own.
+    """Check spend-evidence selection and recovery instructions.
 
-    (a) `_live_spend_evidence` GLOBBED `cache/*_cache.json`. `_flush_cache` leaves a zero-byte
-        `cache/tmp.lock.<instrument>_cache.json` behind and never unlinks it, so the mock
-        rehearsal the handoff prescribes on all three bases before paying made the FIRST live
-        run abort claiming spend that never happened -- a silent fail-open replaced by a
-        spurious fail-closed, on exactly the path to the paid batch.
-    (b) The refusal messages told the operator to reconstruct the count from the wire log,
-        "one record per HTTP request". It is one record per rating ATTEMPT; transport retries
-        are a count INSIDE a record, and an attempt whose retries were all exhausted writes no
-        record at all. Following it under-counts real spend -- the fail-open direction, in the
-        one message printed when the fail-closed gate fires."""
+    Cache lock files can match a broad cache glob despite containing no paid scores.
+    Wire records count rating attempts; transport retries are recorded within an
+    attempt, and exhausted attempts may have no record. Recovery instructions must
+    preserve these distinctions."""
     print("\n[R9b: evidence selection is exact; the recovery instruction is TRUE]")
     if not _raw_logs_present():
         skip("R9b: evidence selection is exact; the recovery instruction is TRUE", RAW_LOG_NOTE)
@@ -1752,11 +1741,10 @@ def test_ledger_evidence_scan_is_exact_and_recovery_text_is_true():
 
 
 def test_fingerprint_divergence_is_reported_without_spanning():
-    """R9b: `fingerprint_summary` tested MULTIPLICITY only. A live invocation that is 100%
-    cache hits on a backend the preflight did NOT freeze observes exactly one fingerprint, so
-    it published spans_multiple_backends=false while not one rating came from the frozen
-    backend -- and the provenance note tells readers to key on that flag. The per-call abort
-    cannot cover this: it only ever sees FRESH responses."""
+    """Report a backend mismatch even when all ratings come from one backend.
+
+    A fully cached run can contain one fingerprint that differs from preflight.
+    Both fingerprint multiplicity and agreement with preflight must be checked."""
     print("\n[R9b: divergence from the frozen backend is reported even without spanning]")
     S = lambda fps: {"helpfulness": {"system_fingerprints": fps}}
 
@@ -1793,11 +1781,9 @@ def test_fingerprint_divergence_is_reported_without_spanning():
 
 
 def test_paid_ratings_survive_a_disorderly_crash():
-    """R9b: `_score_instrument`'s salvage flush caught only SystemExit, so an unexpected
-    TypeError / KeyboardInterrupt / escaping SDK error discarded this conversation's
-    already-PAID reps -- and left the base with no live-stamped cache for the ledger's
-    missing-evidence scan to find. Also: a truthy non-dict cached `meta` was one such
-    unexpected exception, introduced by the R9-F2 fix itself."""
+    """Flush paid ratings after unexpected exceptions and interrupts.
+
+    Cover malformed cached metadata as well as ordinary scoring failures."""
     print("\n[R9b: paid ratings survive a DISORDERLY crash, not just an orderly abort]")
     u = {"base": "s", "run_id": "r1", "condition": "conv", "replicate_id": "0",
          "problem_id": "p", "turn_index": 0, "dialogue": "d", "dialogue_sha256": "h"}
@@ -1844,10 +1830,9 @@ def test_paid_ratings_survive_a_disorderly_crash():
 
 
 def test_backend_fingerprint_drift_is_detected():
-    """R8-F1: the batch aborted only when `response.model` changed. `gpt-5.6-sol` is explicitly
-    NOT an immutable dated snapshot, so an in-place backend update keeps the model string and
-    changes only `system_fingerprint` -- which was recorded and never compared. Two scoring
-    regimes would be mixed while provenance reported one model."""
+    """Reject fingerprint drift under an unchanged model identifier.
+
+    A movable model alias can retain its name across backend updates."""
     print("\n[R8-F1: system_fingerprint is frozen at preflight and checked on every call]")
 
     def meta(fp):
@@ -1903,10 +1888,10 @@ def test_backend_fingerprint_drift_is_detected():
 
 
 def test_transport_retries_consume_the_spend_ceiling():
-    """R6-F1: the budget was charged once per LOGICAL rating attempt, but `_Caller.call` retries
-    transient failures up to five times internally -- so one charge could cover five real HTTP
-    requests. A limit documented as 'charged before every request, retries included' was bypassed
-    5x. The ceiling must be charged per HTTP request."""
+    """Charge every HTTP request, including transport retries, against the ceiling.
+
+    Charging only logical rating attempts would allow each charge to cover up to
+    five requests."""
     print("\n[R6-F1: every HTTP request, including transport retries, consumes the ceiling]")
     R.time.sleep = lambda *_a, **_k: None
 
@@ -1986,9 +1971,7 @@ def test_transport_retries_consume_the_spend_ceiling():
 
 
 def test_sdk_internal_retries_are_disabled():
-    """R4-F5: the SDK retries internally by default (openai ships DEFAULT_MAX_RETRIES=2), so the
-    declared 5-attempt bound was really up to 15 HTTP requests per logical call -- none of the
-    internal ones counted in transient_retries, the wire log, or provider_calls."""
+    """Disable SDK retries so every HTTP retry goes through the logged outer loop."""
     print("\n[R4-F5: all retrying is the outer LOGGED loop; SDK retries disabled]")
     import openai
     check("the SDK does default to internal retries (so this must be overridden)",
@@ -2026,10 +2009,9 @@ def test_sdk_internal_retries_are_disabled():
 
 
 def test_degraded_responses_are_not_valid_ratings():
-    """R4-F3: a parseable but DEGRADED reply used to be accepted as a rating. The served-model
-    identity check was skipped when the response carried no model at all, and finish_reason /
-    usage were gated only at preflight -- so a truncated, unattributed, unauditable reply
-    counted toward completeness."""
+    """Reject parseable responses with missing identity, invalid finish reasons, or usage.
+
+    These checks apply to scored responses as well as preflight."""
     print("\n[R4-F3: degraded/unattributed responses are refused, not rated]")
 
     def _meta(model="openai/gpt-5.6-sol", finish="stop", usage=True, text=_GOOD):
@@ -2101,11 +2083,9 @@ def test_degraded_responses_are_not_valid_ratings():
 
 
 def test_plan_identity_covers_condition_replicate_and_source_logs():
-    """R4-F2: `assert_plan_matches` reduced unit identity to (run_id, problem_id, turn_index) +
-    dialogue hash. condition/replicate_id are what every per-policy analysis is cut by and live
-    in gitignored logs/, so a run could be relabelled conv->ped without touching a byte of
-    dialogue and the paid batch would score and publish it misclassified. The manifest's
-    source_log_sha256 was written but never read."""
+    """Bind planned units to condition, replicate, dialogue, and source-log hashes.
+
+    Run/problem/turn identifiers alone do not detect relabelled condition metadata."""
     print("\n[R4-F2: full unit identity + frozen source-log hashes are verified]")
     if not _raw_logs_present():
         skip("R4-F2: full unit identity + frozen source-log hashes are verified", RAW_LOG_NOTE)
@@ -2182,9 +2162,10 @@ def test_plan_identity_covers_condition_replicate_and_source_logs():
 
 
 def test_concurrent_runs_for_one_base_are_refused():
-    """R4-F1: nothing serialized scoring or promotion. Two runs for the same base could
-    duplicate PAID calls, clobber run state, interleave promotions, and -- because
-    clear_staging() sweeps any pid's staging dir -- delete each other's staged results."""
+    """Serialize scoring and promotion for each base.
+
+    Concurrent runs could duplicate paid calls, overwrite run state, or remove
+    each other's staging files."""
     print("\n[R4-F1: per-base run lock refuses a second concurrent run]")
     if not _raw_logs_present():
         skip("R4-F1: per-base run lock refuses a second concurrent run", RAW_LOG_NOTE)
@@ -2345,7 +2326,7 @@ def check_prelive(name, cond_fn):
 
 
 def test_mock_rehearsal_does_not_trip_the_live_gpt_artifact_gate():
-    """The R9b root cause on the PACKAGING side, plus the defects the FIX introduced.
+    """Ignore mock scratch files when detecting live artifacts for packaging.
 
     `tools/build_submission_artifact.py` and `artifact/verify_artifact.py` both detected "live
     GPT judge artifacts" with `glob("**/cache/*_cache.json") + glob("**/wire/*.jsonl") +
@@ -2792,7 +2773,7 @@ def test_artifact_verifier_requires_promoted_outputs():
     check("restoring a consistent promoted set verifies clean again",
           V.gpt_base_promotion_failures(base_dir, "sonnet") == [])
 
-    # R6-F2: EVERY promoted output must be required. Checking only caches/details/wire let an
+    # EVERY promoted output must be required. Checking only caches/details/wire let an
     # archive drop judge_inference.json, the CSVs, metrics_summary, policy_adjusted, provenance,
     # or completeness and still verify as complete -- the manifests only inventory what remains.
     check("the verifier's required set equals the runner's own promoted set",

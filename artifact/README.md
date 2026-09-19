@@ -1,41 +1,35 @@
 # Analysis artifact
 
-The archive supports these offline workflows:
+The archive packages raw transcripts, cached judge scores, metric tables, and analysis code.
+It supports reconstruction of the metric tables and inference without provider calls.
+The three confirmatory bases contain 90 run directories and 270 raw files in total.
 
-1. **Reconstruct the GPT and Gemini metric tables** (Section 2). All three
-   confirmatory raw-log families are now packaged — 90 run directories (30 per
-   base), 270 raw files — because the GPT-5.6 Sol judge reconstructs prompts from
-   every base; the Sonnet family reconstructs analogously (its Opus caches are
-   included) and its base is copied directly in Section 3. `--offline-cache-only`
-   disables provider calls and fails if a required score is missing.
-2. **Recompute inference for all three bases.** The required CSV tables and
-   analysis code are included. Because the archive omits `.git`, the recorded
-   freeze commit is supplied with `--freeze-commit`.
-3. **Reconstruct the second-judge (GPT-5.6 Sol) robustness tables** — *only once
-   the live GPT pass has been run and re-packaged.* The archive then also carries
-   `results/judge_robustness/` (input manifests, per-rep GPT score caches, wire
-   logs, and the GPT detail/CSV/analysis), pinned by
-   `gpt-judge-wire-log-manifest.sha256`. `analysis/run_cross_judge_audit.py
-   --offline-cache-only` rebuilds the GPT tables from the released caches with a
-   hard tripwire on any miss; `analysis/compare_judges.py` rebuilds the cross-judge
-   comparison. Before that live pass the archive carries only the input manifests
-   and protected-primary hashes, and `verify_artifact.py` reports the GPT layer as
-   "manifests only, live run pending".
+The GPT-5.6 Sol robustness pass is complete in the tracked results for all three bases.
+Reconstructing that layer also requires an archive containing its score caches and wire
+logs under `results/judge_robustness/`, pinned by `gpt-judge-wire-log-manifest.sha256`.
+`analysis/run_cross_judge_audit.py --offline-cache-only` reconstructs its tables;
+`analysis/compare_judges.py` computes the comparison. Check the received archive with
+`verify_artifact.py`: older, manifests-only archives lack the completed scoring layer.
 
-The archive reproduces neither tutor responses nor uncached judge scores; those
-require provider access and the recorded model identifiers. Reusing a cached score
-reproduces the released scoring output; it is not a new judge evaluation. The
-GPT-5.6 Sol layer is a post hoc robustness audit — the Opus results remain
-primary, and the two judges are always reported separately (never averaged).
-
-The post hoc policy-adjusted sensitivity is reported alongside, not in place of,
-the pre-registered pooled J2 analysis.
+Offline reconstruction reuses the released scores and aborts on a missing cache entry.
+New tutor responses or judge evaluations require provider access. Opus is the primary judge;
+Sol is a post hoc robustness judge, reported separately. The policy-adjusted sensitivity
+accompanies the pre-registered pooled J2 analysis.
 
 ## Pinned environment
 
 Use Python 3.12.8 and the exact direct dependency versions in
 `artifact/requirements-pinned.txt`. Hardware, operating system, package versions, and the
 three freeze commits are recorded in `artifact/pinned-environment.json`.
+
+The reference environment is macOS on Apple silicon. Linux/BLAS reruns have shown
+small mixed-model coefficient and variance differences while retaining coefficient signs
+and significance decisions. Docker and CI use portable comparisons; exact numeric checks
+require the recorded environment. For inference comparisons on Linux, use
+`tools/compare_inference.py --science-only --rel-tol 0.05`, as Docker does.
+
+Only direct dependencies are pinned. Docker records the resolved dependency set in
+`/work/pip-freeze.txt` for comparisons between builds.
 
 ## 1. Verify the archive
 
@@ -122,12 +116,9 @@ python tools/compare_condition_adjusted.py \
   results/condition_adjusted_sensitivity/analysis.json reproduced/condition-adjusted.json
 ```
 
-`cmp` was used here previously. It asserts byte equality, which holds only on macOS/arm64:
-the mixed-effects fits are not bit-portable across BLAS implementations, so a reader
-following these steps on Linux saw a failure that meant nothing about the analysis. The
-comparator asserts convergence, coefficient signs, significance at alpha, and agreement
-within an absolute tolerance. Add `--strict` for exact comparison inside the pinned
-environment.
+The comparator checks convergence, coefficient signs, significance at alpha, and coefficient
+agreement within its absolute tolerance (default `0.05`). Add `--strict` for exact numeric
+comparison inside the pinned environment.
 
 The command reads only the three packaged `per_turn.csv` files, fits
 `outcome ~ leaks_i + C(condition)` with crossed replicate/problem variance components and

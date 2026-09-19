@@ -1,24 +1,9 @@
 name: CI
 
-# What this job is for, and what it deliberately is not for.
-#
-# The claim this repository makes is that its headline numbers re-derive from the tracked
-# tables without contacting a model provider. That claim is checkable in about three
-# minutes on a machine with no API keys, so it is checked on every push.
-#
-# It does NOT re-run the experiment. Tutor responses and uncached judge scores require paid
-# provider access and the recorded model identifiers; no amount of CI reproduces those.
-# Nothing here spends money or needs a secret, and the workflow has no `secrets:` access by
-# design -- if a step ever appears to need one, that step belongs somewhere else.
-#
-# Numeric comparisons run in --science-only mode. Crossed mixed-effects fits are not
-# bit-portable across BLAS implementations: the packaged references were fit on macOS/arm64
-# (Accelerate) and GitHub's runners are Linux/x86_64 (OpenBLAS), which moves coefficients in
-# the third decimal and random-effect variances by up to 0.007, while leaving every verdict
-# label, coefficient sign, and significance call identical. Asserting bit equality here
-# would produce a permanently red badge that says nothing about the science. The exact
-# checkpoints still exist and still run -- inside the pinned environment, where they mean
-# something (see tools/test_condition_adjusted_sensitivity.py).
+# Run tests and offline inference comparisons from tracked tables without provider keys.
+# Portable comparisons allow Linux/BLAS differences from the macOS reference.
+# Exact numeric checkpoints run only in their recorded environment.
+# See artifact/README.md for comparison modes and tolerances.
 
 on:
   push:
@@ -42,9 +27,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # 3.12 is the pinned analysis version (artifact/pinned-environment.json). 3.11 is
-        # here because the README advertises 3.11+, and an advertised version that nothing
-        # runs is a claim, not a fact.
+        # Test both supported Python minor versions; the recorded analysis version is 3.12.8.
         python-version: ["3.11", "3.12"]
 
     steps:

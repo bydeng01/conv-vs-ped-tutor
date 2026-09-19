@@ -15,14 +15,14 @@ machine (state tracker, decomposer, deferral gate, hint cascade). A cold baselin
 tutoring establishes the floor. The experiment measures whether an LLM helpfulness judge
 rewards the answer-leakage that reduces the student's later independent work.
 
-The pre-registration is [`paper-plan.md`](./paper-plan.md); every deviation from it is dated
-in [`decisions-log.md`](./decisions-log.md). Findings, limitations, and the falsification
-rule are in the paper — this README covers how to run the code.
+The pre-registration is [`paper-plan.md`](./paper-plan.md); dated amendments and implementation decisions are recorded
+in [`decisions-log.md`](./decisions-log.md). The [research record](supplement/research-record.md)
+indexes the main decisions and clarifies historical wording.
 
 ## Quickstart
 
-Every published number re-derives from the tracked tables offline, **with no API key**, in
-about a minute:
+Recompute the confirmatory inference for all three tutor bases from the tracked tables,
+without an API key:
 
 ```bash
 pip install -r requirements.txt
@@ -38,22 +38,19 @@ python analysis/run_inference.py results/confirmatory_gemini \
   --freeze-commit 68ee3faf8d1370da15bb7f8ab1a87599389a7eb6
 ```
 
-Each pre-registration freeze commit is passed explicitly, matching what CI, the Dockerfile,
-and [`artifact/README.md`](./artifact/README.md) already do. The freeze tags themselves are
-not published, so `--freeze-tag` alone would not resolve in a clone; the commit is the
-authoritative binding and is also recorded in every `metrics_summary.json` (`freeze_heads`)
-and `inference.json` (`provenance.freeze_commit`). Do not drop these flags.
+The commands supply the recorded freeze commits because the freeze tags are not published.
+The commits are also recorded in `metrics_summary.json` (`freeze_heads`) and
+`inference.json` (`provenance.freeze_commit`).
 
-Verdicts print to stdout and land in each directory's `inference.json`. CI runs exactly this
-on every push. Collecting *new* runs is the only thing that needs provider access — see
-[Running the experiment](#running-the-experiment).
+Each command prints verdicts and writes `inference.json` in its input directory. To keep the
+reference files intact, follow the copy-based workflow in [artifact/README.md](artifact/README.md).
 
 ## Repository layout
 
 ```
-agents/          the manipulated variable
+agents/          tutoring policies and model clients
   conv_tutor.py      single-node graph
-  ped_tutor.py       multi-node state machine — the only file that differs in kind
+  ped_tutor.py       multi-node state machine
   ped_ablations.py   node-knockout variants (no tracker / no gate / no cascade)
   cold_baseline.py   no-tutor harness
   model_client.py    mock + live backends (Anthropic, OpenAI-compatible)
@@ -107,13 +104,12 @@ python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-Keys are needed **only to collect new runs or re-score with a live judge**, never to
-reproduce the published analyses:
+Collecting new runs or scoring with a live judge requires the relevant provider keys:
 
 | Variable | Used for |
 |---|---|
 | `ANTHROPIC_API_KEY` | Sonnet tutor + Opus judge (`configs/models.yaml`) |
-| `OPENROUTER_API_KEY` | Llama-3.1-8B student, pinned OpenRouter → Groq |
+| `OPENROUTER_API_KEY` | Llama-3.1-8B student (Groq upstream); GPT-5.6 Sol robustness judge (OpenAI upstream) |
 | `OPENAI_API_KEY` | GPT tutor base (`configs/models.gpt.yaml`) |
 | `GEMINI_API_KEY` | Gemini tutor base (`configs/models.gemini.yaml`) |
 
@@ -159,24 +155,32 @@ python tools/verify_problems.py                                  # symbolic prob
 python -m pytest analysis/figures/test_fig2_dissociation.py -q   # the one pytest-style test
 ```
 
-Checks whose input is the gitignored transcript set report `SKIP` on a fresh clone and are
-tallied separately, so a clone cannot be mistaken for having exercised them.
+Tests that require the gitignored transcripts report `SKIP` on a fresh clone.
+The test summary counts these separately from passed checks.
 
-[`.github/workflows/ci.yml`](./.github/workflows/ci.yml) runs the above plus the full
-offline re-derivation and `tools/scan_sensitive.py`, on Python 3.11 and 3.12. It needs no
-secrets and has none: nothing in CI contacts a provider, and a final step asserts that no
-wire log was produced.
+[`.github/workflows/ci.yml`](./.github/workflows/ci.yml) runs the tests, offline inference
+comparisons, and `tools/scan_sensitive.py` on Python 3.11 and 3.12. It uses no provider
+credentials and checks that no wire log was produced.
+
+For an offline pipeline demonstration with synthetic scores:
+
+```bash
+python tools/make_mock_logs.py --seed 0 --conditions cold,conv,ped
+python analysis/compute_metrics.py logs/cold-* logs/conv-* logs/ped-* --out results/mock_triple \
+    --judge-helpfulness --judge-backend mock
+```
+
+The mock tutor produces identical text for ConvTutor and PedTutor; this checks pipeline
+execution, not behavioral differences.
 
 ## Reproducing the published analyses
 
-The tracked per-base tables are sufficient; no model calls:
+After the [confirmatory inference](#quickstart), these commands compute the post hoc
+policy-adjusted sensitivity and descriptive ablation analysis from tracked tables:
 
 ```bash
-python analysis/run_inference.py results/confirmatory \
-  --freeze-tag confirmatory-freeze \
-  --freeze-commit 1a12b566bb825ff91359fb7c526e24b161ae38d3   # and _gpt / _gemini per Quickstart
-python analysis/condition_adjusted_sensitivity.py                  # post hoc, additive
-python analysis/ablation_analysis.py results/ablation              # descriptive
+python analysis/condition_adjusted_sensitivity.py
+python analysis/ablation_analysis.py results/ablation
 ```
 
 Each `results/confirmatory*/` holds the per-turn, per-session, and per-replicate tables, the
@@ -195,11 +199,9 @@ docker build -t conv-vs-ped-tutor .
 docker run --rm conv-vs-ped-tutor
 ```
 
-Pins Python 3.12.8 and the exact direct dependencies, and fails the build if either drifted.
-It makes the analysis reproducible **between users**; it does **not** reproduce the paper's
-digits — Docker is Linux/OpenBLAS, whereas the published values were computed on macOS/Apple
-silicon. Verdicts, signs, and significance still reproduce on any platform; matching the exact
-digits requires macOS on Apple silicon with `artifact/requirements-pinned.txt`.
+The image pins Python 3.12.8 and the direct dependencies and runs offline inference
+comparisons. Its Linux/BLAS environment can produce different mixed-model coefficients
+from the macOS reference. See [environment and comparison details](artifact/README.md#pinned-environment).
 
 ## Citation
 

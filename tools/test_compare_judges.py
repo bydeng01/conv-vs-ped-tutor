@@ -439,13 +439,9 @@ def _rewrite_manifest(gpt_dir: Path, base: str, overrides: dict):
 
 
 def test_dialogue_manifest_binding_is_mandatory():
-    """R9-F3: the frozen input manifest is the ONLY thing tying the GPT ratings to the planned
-    dialogue text, and it used to be optional on every surface -- `_manifest_dialogue_hashes`
-    returned {} when absent, the hash check fired only when both sides were truthy, the
-    comparison bindings skipped it, and the artifact verifier did not require it. A reportable
-    comparison could therefore publish with no dialogue binding at all.
+    """Require a nonempty, complete dialogue manifest when binding comparison inputs.
 
-    Each block below reverts one half of the fix; each must abort."""
+    Missing manifests must not turn dialogue checks into optional comparisons."""
     print("\n[R9-F3: the frozen dialogue manifest is required, covering, and non-empty]")
     of = lambda i, c, r, p, t: [4, 4, 4]
     gf = lambda i, c, r, p, t: [3, 4, 3]
@@ -715,11 +711,9 @@ def test_requires_current_complete_promoted_outputs():
 
 
 def test_failed_comparison_leaves_no_publishable_report():
-    """R4-F4: `compare()` wrote comparison.json only on success but never invalidated an existing
-    report first, and nothing bound the report to the base outputs beside it. Since O4 made
-    failure a DESIGNED outcome (a missing policy_adjusted.json or a non-converged fit blocks),
-    a failed recomputation used to leave the previous comparison publishable next to refreshed
-    bases."""
+    """Invalidate an old comparison before recomputation and bind a successful report
+    to its inputs. Missing policy-adjusted results or a non-converged fit must not
+    leave the previous report publishable beside refreshed base outputs."""
     print("\n[R4-F4: comparison publication is transactional and input-bound]")
     import shutil
     of, gf = opus_ratings, gpt_ratings   # NOT constant -- see the note above build_base
@@ -748,7 +742,7 @@ def test_failed_comparison_leaves_no_publishable_report():
               state["comparison_sha256"] == C._sha256_file(out / "comparison.json"))
         check("comparison records input hashes for all three bases",
               set(state["inputs"]) == {"sonnet", "gpt", "gemini"})
-        # R8-F2: the bindings must cover the OPUS surfaces too, not only gpt_dir
+        # Bind the Opus inputs as well as the GPT inputs.
         check("bindings cover every required input label on both sides",
               all(set(C.REQUIRED_INPUT_LABELS) <= set(v["files"])
                   for v in state["inputs"].values()))
@@ -801,10 +795,9 @@ def test_failed_comparison_leaves_no_publishable_report():
 
 
 def test_source_mutation_during_comparison_blocks_publication():
-    """R8-F2: bindings were computed only AFTER the report was built, and covered only gpt_dir.
-    A concurrent base refresh could therefore bind the NEW inputs to a report computed from the
-    OLD ones -- and artifact verification, which checks exactly those recorded hashes, would
-    accept it."""
+    """Snapshot both judges' inputs before analysis and recheck them before publication.
+
+    Computing hashes only after analysis could bind new inputs to an old report."""
     print("\n[R8-F2: inputs are snapshotted before analysis and re-verified before promotion]")
     import shutil
     of, gf = opus_ratings, gpt_ratings   # NOT constant -- see the note above build_base
@@ -869,9 +862,9 @@ def test_source_mutation_during_comparison_blocks_publication():
 
 
 def test_comparison_verification_does_not_fail_open():
-    """R8-F4: verification returned success when comparison.json was missing (even beside a
-    complete run_state), treated comparison_sha256 and inputs as optional, and checked only
-    whatever bases/files happened to be listed."""
+    """Require the comparison report, its hash, and complete input bindings.
+
+    A complete run-state record alone is insufficient."""
     print("\n[R8-F4: comparison verification requires complete integrity evidence]")
     import shutil
     V = _load_verifier()

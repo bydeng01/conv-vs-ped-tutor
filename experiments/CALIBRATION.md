@@ -1,6 +1,6 @@
 # Running the live calibration locally
 
-The Step-2 diagnostic reads the two thesis-decisive failure modes on a live model
+The calibration diagnostic checks two design requirements on a live model
 **before** the frozen problem set is authored:
 
 - **Failure mode #1** — cold-baseline accuracy LOW (target **20–40%**).
@@ -92,7 +92,7 @@ the student used in the confirmatory run. Use `--cold-only` for a cheap check (n
 tutor calls, only the student runs):
 
 ```bash
-export ANTHROPIC_API_KEY=sk-ant-...
+export OPENROUTER_API_KEY=...
 python experiments/calibrate.py --models configs/models.yaml --cold-only
 ```
 
@@ -113,9 +113,8 @@ Default is Groq. To use Cerebras or OpenRouter instead, edit
 
 - Backend, providers, and per-role models are all read from
   `configs/models.free.yaml` — no code edits needed to retarget.
-- This pilot uses free models; the **final confirmatory run uses Anthropic**
-  (`configs/models.yaml`), and these gates must be **re-verified on the final
-  model** before that run (logged in `decisions-log.md`).
+- The proxy calibration uses `configs/models.free.yaml`. The primary confirmatory
+  configuration uses an Anthropic tutor and an OpenRouter student pinned to Groq.
+  Re-check calibration gates on that serving configuration before collection.
 - Rate limits: the runner retries with exponential backoff on 429s. If a free
   tier is very limited, re-run — logging is per-run and append-only.
-```

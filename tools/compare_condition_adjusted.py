@@ -1,23 +1,8 @@
 """Compare two condition-adjusted sensitivity reports.
 
-Replaces a bare `cmp` of the two JSON files. `cmp` asserts byte equality, which holds only
-on the machine the packaged reference was fit on: the crossed mixed models in
-`analysis/condition_adjusted_sensitivity.py` are not bit-portable across BLAS
-implementations. With the pinned package set on Linux/OpenBLAS instead of macOS/Accelerate,
-the GPT helpfulness problem-variance moves from 1.1e-10 (a boundary estimate) to 6.5e-3 and
-the Sonnet helpfulness p-value from 9.6e-10 to 1.2e-11 -- while every coefficient sign and
-every significance call is unchanged. A reader following the artifact README on Linux would
-see `cmp` fail and reasonably conclude the analysis did not reproduce.
-
-So this compares what the sensitivity analysis is used to claim:
-
-  * the same models converged,
-  * the leakage coefficients agree within an absolute tolerance,
-  * each coefficient carries the same sign, and
-  * each clears (or fails to clear) alpha the same way.
-
-`--strict` restores exact numeric comparison for a rerun inside the pinned environment
-recorded in `artifact/pinned-environment.json`.
+Checks model convergence, leakage coefficients within an absolute tolerance, coefficient
+signs, and significance decisions. Use --strict for exact numeric comparison in the
+recorded environment. See artifact/README.md for platform differences and tolerances.
 
 Usage:
     python tools/compare_condition_adjusted.py EXPECTED.json ACTUAL.json

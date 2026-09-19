@@ -1,10 +1,9 @@
-"""Run the Week-3 inferential analysis (paper-plan.md §10) over a compute_metrics output
+"""Run the confirmatory inferential analysis (paper-plan.md §10) over a compute_metrics output
 dir. Consumes the conversation summaries that compute_metrics already wrote
 (per_replicate.csv, per_session.csv, per_turn.csv with the judge's helpfulness filled);
 writes inference.json and prints the J1 / J2 / accuracy / cost-normalized verdicts.
 
-This is post-hoc and read-only over the frozen metrics — it implements the pre-registered
-tests, tunes nothing, and reports P1-P3 / J1 / J2 regardless of outcome (§11).
+Runs the pre-registered tests on existing metric tables (paper-plan.md §10–11).
 
 Usage:
   # after: python analysis/compute_metrics.py logs/conf-s0-* --out results/confirmatory --judge-helpfulness

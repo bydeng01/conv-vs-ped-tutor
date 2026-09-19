@@ -37,13 +37,11 @@ pre-registered pooled analyses remain in each base's `inference.json`.
 
 ## `judge_robustness/` — second-judge (GPT-5.6 Sol) robustness audit
 
-A **prospectively specified post hoc cross-judge robustness analysis over frozen
-transcripts** (`cross-judge-amendment-2026-07-19.md`). Claude Opus 4.8 remains the frozen
-**primary** judge; GPT-5.6 Sol is an **additive robustness** judge that re-scores the same
-1,179 confirmatory answer-phase tutor turns under the byte-identical frozen helpfulness and
-pedagogy rubrics. It is written by `analysis/run_cross_judge_audit.py` (scoring) and
-`analysis/compare_judges.py` (cross-judge comparison); it never touches any
-`results/confirmatory*`, `results/ablation`, or Opus artifact.
+The post hoc GPT-5.6 Sol analysis re-scores the same 1,179 confirmatory answer-phase tutor
+turns with the frozen helpfulness and pedagogy rubrics. Its plan was specified before Sol
+scoring, after collection of the transcripts and primary Opus scores.
+`analysis/run_cross_judge_audit.py` scores the turns; `analysis/compare_judges.py` compares
+the judges. See the [research record](../supplement/research-record.md) for the amendments.
 
 Layout — `judge_robustness/gpt-5.6-sol/{sonnet,gpt,gemini}/`:
 
@@ -60,17 +58,13 @@ Layout — `judge_robustness/gpt-5.6-sol/{sonnet,gpt,gemini}/`:
   `--offline-cache-only` reconstruction) and `wire/` (raw provider wire logs), pinned by the
   top-level `gpt-judge-wire-log-manifest.sha256`.
 
-Both instruments are reported separately — Opus and GPT scores are **never** averaged into a
-consensus headline. Two judges support "replicated across Opus and GPT-5.6 Sol",
-"directionally consistent", or "judge-contingent"; never "judge-independent",
-"generalizable across LLM judges", or any human-validity claim. The GPT-judge/GPT-tutor arm
-is flagged same-family, and a Sonnet+Gemini-only sensitivity is reported. Live scoring needs
-`OPENAI_API_KEY` and a completed transport preflight; the exact commands are in the amendment.
+Opus and Sol scores are reported separately. The comparison concerns these two judges;
+human validation remains outside this analysis. The GPT-judge/GPT-tutor arm is flagged
+as same-family, with a Sonnet+Gemini-only sensitivity. Live Sol scoring uses
+`OPENROUTER_API_KEY` and a completed transport preflight. Routing and identity limitations
+are described in [the transport disclosure](../supplement/second-judge-transport-disclosure.md).
 
-Re-derive the verdicts from these tables with `analysis/run_inference.py` (and
-`analysis/ablation_analysis.py` for the ablation); see the repo README's "Reproducing
-the results". Raw transcripts are gitignored but SHA-256-pinned by the top-level
-`*-log-manifest.sha256` files.
+See the repository README for [offline inference commands](../README.md#quickstart).
 
 ## Verifying the raw-log manifests
 
@@ -97,41 +91,6 @@ shasum -a 256 -c ablation-judge-log-manifest.sha256  # ablation judge wire-logs
 
 Every other `logs/` subdirectory — pilots, smokes, mock plumbing, and any un-manifested
 judge-log scratch — is unpinned working scratch.
-
-The two directories below are pipeline demonstrations, not results.
-
-## mock_triple/ (scaffolding demonstration — SYNTHETIC, not a result)
-
-Cold, ConvTutor, and PedTutor through the full continuous protocol on the **mock**
-backend (`backend=mock` in every row), one replicate. Generated with:
-
-```
-python tools/make_mock_logs.py --seed 0 --conditions cold,conv,ped
-python analysis/compute_metrics.py logs/cold-* logs/conv-* logs/ped-* --out results/mock_triple \
-    --judge-helpfulness --judge-backend mock
-```
-
-This exercises the whole pipeline end to end with no API key: PedTutor's
-several-model-calls-per-visible-turn cost accounting, the paired per-replicate J1
-preview, and the helpfulness columns (`--judge-backend mock` uses the offline mock
-judge). The generic mock tutor ignores the scoped node prompts, so ConvTutor and
-PedTutor produce identical mock text. The leakage, independence, and helpfulness
-numbers here are plumbing, **not** behavior: ConvTutor and PedTutor come out equal
-by construction under the mock. Behavioral separation is a live property (see
-`live_conv_session/` and `decisions-log.md`).
-
-## live_conv_session/ (real model output)
-
-Metrics computed on one real stored session, `logs/learn-20260617-154007-344`
-(Sonnet tutor and Llama-3.1-8B student through the full protocol, `backend=live`).
-Real values: ConvTutor training leakage about 56% (consistent with the calibrated
-Sonnet 52%), independence about 33%, and immediate/delayed/transfer accuracy of
-100%/100%/100% (the saturation that drove the process reframe; `paper-plan.md` §4,
-S1).
-
-```
-python analysis/compute_metrics.py logs/learn-20260617-154007-344 --out results/live_conv_session
-```
 
 ## Independence LLM-verification (Opus)
 

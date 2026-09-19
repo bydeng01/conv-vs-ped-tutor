@@ -1,18 +1,13 @@
-# Technical appendix — details moved out of the main paper in the 2026-07-09 revision
+# Technical appendix
 
-The 2026-07-09 revision moved supporting detail out of the main manuscript.
-Nothing below changes a result; every item is either a value relocated from the main text
-(with its provenance) or a disclosure that the condensed main text compresses. Sources are the
-frozen `results/` outputs and `decisions-log.md`, both packaged in this artifact; every value
-below re-derives from them except where a line says otherwise.
+Supporting methods and values from the frozen `results/` outputs and `decisions-log.md`.
+Sources that cannot be reconstructed from packaged raw logs are identified below.
 
 ## 1. Pre-run advisory leakage diagnostics (values referenced in the Cross-Model section)
 
-The main text now says the advisory diagnostics "anticipated this leakage ordering (values
-in the supplement)." The values, quoted from the project log (decisions-log.md; advisory,
-report-but-do-not-tune, and NOT re-derivable from local raw — the
-results/leakage_diag_{gpt,gemini}/leakage_diagnostic.json files are absent by design of the
-log entry):
+The project log records these advisory diagnostics. Their raw diagnostic JSON files are
+not included, so the values below are quoted from `decisions-log.md` rather than
+reconstructed from raw logs:
 
 - Sonnet 4.6 (calibration): ConvTutor leakage ~52.5%
 - GPT-5.5 (pre-run diagnostic): ~62.5% (15/24 turns)
@@ -51,36 +46,18 @@ All seven point estimates negative; bootstrap CI excludes zero in 5/7 (exception
 conv_socratic); with five usable replicates the smallest attainable two-sided signed-rank
 p is 2/2^5 = .0625.
 
-## 4. Items compressed in the condensed main text (full statements preserved here)
+## 4. Further validation
 
-- Table 1's "Observed" column now gives qualitative verdicts only; every underlying
-  statistic (means, deltas, exact p-values, CIs) remains in Table 2 and the Results text,
-  and re-derives from results/confirmatory{,_gpt,_gemini}/inference.json.
-- The next-step sentence formerly closing Limitations: randomized reveals within otherwise
-  identical tutoring would make the coupling causal; human raters, and human learners
-  assessed outside the carried context, would make rubric validity and durability
-  measurable; the released artifact makes wider replication data collection rather than
-  redesign.
-- Figure 2's caption formerly ended: "A helpfulness-only evaluation would have detected
-  none of these differences." The claim stands (it appears in the Introduction) and is
-  supported by the 4.70-4.95 helpfulness band vs the 2.58-4.86 pedagogy span.
-- The four tutoring-principle citations (Wood/Bruner/Ross 1976; Slamecka & Graf 1978;
-  Koedinger & Aleven 2007; Aleven et al. 2006) are now cited once, in Related Work; the
-  PedTutor stage-to-principle mapping in the Design section references them there.
+Randomized reveals within otherwise identical tutoring would identify causal effects of
+answer disclosure. Human ratings and assessments outside the carried context would address
+rubric validity and durable learning.
 
-## 5. Wording corrections folded into the revision (from the faithfulness review)
+## 5. Protocol details
 
-A 2026-07-09 faithfulness review checked the manuscript line by line against the frozen
-outputs; the trim also fixes the mismatches it found. The no-final-answer variant's caveat
-now describes the actual mechanism
-(post-solution confirmation turns; window-scoped suppression; in-window judging on
-no-commit problems) instead of an "end-of-session wrap-up"; "dated model versions" became
-"model identifiers are pinned" (only the GPT pin id carries a date); "several model calls
-per visible turn" became "two model calls"; the extensions sentence now distinguishes the
-descriptive extensions (pedagogy rubric, ablation) from the cross-model replications,
-which rerun the frozen per-base inference; "one-line Socratic instruction" became
-"prompt-only Socratic instruction"; and the intro's "the reward for causing it" causal
-phrasing was removed.
+The no-final-answer variant can produce post-solution confirmation turns; the answer-phase
+window excludes tutor turns at or after a parsed commitment and retains the full window when there is no
+commitment. Full PedTutor uses two model calls per visible turn. The pedagogy-rubric and ablation
+extensions are descriptive; cross-model replications rerun the frozen inference for each base.
 
 ## 6. Post hoc condition-adjusted leakage sensitivity
 
@@ -110,9 +87,8 @@ effects of leakage or demonstrated reward-training outcomes.
 
 ## 7. Reproducibility details (environment, sampling parameters, seeds, instrument selection)
 
-Added 2026-07-27 alongside the submission's reproducibility checklist. Nothing here changes a
-result; every value is read from `configs/models*.yaml`, `artifact/pinned-environment.json`,
-`paper-plan.md` §6, or `decisions-log.md`, all packaged in this artifact.
+Sources: `configs/models*.yaml`, `artifact/pinned-environment.json`, `paper-plan.md` §6,
+and `decisions-log.md`.
 
 ### 7.1 Computing infrastructure
 
@@ -152,7 +128,7 @@ sampling applies. The three ratings per turn are therefore genuine stochastic sa
 (decisions-log.md, 2026-06-18). GPT-5.x `max_tokens` is sent as `max_completion_tokens`.
 
 Tutor temperature 0.4 (low but nonzero, so replicates vary) and student temperature 0.8 (so the
-student behaves like a real learner) were fixed by design before data collection and never
+student responses vary) were fixed by design before data collection and never
 searched: one value each, no sweep, no tuning against any outcome. The only respect in which the
 tutor configuration differs across bases is the vendor-minimum reasoning setting, which the paper
 declares as a caveat on cross-base comparison.
@@ -171,11 +147,10 @@ sampling. Confirmatory *generation* is therefore not bit-reproducible, which the
 anticipated: the replicate, not the individual call, is the unit of pairing, and residual sampling
 stochasticity is within-replicate noise.
 
-Everything downstream of generation is bit-reproducible from the released artifact, and
-`artifact/README.md` gives the commands: raw transcripts plus released score caches to metric
-tables under `--offline-cache-only` (which fails rather than contacting a provider on a cache
-miss), and metric tables to the frozen inference and verdicts. Reusing a cached score reproduces
-the released scoring output; it is not a new judge evaluation.
+The artifact supports offline reconstruction of metric tables from raw transcripts and
+released score caches, followed by inference from those tables. `--offline-cache-only` aborts
+on a missing score. Numerical comparisons account for the package and BLAS differences
+described in `artifact/README.md`; cached reconstruction reuses the original judge scores.
 
 ### 7.4 Instrument selection and its criterion
 

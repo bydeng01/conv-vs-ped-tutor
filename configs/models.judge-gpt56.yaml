@@ -1,72 +1,11 @@
-# SECOND-JUDGE ROBUSTNESS config -- GPT-5.6 Sol judge.
-#
-# TRANSPORT AMENDED 2026-07-20: cross-judge-amendment-openrouter-2026-07-20.md supersedes the
-# transport provisions of cross-judge-amendment-2026-07-19.md. The judge is now served through
-# OpenRouter, pinned to the `openai` upstream. Everything else is unchanged.
-#
-# This config is ONLY for analysis/run_cross_judge_audit.py. It is deliberately
-# JUDGE-ONLY: it defines no tutor/student role, so agents/config.py:load_models_config
-# (which requires all three roles) REFUSES it. That is a guardrail -- it makes it
-# impossible to feed this GPT judge into the confirmatory runner or into
-# analysis/compute_metrics.py (which would write base tables before its different-judge
-# rejection). The cross-judge runner uses its own loader that requires only the judge role.
-#
-# EPISTEMIC STATUS: prospectively specified post hoc cross-judge robustness analysis over
-# frozen transcripts. Claude Opus 4.8 remains the frozen PRIMARY judge; GPT-5.6 Sol is an
-# additive ROBUSTNESS judge applied to the already-collected transcripts. This config is
-# never used to (re)run the student, the tutors, the training protocol, or the Opus judge.
-#
-# FROZEN CONFIGURATION (re-frozen after the OpenRouter transport amendment; a NEW live
-# preflight is required, because the request contract hash changed):
-#   provider          openrouter  [SUPERSEDED 2026-07-20: the previous freeze required OpenAI
-#                     directly.] The direct route was abandoned for cause, not preference:
-#                     byte-identical requests failed intermittently (the sonnet ledger plus the
-#                     superseded wire log give 3 failures in 6 attempts on real 925-token
-#                     prompts; the ledger records no status codes, so the "401" attribution is
-#                     operator-reported), and the account's daily token cap fell below the
-#                     requirement of any single base. The "10-30%" and "1.35M tokens/day"
-#                     figures from working notes were never captured -- do not cite them.
-#   base_url          https://openrouter.ai/api/v1
-#   api key env       OPENROUTER_API_KEY
-#   requested model   openai/gpt-5.6-sol  (the ROUTER slug; response.model returns it verbatim
-#                     and nothing further -- the live preflight confirms the response carries
-#                     the bare slug, so through a router the model string attests to the
-#                     ROUTER's label, not to an upstream deployment. [STRUCK 2026-07-20: an
-#                     earlier version of this header claimed the route resolves to a dated
-#                     snapshot `openai/gpt-5.6-sol-20260709` and called that a stronger identity
-#                     than the movable alias. No artifact supports it; withdrawn, and it must
-#                     not enter the paper.] The served model is captured from response.model at
-#                     preflight, frozen into the cache stamp, and re-checked on EVERY call.)
-#   routing pin       provider.order=["openai"], allow_fallbacks=false, sent as extra_body on
-#                     every request. WITHOUT it, OpenRouter's default is automatic failover.
-#                     VERIFIED ENFORCED, captured in preflight/routing_verification.json:
-#                     order=["azure"] is served by Azure while order=["openai"] is served by
-#                     OpenAI (routing follows `order`), a bogus tag is refused 404, and that
-#                     same bogus tag succeeds once allow_fallbacks is re-enabled.
-#                     `require_parameters` is deliberately NOT sent (it filters on normalized
-#                     parameter names, which exclude max_completion_tokens, and 404s the route).
-#   attestation       every response carries a top-level `provider` field naming the upstream
-#                     that served it; recorded per rating and asserted to agree across a
-#                     promoted base. All 7,074 ratings report `OpenAI`, none unattested.
-#                     system_fingerprint was ALREADY None on OpenAI direct, so no working
-#                     control was given up in the move.
-#   API surface       Chat Completions
-#   reasoning_effort  medium  (explicitly supplied; forwarded as a top-level Chat field.
-#                     REQUESTED, NOT VERIFIED: reasoning tokens are produced (mean 33.8 over
-#                     7,074 calls) but no captured test shows the LEVEL being modulated -- the
-#                     probe returned minimal=166 vs high=126, n=1 each, i.e. inconclusive.
-#                     All ratings ran under identical settings, so the comparison is unaffected.)
-#   temperature       null    => the parameter is OMITTED from the request (not JSON null;
-#                               agents/model_client.py drops a null temperature)
-#   max_tokens        2048    => sent as max_completion_tokens. Never approached in the batch:
-#                               max observed completion 86 tokens, finish_reason 'stop' on all
-#                               7,074 ratings, 0 truncations.
-#   tools/web/file/code   none        no provider fallback   no model fallback   Pro mode off
-#
-# If the account cannot access `openai/gpt-5.6-sol`, or the routing pin does not hold, the
-# runner STOPS. It never silently substitutes GPT-5.5, GPT-5.6 Terra, the `gpt-5.6` alias, or
-# a different upstream: the provider allow-list and the per-call served-provider check both
-# refuse. Changing the transport again requires a new amendment, not a config edit.
+# GPT-5.6 Sol robustness judge for analysis/run_cross_judge_audit.py.
+# This judge-only config is not accepted by the tutor/student runner.
+# Transport: OpenRouter, pinned by the runner to the openai upstream without fallback.
+# See cross-judge-amendment-openrouter-2026-07-20.md for the dated transport decision
+# and supplement/second-judge-transport-disclosure.md for current interpretation.
+# The returned model slug does not identify an immutable upstream deployment.
+# reasoning_effort is requested; upstream enforcement was not established.
+# A routing or model change requires a new amendment and live preflight.
 
 provider: openrouter
 providers:
@@ -77,8 +16,7 @@ providers:
 roles:
   judge:
     provider: openrouter
-    model: openai/gpt-5.6-sol   # the ROUTER slug (see header); the SERVED model is captured
-                                # from response.model at preflight and re-checked on every call
+    model: openai/gpt-5.6-sol   # router slug; response.model is checked against preflight
     temperature: null           # OMITTED from the request (model's default sampling)
     max_tokens: 2048            # sent as max_completion_tokens
     reasoning_effort: medium    # explicit; top-level Chat Completions field

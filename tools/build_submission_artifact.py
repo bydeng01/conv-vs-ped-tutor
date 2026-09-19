@@ -28,20 +28,11 @@ TOP_LEVEL = (
     "paper-plan.md",
     "metric-amendment-2026-06-19.md",
     "cross-judge-amendment-2026-07-19.md",
-    # The transport amendment GOVERNING the shipped second-judge ratings. Omitting it left the
-    # archive shipping only the superseded 07-19 amendment -- whose text says the transport is
-    # OpenAI-direct and "never OpenRouter" -- beside 7,074 ratings actually served through
-    # OpenRouter, with its two [SUPERSEDED] markers pointing at a file that was not present.
-    # An amendment that governs packaged data must itself be packaged.
+    # Records the transport used for the released second-judge scores.
     "cross-judge-amendment-openrouter-2026-07-20.md",
-    # The artifact's only record of deviation from pre-registration. Packaged documents cite it
-    # 15 times, and supplement/technical-appendix.md names it as the source for the advisory
-    # leakage values in its section 1 -- values explicitly flagged as NOT re-derivable from the
-    # shipped raw logs, so nothing else in the archive can stand in for it.
+    # Records pre-registration deviations and advisory diagnostics absent from raw logs.
     "decisions-log.md",
-    # Sonnet primary raw logs are now packaged too (the GPT-5.6 Sol judge reconstructs
-    # prompts from ALL THREE bases' transcripts, so the Sonnet family can no longer be
-    # omitted); its manifest joins the two cross-model manifests.
+    # All three transcript families are needed to reconstruct second-judge prompts.
     "confirmatory-log-manifest.sha256",
     "crossmodel-gpt-log-manifest.sha256",
     "crossmodel-gemini-log-manifest.sha256",
@@ -297,19 +288,12 @@ def verify_wire_manifest(manifest: Path, jr_payload: list[Path]) -> list[str]:
 
 
 def untracked_payload_paths(paths) -> list[Path]:
-    """Payload files under SOURCE_DIRS that git neither TRACKS nor IGNORES.
+    """Find payload files under SOURCE_DIRS that Git neither tracks nor ignores.
 
-    The builder is deliberately filesystem-driven -- it walks `rglob` and consults git for
-    nothing -- because the archive intentionally carries gitignored families (raw logs, score
-    caches) that `git archive` would omit. The cost of that design is that any stray file
-    dropped into a source directory is swept silently into the packaged artifact.
-
-    That is not hypothetical: `supplement/technical-appendix.md` shipped in the artifact, and was
-    pinned in the in-archive manifest, while being untracked by any commit -- so the repository
-    could not reproduce its own artifact, and the file sat outside both version control and the
-    freeze while shipping.
-
-    IGNORED is fine (that is the intended carve-out). TRACKED is fine. Neither is a stray."""
+    The filesystem-based builder includes ignored raw logs and caches. This check
+    catches untracked source files that would otherwise enter the archive without
+    a versioned source in the repository.
+    """
     import subprocess
 
     def git(*args, stdin=None):

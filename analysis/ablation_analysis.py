@@ -1,24 +1,14 @@
-"""DESCRIPTIVE ablation analysis (#5; decisions-log.md 2026-06-30) — SEPARATE from the
-frozen §10 inference, and NEVER part of the J1/J2 verdict.
+"""Descriptive ablation analysis (paper-plan.md §14; decisions-log.md 2026-06-30).
 
-It reads a compute_metrics output dir that contains BOTH the ablation conditions and the
-reused primary baselines (conv / ped / cold) — produced by:
+Reads metric tables containing ablation conditions and reused primary baselines:
 
   python analysis/compute_metrics.py logs/abl-s0-* logs/conf-s0-conv-r* logs/conf-s0-ped-r* \
       logs/conf-s0-cold-r* --out results/ablation --judge-helpfulness --judge-pedagogy
 
-and characterizes, for each ablation variant, how its leakage / independence / helpfulness /
-pedagogy compare to the minimal-ConvTutor and frozen-PedTutor baselines, plus the per-turn
-leakage -> next-turn-independence coupling FIT SEPARATELY PER CONDITION (never pooled across
-conditions). All of it is DESCRIPTIVE — paired conv/ped-style differences, Cliff's delta,
-bootstrap CIs — exactly the §4 S-style descriptive treatment, with no NHST verdict.
-
-WHY THIS IS A SEPARATE SCRIPT (and never analysis/run_inference.py): the frozen §10 J1/J2
-path is variant-UNSAFE — `j1`/`_paired` pair only conv-vs-ped, accuracy loops cold/conv/ped,
-and `j2` POOLS every per-turn row it is given with no condition covariate. Feeding ablation
-rows (or an ablation out dir) to it would contaminate the frozen verdict. This script imports
-ONLY the two PURE statistics primitives (`bootstrap_ci`, `cliffs_delta`) — never `j1`/`j2`/
-`verdict`/`accuracy` — and fits the coupling on one condition's rows at a time.
+Reports paired differences, Cliff's delta, bootstrap intervals, and leakage-to-next-turn
+independence coupling fitted separately for each condition. These descriptive outputs are
+separate from the confirmatory J1/J2 verdict. The confirmatory inference runner pairs only
+conv/ped and pools J2 rows, so it cannot analyze these variants as separate conditions.
 
 Usage:
   python analysis/ablation_analysis.py results/ablation
@@ -39,7 +29,7 @@ from scipy import stats
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT))
 
-# ONLY the pure stats primitives — NOT j1/j2/verdict/accuracy (the frozen §10 orchestration).
+# Reuse statistical primitives; condition grouping is handled in this module.
 from analysis.inferential import ALPHA, bootstrap_ci, cliffs_delta  # noqa: E402
 
 
