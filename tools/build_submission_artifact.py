@@ -24,6 +24,10 @@ DEFAULT_OUTPUT = Path("dist/conv-vs-ped-tutor-artifact.tar.gz")
 TOP_LEVEL = (
     "LICENSE",
     "README.md",
+    "CITATION.cff",
+    "Dockerfile",
+    ".dockerignore",
+    ".github/workflows/ci.yml",
     "requirements.txt",
     "paper-plan.md",
     "metric-amendment-2026-06-19.md",
@@ -48,12 +52,11 @@ RESULT_DIRS = (
     "results/confirmatory_gemini",
     "results/condition_adjusted_sensitivity",
     "results/ablation",
-    # Second-judge robustness outputs: input manifests + protected-primary hashes now;
-    # after the live run, also the GPT detail/CSV/analysis, per-rep score caches, and wire
-    # logs (all rglob'd here and pinned again by gpt-judge-wire-log-manifest.sha256).
+    # Second-judge results, score caches, and wire logs are also bound by the
+    # top-level gpt-judge-wire-log-manifest.sha256.
     "results/judge_robustness",
 )
-# All three confirmatory raw-log families (30 run dirs each). Sonnet was previously omitted.
+# All three confirmatory raw-log families (30 run directories each).
 RAW_FAMILIES = {"sonnet": "conf-s0-*", "gpt": "conf-gpt-s0-*", "gemini": "conf-gemini-s0-*"}
 EXCLUDED_PARTS = {"__pycache__", ".pytest_cache"}
 EXCLUDED_NAMES = {".DS_Store"}
@@ -76,35 +79,28 @@ def acceptable(path: Path) -> bool:
     return (
         path.is_file()
         and not path.is_symlink()
-        # analysis/figures holds both the figure GENERATORS (.py -- analysis code, so a
-        # reader needs them) and their rendered outputs (.pdf/.png/.svg/.tiff -- the
-        # manuscript already carries those, and they are megabytes). Ship the source only,
-        # minus the `.prev-` snapshots of superseded designs, which would leave a reader
-        # guessing which script drew the shipped figure.
+        # Ship figure generators; omit rendered assets and superseded designs.
         and not (relative.parts[:2] == ("analysis", "figures")
                  and (path.suffix != ".py" or ".prev-" in path.name))
         and not (set(relative.parts) & EXCLUDED_PARTS)
         and path.name not in EXCLUDED_NAMES
-        # `tmp.`-prefixed DIRECTORIES too, not just file names: the cross-judge runner stages an
-        # unpromoted scoring attempt in `<base>/tmp.staging.<pid>/`, whose members have ordinary
-        # names. Packaging a staging directory would ship exactly the unpromoted results the
-        # transactional promotion exists to withhold.
+        # Handoffs are local workflow records. Scientific plans and amendments
+        # are retained under their own filenames.
+        and ".local-archive" not in relative.parts
+        and path.name != "COORDINATOR.md"
+        and not path.name.startswith(("HANDOFF_", "ANALYSIS_HANDOFF_", "CONTINUE_REVIEW_NOTES_"))
+        # Unpromoted scoring attempts can contain ordinary filenames inside tmp.*.
         and not any(part.startswith("tmp.") for part in relative.parts)
     )
 
 
-# A pre-live base carries ONLY these: the frozen plan, the input manifest, and the
-# protected-primary hashes. None of them is produced by contacting a provider, so none is ever
-# evidence of a paid run. Everything else under an output directory was written by a scoring or
-# preflight attempt and is classified by the backend that attempt recorded.
+# Plans, input manifests, and protection hashes can exist before scoring.
+# Classify other outputs by their recorded backend.
 PRE_LIVE_NAMES = frozenset({"plan.json", "input_manifest.jsonl", "protected-primary.sha256"})
 
 
 def _transient(path: Path, root: Path) -> bool:
-    """A `tmp.`-prefixed file OR a file inside a `tmp.`-prefixed directory, relative to the
-    tree being scanned. Mirrors the `tmp.` clause of acceptable(), which already keeps both out
-    of the payload. Relative to `root`, not REPO_ROOT, so the helper cannot raise ValueError on
-    a tree outside the repo (an extracted artifact, a test fixture)."""
+    """Whether a file or ancestor directory has the runner's temporary prefix."""
     return any(part.startswith("tmp.") for part in path.relative_to(root).parts)
 
 
@@ -130,19 +126,11 @@ def _backends_in(obj) -> list[str]:
 
 
 def _file_backends(path: Path) -> list[str] | None:
-    """Backends recorded in one file, or None if the file cannot be read as provenance.
+    """Read recorded backends, returning None for unreadable provenance.
 
-    None is NOT "no backend" -- it means unknown, which is treated as not-provably-mock by the
-    caller. A `.jsonl` is read line by line and short-circuits on the first non-mock marker, so
-    a live wire log costs one line and never loads a large log into memory.
-
-    A file under `wire/` that records NO backend at all is UNKNOWN, not vouching-nothing: the
-    scoring runner stamps `backend` into every wire record, but the LIVE preflight's records
-    carry none -- and the preflight writes them DURING its call loop, then aborts on a contract
-    violation BEFORE rewriting `resolved_config.json`. A live preflight aborting over an
-    earlier mock one therefore leaves PAID wire records beside stale mock provenance, and the
-    stale siblings must not vouch the directory mock. Only wire/ gets this rule --
-    `input_manifest.jsonl` lines legitimately record no backend."""
+    Wire records without a backend are also unknown: a live preflight can stop
+    before updating sibling provenance files. Unknown records cannot establish
+    that a directory contains only mock output."""
     try:
         if path.suffix == ".jsonl":
             found = []
@@ -179,30 +167,13 @@ def _output_dir_of(path: Path, jr: Path) -> Path:
 
 
 def live_gpt_artifacts(jr: Path) -> list[Path]:
-    """Files under `jr` that must be pinned by the wire/score manifest before they may ship.
+    """Find output files that require the wire/score manifest.
 
-    Classification is per OUTPUT DIRECTORY and by recorded PROVENANCE, not by filename:
-
-        a directory's files are evidence UNLESS the directory proves it is MOCK.
-
-    Two earlier shapes of this gate both failed, in opposite directions:
-
-    * Globbing `cache/*_cache.json` + `wire/*.jsonl` + `*_detail.json` matched the zero-byte
-      `cache/tmp.lock.<instrument>_cache.json` that `_flush_cache` leaves behind and never
-      unlinks, and checked no backend at all -- so the mock rehearsal the handoff prescribes on
-      all three bases BEFORE paying made this gate refuse to package.
-    * Narrowing it to those three EXACT per-instrument filenames with `backend == "live"` then
-      failed OPEN in several ways: `--offline-cache-only` output records
-      `backend: "offline-cache-only"` though its scores are reconstructed FROM paid caches
-      (the runner refuses to reconstruct anything else); the live PREFLIGHT writes
-      `wire/preflight_<instrument>.jsonl`, `preflight.json` and `resolved_config.json`, none of
-      which matched; and a file with a missing, unrecognized, or malformed backend read as
-      not-live. The caches are gitignored, so a tree can legitimately carry live-derived detail
-      files with no cache beside them to trip the gate.
-
-    Only "mock" is positively unpaid. Live, offline-cache-only, "cache", an unknown value, a
-    missing marker, and an unreadable file all fail CLOSED -- the remedy is to build the
-    manifest, which is cheap, whereas shipping unpinnable judge scores is not recoverable."""
+    Classify each scoring or preflight directory from its recorded backends.
+    Only a directory with exclusively explicit mock provenance is exempt.
+    Live scores, cache reconstructions, missing markers, and unreadable records
+    require a manifest. Plans and input/protection manifests can predate scoring.
+    Temporary files and excluded filesystem metadata do not enter the payload."""
     if not jr.is_dir():
         return []
     # The scan applies the same exclusions as acceptable(): a file this builder would never

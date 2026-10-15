@@ -146,8 +146,8 @@ configs/models.<base>.yaml`, once per base, **never pooled**.
 
 ## Tests and CI
 
-The files in `tools/test_*.py` are **standalone scripts, not pytest modules** — each calls
-`sys.exit()` at module scope, so `pytest tools/` aborts during collection. Run them directly:
+Run `tools/test_*.py` directly. The directory contains both standalone checks and
+`unittest` modules; some older scripts exit at module scope and cannot be collected by pytest:
 
 ```bash
 for f in tools/test_*.py; do python "$f" || echo "FAILED: $f"; done
@@ -191,6 +191,12 @@ committed, but the `*-log-manifest.sha256` files verify a released copy.
 judge caches that are too large to track — and `python artifact/verify_artifact.py` checks a
 received copy against its manifest. See [`artifact/README.md`](./artifact/README.md) for
 construction, integrity checks, and offline reconstruction.
+
+Local submission preparation and earlier release copies belong in ignored `output/`,
+`dist/`, or `.local-archive/` directories. The artifact builder excludes coordinator
+instructions and conversation handoffs. Dated scientific plans, protocol amendments,
+and provenance records remain part of the release; their historical status statements
+are explained in the [research record](supplement/research-record.md).
 
 ### Docker
 

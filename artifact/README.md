@@ -16,6 +16,17 @@ New tutor responses or judge evaluations require provider access. Opus is the pr
 Sol is a post hoc robustness judge, reported separately. The policy-adjusted sensitivity
 accompanies the pre-registered pooled J2 analysis.
 
+The builder packages the original three-base study, ablations, and second-judge
+audit. It does not package the later human-validation or second-student results.
+Coordinator instructions, conversation handoffs, local archives, and submission
+preparation stay outside its payload. Private receipt and handoff files used by
+human-validation preparation remain in ignored local result directories.
+
+Builds create a new `ARTIFACT-MANIFEST.sha256` for the packaged files. Historical
+experiment manifests and source hashes retain their original values; a current
+archive manifest does not replace those records. Keep earlier submission copies
+separate from a newly built archive.
+
 ## Pinned environment
 
 Use Python 3.12.8 and the exact direct dependency versions in

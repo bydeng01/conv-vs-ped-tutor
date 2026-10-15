@@ -4,6 +4,13 @@ The dated plans and decisions below document how the study developed. Their stat
 refer to the date of each entry: the confirmatory runs and Sol robustness scoring have since
 completed. The original records remain unchanged.
 
+The decisions log combines implementation notes with the only saved source for
+some calibration measurements, model-selection decisions, and protocol deviations.
+It is retained as evidence. The dated human-validation and J2 plans likewise
+specify sampling, analysis, and disclosure requirements. Local coordination
+instructions and chat handoffs are excluded from public packaging; they do not
+replace these scientific records.
+
 | Record | Contents |
 |---|---|
 | [Pre-registration](../paper-plan.md) | Predictions, metrics, analysis plan, and outcome interpretation; amended after calibration and before confirmatory collection. |

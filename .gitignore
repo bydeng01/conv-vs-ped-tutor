@@ -14,6 +14,13 @@ venv/
 # Local scratch (reference PDFs etc.) -- not part of the experiment
 tmp/
 
+# Local archives, submission preparation, and console output.
+/.local-archive/
+/output/
+/nohup.out
+/reproduced/
+/supplement/human-validation/COORDINATOR.md
+
 # Experiment outputs.
 logs/
 results/*

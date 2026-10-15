@@ -22,7 +22,8 @@ PLACEHOLDER = re.compile(r"\.\.\.|<[^>]*>|redacted|your[-_]|YOUR[-_]|xxx|XXX|exa
 
 SKIP_SUFFIXES = {".png", ".jpg", ".jpeg", ".pdf", ".gz", ".zip", ".tar", ".pyc",
                  ".bst", ".sty", ".bib", ".ttf", ".otf", ".woff", ".woff2"}
-SKIP_DIRS = {".git", "__pycache__", ".venv", "venv", "node_modules", "dist", "logs"}
+SKIP_DIRS = {".git", "__pycache__", ".venv", "venv", "node_modules", "dist", "logs",
+             ".local-archive", "output", "tmp"}
 
 
 def _patterns() -> dict[str, re.Pattern]:

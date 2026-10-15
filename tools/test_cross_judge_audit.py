@@ -1481,12 +1481,10 @@ def test_spend_ceiling_is_cumulative_across_invocations():
 
 
 def test_mock_rehearsal_spend_never_consumes_the_paid_allowance():
-    """The rehearsal the handoff PRESCRIBES ran on the canonical base dirs and persisted its
-    simulated charges into the same spend_ledger.json the paid run reads -- so the first live
-    batch started with ~90% of its lifetime allowance already consumed by spend that was never
-    billed, and its exhaustion message pressured the operator into a false re-authorization.
-    Rows are now labeled by backend: a LIVE ledger excludes explicitly-MOCK rows and counts
-    unlabeled (legacy) rows -- over-stating prior spend is the safe direction."""
+    """Exclude explicitly mock charges from the live allowance.
+
+    Count unlabeled legacy charges conservatively so a resume cannot discard
+    earlier paid attempts."""
     print("\n[spend ledger: mock rehearsal spend never consumes the paid allowance]")
     if not _raw_logs_present():
         skip("spend ledger: mock rehearsal spend never consumes the paid allowance", RAW_LOG_NOTE)
@@ -2326,28 +2324,11 @@ def check_prelive(name, cond_fn):
 
 
 def test_mock_rehearsal_does_not_trip_the_live_gpt_artifact_gate():
-    """Ignore mock scratch files when detecting live artifacts for packaging.
+    """Check packaging provenance across mock, live, and reconstructed outputs.
 
-    `tools/build_submission_artifact.py` and `artifact/verify_artifact.py` both detected "live
-    GPT judge artifacts" with `glob("**/cache/*_cache.json") + glob("**/wire/*.jsonl") +
-    glob("**/*_detail.json")`. Two defects, the same pair `_live_spend_evidence` had: the
-    zero-byte `cache/tmp.lock.<instrument>_cache.json` matched `*_cache.json`, and nothing
-    checked the BACKEND -- so the mock rehearsal the handoff prescribes on all three bases
-    before paying made the builder refuse to package for a live run that had not happened.
-
-    Narrowing detection to the three EXACT per-instrument filenames with `backend == "live"`
-    then failed OPEN four ways, all pinned below:
-      * `--offline-cache-only` output records `backend: "offline-cache-only"` while its scores
-        are reconstructed FROM paid caches; the caches are gitignored, so a tree can carry the
-        live-derived detail files with nothing beside them to trip the gate;
-      * the live PREFLIGHT -- the FIRST paid call of the whole audit -- writes
-        `wire/preflight_<instrument>.jsonl`, `preflight.json` and `resolved_config.json`, none
-        of which matched the per-instrument names;
-      * a missing, unknown or malformed backend read as not-live;
-      * derived outputs (per_turn.csv + provenance.json) carry paid scores but are none of the
-        three classes.
-    Detection is now per OUTPUT DIRECTORY and by recorded provenance: a directory's files are
-    evidence unless the directory proves it is MOCK."""
+    Mock-only directories and temporary locks need no live manifest. Cached
+    live scores, preflight records, derived tables, and unknown or malformed
+    backend markers still require one."""
     print("\n[packaging: mock rehearsal is not a live run; live provenance always is]")
     if not _raw_logs_present():
         skip("packaging: mock rehearsal is not a live run; live provenance always is", RAW_LOG_NOTE)

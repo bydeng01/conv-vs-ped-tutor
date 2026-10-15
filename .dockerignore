@@ -14,6 +14,9 @@ logs/
 dist/
 tmp/
 reproduced/
+.local-archive/
+output/
+nohup.out
 
 # Rendered figures are build outputs; the generators under analysis/figures/*.py are copied.
 analysis/figures/*.pdf

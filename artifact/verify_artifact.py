@@ -110,16 +110,8 @@ def inventory_failures() -> list[str]:
 GPT_BASES = ("sonnet", "gpt", "gemini")
 GPT_INSTRUMENTS = ("helpfulness", "pedagogy")
 RUN_STATE_FILE = "run_state.json"
-# The EXACT file set a complete promoted GPT base must ship. Checking only the caches, details,
-# and wire logs let an archive drop `judge_inference.json`, the CSVs, `metrics_summary.json`,
-# `policy_adjusted.json`, `provenance.json`, or even `completeness.json` and still verify as a
-# complete promoted set -- the manifests only inventory files that remain, so deleting one and
-# rebuilding them left no trace. This list is deliberately duplicated here rather than imported
-# from analysis.run_cross_judge_audit (the verifier must stay dependency-free inside an extracted
-# artifact); the duplication is guarded by cross-checking it against `run_state.promoted_outputs`
-# below, and by a test asserting it equals the runner's own final_output_names().
-# A published comparison is declared over exactly these three bases, and must bind every input
-# it read -- including the OPUS surfaces, which the earlier bindings omitted entirely.
+# Keep the verifier dependency-free. Tests compare this inventory with the
+# runner's promoted outputs. Comparison checks bind both judges' inputs.
 COMPARISON_BASES = ("sonnet", "gpt", "gemini")
 REQUIRED_COMPARISON_INPUTS = (
     "opus/per_turn.csv",
@@ -147,33 +139,9 @@ REQUIRED_BASE_OUTPUTS = (
     "pedagogy_detail.json",
 )
 
-# ---------------------------------------------------------------- positive presence inventory
-# WHY THIS EXISTS. Every other check in this file detects CORRUPTION or CONTAMINATION -- never
-# OMISSION. `ARTIFACT-MANIFEST.sha256` is rendered from the same `payload` list the tar members
-# are written from, so a file missing at BUILD time is absent from the manifest AND from the
-# tree, both operands of the exhaustive check agree, and all checks PASS. That is not
-# hypothetical: an archive once shipped carrying only the SUPERSEDED 07-19 amendment -- whose
-# text says the transport is OpenAI-direct and "never OpenRouter" -- beside 7,074 OpenRouter
-# ratings, with that document's [SUPERSEDED] markers pointing at a file that was not present.
-# It verified 6/6. A human asking "what is this file?" caught what six automated PASSes could not.
-#
-# WHERE THE TRUST ANCHOR SITS -- the crux. This inventory is CODE, deliberately, not a generated
-# data file. A generated inventory reproduces the bug exactly: omission requires NO action, since
-# a file absent from `payload` is absent from the inventory too, and silence is the default
-# outcome. A hardcoded constant inverts that -- the builder has no code path that writes, edits,
-# or filters this file, so dropping an entry takes a deliberate, reviewable source edit, and
-# silence stops being free. Three anchor layers, outermost first:
-#   (A) OUTSIDE the archive: `dist/<archive>.tar.gz.sha256` and the freeze tag. Published in
-#       README.md, this is the only check that survives a wholly substituted archive.
-#   (B) PRE-BUILD, repo-side: tools/test_cross_judge_audit.py asserts
-#       REQUIRED_ARTIFACT_PATHS <= collect_payload(), so a defective archive fails at TEST time
-#       and is never built.
-#   (C) IN-ARCHIVE: the presence check below, which is what a recipient actually runs.
-#
-# IT IS A FLOOR, NOT AN EQUALITY. Gaining an ordinary file requires no edit here; only promoting
-# something to load-bearing does. An exact match against the payload would put this list in the
-# path of every routine addition, which is how lists rot into being rubber-stamped -- and a
-# rubber-stamped list is precisely the failure mode that produced this bug.
+# Minimum scientific and provenance inventory, independent of the generated manifest.
+# The builder test checks this list before packaging; recipients check it after
+# extraction. Archive checksums identify the complete delivered archive.
 REQUIRED_ARTIFACT_PATHS = (
     # -- the verifier's own inputs and the manifest it checks -------------------------------
     "ARTIFACT-MANIFEST.sha256",
@@ -235,11 +203,10 @@ def live_judge_pass_present(root: Path = None) -> bool:
 
 
 def missing_required_failures() -> list[str]:
-    """Files a recipient MUST receive, checked for PRESENCE.
+    """Check the extracted tree for required scientific and provenance files.
 
-    This is the only check here that can detect a build-time omission. Note it deliberately
-    tests the extracted TREE, not the manifest: a file absent from both (the exact defect this
-    guards) is invisible to any manifest-derived check."""
+    A generated manifest cannot detect a file omitted from both the archive
+    and the manifest, so this check uses a separate required-file inventory."""
     required = list(REQUIRED_ARTIFACT_PATHS)
     if live_judge_pass_present():
         required += list(REQUIRED_AFTER_LIVE_JUDGE_PASS)
@@ -248,13 +215,10 @@ def missing_required_failures() -> list[str]:
 
 
 def gpt_base_promotion_failures(base_dir: Path, base: str) -> list[str]:
-    """A packaged live GPT base must be a CURRENT, COMPLETE, promoted output set.
+    """Check that a packaged base is a complete promoted output set.
 
-    File presence alone is not enough: an incomplete rerun used to leave the previous run's
-    detail files and analyses in place beside a new partial cache, and both would ship. The
-    runner now promotes a complete attempt atomically and records `run_state.json` last, so
-    verification requires that marker plus agreement between the promoted cache stamps, the
-    stamps embedded in the detail files, and the stamps on the packaged per-rep caches."""
+    Require the completion marker and agreement between its cache stamps,
+    the detail-file stamps, and the packaged per-repetition caches."""
     failures = []
     state_path = base_dir / RUN_STATE_FILE
     if not state_path.is_file():
@@ -444,13 +408,10 @@ def live_gpt_artifacts(jr: Path) -> list[Path]:
 
 
 def gpt_wire_live_failures(base_dir: Path, base: str) -> list[str]:
-    """Every packaged wire log must RECORD the paid run it is being certified as.
+    """Require at least one live request record in each packaged wire log.
 
-    Presence was already required, but never content: a wire log whose every record says
-    backend="mock" (or that is empty, or unreadable) satisfied the layer. One parsed record
-    with backend "live" is the requirement -- an offline-cache-only reconstruction appends
-    nothing to the wire (100% cache hits), so the live run's records are still what the file
-    contains."""
+    Offline cache reconstruction adds no requests; the original live records
+    remain the evidence for the released scores."""
     failures = []
     for inst in GPT_INSTRUMENTS:
         wire = base_dir / "wire" / f"{inst}.jsonl"
@@ -476,16 +437,11 @@ def gpt_wire_live_failures(base_dir: Path, base: str) -> list[str]:
 
 
 def gpt_manifest_coverage_failures(manifest: Path, jr: Path) -> list[str]:
-    """The wire/score manifest must pin EVERY packaged second-judge file, both directions.
+    """Check that manifest entries and packaged second-judge files agree.
 
-    verify_manifest() only checks the files a manifest LISTS, so a manifest built before later
-    scoring (or hand-pruned) verified while live files sat beside it unpinned. The scope rule
-    mirrors tools/build_gpt_judge_manifest.py:_acceptable and the artifact builder's
-    acceptable(): regular non-transient files, no __pycache__/.pytest_cache/.DS_Store. Entries
-    must also LIE IN that scope: an entry pinning a transient file passes in-repo hash checks
-    but fails only after extraction (the archive never contains it), a '..' segment would
-    defeat the prefix rule, and duplicate lines are last-wins for a dict while the documented
-    `shasum -a 256 -c` fails the same manifest."""
+    Reject duplicates, paths outside the result directory, parent traversal,
+    and transient or missing files. Checking listed hashes alone would miss
+    unlisted scores added after a manifest was created."""
     failures = []
     seen: set[str] = set()
     try:
@@ -519,12 +475,10 @@ def gpt_manifest_coverage_failures(manifest: Path, jr: Path) -> list[str]:
 
 
 def gpt_mock_contamination_failures(jr: Path) -> list[str]:
-    """POST-live only: no file anywhere under the packaged layer may record backend="mock".
+    """Reject mock records anywhere in a completed second-judge layer.
 
-    The per-base promotion checks iterate the three known bases; a mock file OUTSIDE them (a
-    leftover rehearsal directory, a stray fixture) was provenance-checked by nothing once a
-    manifest existed. A legitimate post-live tree records only "live" (scoring, preflight) or
-    "offline-cache-only"/"cache" (a reconstruction) -- never "mock"."""
+    Live scoring and offline cache reconstruction are valid provenance.
+    Synthetic fixtures outside the three named bases must also be excluded."""
     failures = []
     if not jr.is_dir():
         return failures
@@ -677,12 +631,16 @@ def sensitive_findings() -> list[str]:
     for path in sorted(p for p in ROOT.rglob("*") if p.is_file()):
         text = path.read_bytes().decode("utf-8", errors="ignore")
         for label, pattern in SENSITIVE_PATTERNS.items():
-            match = pattern.search(text)
-            if match:
+            for match in pattern.finditer(text):
                 if label == "assigned API key" and "..." in match.group(0):
                     continue  # documented placeholder, not a credential
+                if (label == "provider account identifier"
+                        and match.group(0).rsplit(":", 1)[1].strip() in {
+                            '"<redacted-account-handle>"', "'<redacted-account-handle>'"}):
+                    continue
                 line = text.count("\n", 0, match.start()) + 1
                 findings.append(f"{path.relative_to(ROOT)}:{line}: {label}")
+                break
     return findings
 
 
