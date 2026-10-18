@@ -421,7 +421,7 @@ where cold is ~0%. Acceptable.
 **Next:** second-person review of the 19, then freeze; then Step 4 (PedTutor).
 
 ### 2026-06-15 — Adversarial review of the 19; fixes applied (rev 2)
-**Context:** An independent adversarial review (subagent) checked the 19 for
+**Context:** An independent adversarial review checked the 19 for
 correctness, ambiguity, isomorphism, difficulty, and leakage strings. Math all
 correct. Findings: (MUST FIX) transfer-3 was the memorized "three consecutive
 integers" template — a weak model can recall the answer without using the taught
@@ -2343,8 +2343,8 @@ untouched). **NOT touched:** `analysis/judge.py`, `supplement/judge_rubric.md`,
 inference, or any frozen log. **Next:** key-holder runs the live pedagogy pass on the Sonnet logs (commit 2);
 the same flags apply to each cross-model base as it lands.
 
-**Addendum (2026-06-27, independent adversarial review — pre-commit, pre-data).** Ran a 6-agent skeptical
-review (4 lenses — tautology/favoritism, no-answer-leakage, alignment/comparability, freeze-integrity —
+**Addendum (2026-06-27, independent adversarial review — pre-commit, pre-data).** Ran a six-part skeptical
+review (4 checks — tautology/favoritism, no-answer-leakage, alignment/comparability, freeze-integrity —
 plus 2 independent attempts to construct a turn that breaks the rubric's symmetry). **Verdict: 6/6 SHIP, no
 MUST-FIX.** The BLOCKING tautology check passed: a disclosing-but-scaffolding ConvTutor turn scores high and a
 vague/unresponsive PedTutor turn scores low under the frozen prompt; both independent counterexample attempts
@@ -2489,7 +2489,7 @@ REJECTED (the pin is immutable and precedes the read; the diagnostic is separate
 both fail ⇒ still 1), the diagnostic records numerator/denominator/rate + backend + provenance + pin ref. Mock
 advisory run wrote the diagnostic (19/24 = 79.2%, sha256 + commit) and printed "ADVISORY (recorded,
 non-blocking)"; non-advisory mock printed "PASS" and wrote no diagnostic (primary path unchanged). Full suite
-green (run_confirmatory 98, metrics 77, judge 38, judge_pedagogy 51). Independent 3-lens adversarial review
+green (run_confirmatory 98, metrics 77, judge 38, judge_pedagogy 51). Independent three-part adversarial review
 (gate-semantics / primary-unchanged+provenance / doc-code consistency): **3/3 SHIP, zero must-fix**; its
 NICE-TO-HAVEs (record `backend`; robust `base_slug`; this log entry; the cost-line note) are addressed.
 **Affects:** `experiments/preflight.py` (`preflight_exit_code` advisory_gates; `leakage_diagnostic`;
@@ -2775,10 +2775,10 @@ manipulation.
    (frozen §10 forbids it as a re-spec) to show within- vs between-condition share; confirm
    Pearson-vs-Spearman estimator parity before tabulating cross-base divergence r's.
 
-**Verification (this pass, nothing tuned).** 3-lens adversarial workflow (numerical fidelity /
-integrity / completeness, Opus, effort=high): **all three returned SHIP.** Numerical lens
+**Verification (this pass, nothing tuned).** Three-part adversarial review (numerical fidelity /
+integrity / completeness): **all three returned SHIP.** The numerical check
 independently re-derived every Sonnet figure from raw and cross-checked every GPT/Gemini figure
-against the FINDINGS lines — **no numerical defects.** Integrity lens confirmed bases never pooled,
+against the FINDINGS lines — **no numerical defects.** The integrity check confirmed bases never pooled,
 §10/§13 distinction held, J1 never called supported, J2 Sonnet-only, by-construction + §12 caveats
 applied. One should-fix folded in: §E.1 now reserves "supported" for the confirmatory J1/J2 verdict
 and frames the dissociation as descriptive ("consistent with / illustrates," not "supported"); P1
@@ -3144,7 +3144,7 @@ helpfulness/pedagogy judge scores" SCOPE LIMIT.
 A 2026-07-05 independent pre-writing audit (verdict PROCEED-WITH-FIXES; no fatal validity flaw, no
 headline-number mismatch, every reported statistic offline-rederivable from tracked artifacts) surfaced
 stale documentation and three false "student = Haiku" strings. This entry records the docs-only
-corrections applied to the working tree (for the lead to review and commit; no analysis re-run, no frozen
+corrections applied to the working tree (pending review and commit; no analysis re-run, no frozen
 measurement artifact changed):
 
 - **Judge-pass record.** Wrote the owed 2026-07-04 JUDGE-PASS FINDINGS entry above and marked the
@@ -3182,7 +3182,7 @@ measurement artifact changed):
   added `ablation-judge-log-manifest.sha256` pinning the two 2026-07-04 judge-log dirs.
 
 **Still owed (not done here):** the clean-history export and the export-time repository housekeeping
-— both are release-packaging steps, deliberately left for the lead. The three ConvTutor
+— both are release-packaging steps, deliberately deferred to release time. The three ConvTutor
 leakage-advisory moderator percentages (~52.5% / 62.5% / 8.3%) and the isolated-cold ~11% remain
 calibration/FINDINGS-sourced (not re-derivable from tracked artifacts); cite them as advisory. Committed
 tables were generated under Python ≤3.11; the current `.venv` (3.12) reproduces them to ≤1 ULP, with three
