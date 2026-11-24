@@ -258,7 +258,7 @@ def main():
                   f"p={_fmt_p(r['p_two_sided'])} | {'SIG' if r['significant_in_predicted_direction'] else 'n.s.'}"
                   f" | flips_vs_raw={r['flips_under_normalization']}")
 
-    print("\n=== §11 VERDICT (reported regardless of outcome; no file-drawer) ===")
+    print("\n=== Preregistered tests (§11) ===")
     for v in verdict:
         if v["p"] is None:
             pstr = ""
@@ -277,8 +277,6 @@ def main():
           f"{prov['n_run_ids']} run ids | statsmodels {prov['statsmodels']} / scipy {prov['scipy']}")
 
     print(f"\nwrote {d}/inference.json")
-    print("Inferential result — reported regardless of outcome (§11); nothing tuned. "
-          "J2 (per-turn coupling) is the headline; J1/P2 are reported honestly whatever they show.")
 
 
 if __name__ == "__main__":

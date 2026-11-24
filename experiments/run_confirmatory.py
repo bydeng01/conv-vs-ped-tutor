@@ -1,64 +1,12 @@
-"""Confirmatory 10x3 runner -- the FROZEN-STATE experiment driver.
+"""Collect paired algebra tutoring sessions for one tutor model.
 
-Runs 10 replicates x {cold, conv, ped} through the frozen continuous protocol
-(protocol.full_session.run_full_session), one session per cell into its own
-logs/<run_id>/, tagging EVERY model call with `condition` and `replicate_id` so the
-metrics pipeline pairs by replicate id (paper-plan.md §10). This is the inferential
-run; unlike experiments/run_pilot.py (non-inferential, no call tags) it:
+Within each replicate the three conditions share a seed. Every model call records
+its condition and replicate ID. A live run requires a clean checkout at the
+specified revision. Completed sessions are skipped when the same command resumes.
 
-  - tags condition + replicate_id on every call (the "logging fix #2" the Step-5
-    entry left to this runner; analysis/metrics.py already READS those tags);
-  - REFUSES to run unless the tree is clean and at the freeze commit (so the
-    pre-registration is frozen before any confirmatory datum exists);
-  - resumes at (condition, replicate) granularity after a rate-limit abort.
-
-Integrity / condition-neutrality:
-  - The call path is IDENTICAL for conv and ped: same TaggingClient, same seed,
-    same turn budget, same tagging. The ONLY per-condition difference is the
-    unavoidable one -- cold has no tutor (tutor=None), conv uses ConvTutor, ped
-    uses PedTutor. No throttling/backoff is added here (the client's existing
-    _with_backoff is reused unchanged), so sampling is not silently altered and a
-    quota abort is not masked -- it propagates loudly and the cell is resumed.
-  - replicate r uses seed = base_seed + r for ALL three conditions (paired), and
-    is tagged replicate_id = r (the pairing key, independent of base_seed).
-  - canonical_answer never reaches a live prompt: this runner only drives the
-    frozen protocol/agents, which already keep the answer out of every live prompt
-    (it lives in mock_meta, ignored by the live backend).
-  - Reads the frozen problems/configs; never writes them.
-
-The LIVE 10x3 (Anthropic Sonnet tutor, OpenRouter->Groq student, Opus judge) is run
-separately; this file is built and mock-validated offline. See experiments/RUN.md for
-the live command/gate order.
-
-Usage:
-  # offline plumbing rehearsal (synthetic, NOT a result; freeze guard not enforced):
-  python experiments/run_confirmatory.py --backend mock --replicates 2
-
-  # live confirmatory run (lead): commit the freeze first, then:
-  ANTHROPIC_API_KEY=... OPENROUTER_API_KEY=... \
-      python experiments/run_confirmatory.py --replicates 10 \
-      --freeze-commit <freeze-hash>
-
-  # resume after an abort (skips completed cells; re-does only missing ones):
-  python experiments/run_confirmatory.py --replicates 10 --freeze-commit <freeze-hash>
-
-  # cross-model base run (pre-registered extension): ONLY the tutor model changes
-  # (a per-base configs/models.<base>.yaml); --base namespaces the logs so the base
-  # can never overwrite or be pooled with the primary (Sonnet) cells:
-  ANTHROPIC_API_KEY=... OPENROUTER_API_KEY=... OPENAI_API_KEY=... \
-      python experiments/run_confirmatory.py --replicates 10 \
-      --models configs/models.gpt.yaml --base gpt --freeze-commit <crossmodel-freeze-hash>
-
-  # just show which cells are done / missing, run nothing:
-  python experiments/run_confirmatory.py --replicates 10 --status
-
-  # ablation extension (#5; pre-registered, DESCRIPTIVE; decisions-log 2026-06-30): runs ONLY
-  # the ablation conditions on the PRIMARY Sonnet config (NOT --base), namespaced `abl-...`,
-  # paired with the existing primary baselines; needs its OWN ablation freeze:
-  ANTHROPIC_API_KEY=... OPENROUTER_API_KEY=... \
-      python experiments/run_confirmatory.py --replicates 10 \
-      --conditions conv_socratic,conv_no_final_answer,ped_no_gate,ped_no_tracker,ped_no_cascade \
-      --freeze-commit ABLATION_FREEZE_HASH   # the ablation freeze (falls back to the `ablation-freeze` tag)
+Use --status to inspect progress without calling any models. See
+experiments/RUN.md for preflight, provider credentials and scoring. Descriptive
+ablations use separate condition names and the primary Sonnet configuration.
 """
 from __future__ import annotations
 

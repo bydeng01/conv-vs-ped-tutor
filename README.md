@@ -1,230 +1,45 @@
-# Conversational vs. Pedagogical Alignment: A Controlled Tutor-Agent Experiment
+# Rethinking LLM-Judged Helpfulness as a Pedagogy Signal
 
-[![Python](https://img.shields.io/badge/python-3.11%20%7C%203.12-blue.svg)](https://www.python.org/downloads/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![CI](https://img.shields.io/github/actions/workflow/status/bydeng01/conv-vs-ped-tutor/ci.yml?branch=main&label=CI)](https://github.com/bydeng01/conv-vs-ped-tutor/actions/workflows/ci.yml)
-[![arXiv](https://img.shields.io/badge/arXiv-2607.28128-b31b1b.svg)](https://arxiv.org/abs/2607.28128)
-[![Docker](https://img.shields.io/badge/Docker-supported-2496ED.svg?logo=docker&logoColor=white)](Dockerfile)
+Can a helpfulness rating distinguish a tutor that gives away the answer from one that helps a student work it out? We tested two tutoring policies on each of three language models. ConvTutor's only tutoring instruction is to be helpful and clear. PedTutor tracks the student's progress, offers increasingly specific hints, and asks the student to supply the final answer. Each pair of tutors used the same underlying model. A third condition gave the student no tutor.
 
-Code and data for [*Rethinking LLM-Judged Helpfulness as a Pedagogy Signal: A Pre-Registered
-Audit Across Tutor Models*](https://arxiv.org/abs/2607.28128).
+One simulated student worked through algebra word problems. We recorded when a tutor disclosed the answer and whether the student's next turn contained independent work. Claude Opus 4.8 rated the tutor turns for helpfulness and pedagogy without seeing the policy labels. A post hoc analysis used GPT-5.6 Sol to rate the same 1,179 turns. [Paper and authors](https://arxiv.org/abs/2607.28128v2) · [Study plan and amendments](supplement/research-record.md)
 
-Two tutoring agents wrap the **same frozen base model** and differ **only in policy
-structure** — `ConvTutor` is a single LangGraph node, `PedTutor` is a multi-node state
-machine (state tracker, decomposer, deferral gate, hint cascade). A cold baseline with no
-tutoring establishes the floor. The experiment measures whether an LLM helpfulness judge
-rewards the answer-leakage that reduces the student's later independent work.
+## What we found
 
-The pre-registration is [`paper-plan.md`](./paper-plan.md); dated amendments and implementation decisions are recorded
-in [`decisions-log.md`](./decisions-log.md). The [research record](supplement/research-record.md)
-indexes the main decisions and clarifies historical wording.
+On the primary tutor model, Claude Sonnet 4.6, Opus gave both policies high helpfulness scores. On a pedagogy rubric added after the Sonnet sessions were collected, every PedTutor replicate scored above every ConvTutor replicate. Scores range from 1 to 5.
 
-## Quickstart
+| Opus rating on Sonnet | ConvTutor mean | PedTutor mean | Paired Wilcoxon *p* |
+| --- | ---: | ---: | ---: |
+| Helpfulness | 4.70 | 4.80 | .160 |
+| Pedagogy | 2.58 | 4.30 | .002 |
 
-Recompute the confirmatory inference for all three tutor bases from the tracked tables,
-without an API key:
+The judges ranked the policies in opposite orders on mean helpfulness for two of the three tutor models. On GPT-5.5, Opus favored PedTutor and Sol favored ConvTutor. This was the only reversal where both differences were significant. Both judges favored PedTutor on pedagogy for Sonnet and GPT-5.5. Neither detected a pedagogy difference on Gemini. [Results and scoring tables](results/README.md)
 
-```bash
-pip install -r requirements.txt
+None of the three tutor models showed the full preregistered policy-level pattern of more disclosure, higher helpfulness, and less independent work under ConvTutor. Across all three tutor models, the simulated student was less likely to show independent work immediately after the tutor revealed an answer. Only on Sonnet did answer-revealing turns also receive significantly higher Opus helpfulness ratings in the preregistered analysis. Whether this pattern extends to human learners remains open.
 
-python analysis/run_inference.py results/confirmatory \
-  --freeze-tag confirmatory-freeze \
-  --freeze-commit 1a12b566bb825ff91359fb7c526e24b161ae38d3        # primary base
-python analysis/run_inference.py results/confirmatory_gpt \
-  --freeze-tag crossmodel-gpt-freeze \
-  --freeze-commit 644271b1e6e365a84d679a103beb08f0775e60ef
-python analysis/run_inference.py results/confirmatory_gemini \
-  --freeze-tag crossmodel-gemini-freeze \
-  --freeze-commit 68ee3faf8d1370da15bb7f8ab1a87599389a7eb6
-```
+## Reproduce the results
 
-The commands supply the recorded freeze commits because the freeze tags are not published.
-The commits are also recorded in `metrics_summary.json` (`freeze_heads`) and
-`inference.json` (`provenance.freeze_commit`).
-
-Each command prints verdicts and writes `inference.json` in its input directory. To keep the
-reference files intact, follow the copy-based workflow in [artifact/README.md](artifact/README.md).
-
-## Repository layout
-
-```
-agents/          tutoring policies and model clients
-  conv_tutor.py      single-node graph
-  ped_tutor.py       multi-node state machine
-  ped_ablations.py   node-knockout variants (no tracker / no gate / no cascade)
-  cold_baseline.py   no-tutor harness
-  model_client.py    mock + live backends (Anthropic, OpenAI-compatible)
-  base.py state.py config.py extraction.py logging_utils.py
-
-student/simulator.py    weak student model with a knowledge frontier
-domain/algebra/         problems.yaml (+ canonical answers), checker.py, calibration.yaml
-protocol/               session.py, full_session.py (train→immediate→interfere→delayed→
-                        transfer), leakage.py (the frozen answer-leakage matcher)
-
-configs/         models.yaml (primary roles), models.{gpt,gemini,free}.yaml (tutor bases),
-                 models.judge-gpt56.yaml (second judge), {conv,ped}_*.yaml (ablation arms)
-
-experiments/     run_confirmatory.py  the 10×3 runner (--base for cross-model)
-                 preflight.py         live go/no-go gates before spending budget
-                 run.py               single-condition smoke test
-                 calibrate.py run_pilot.py ped_smoke.py learnability_check.py
-                 RUN.md               authoritative runbook
-
-analysis/        metrics.py compute_metrics.py     post-hoc metrics from logs
-                 judge.py judge_pedagogy.py        the two LLM-judge evaluators
-                 inferential.py run_inference.py   J1/J2 (Wilcoxon, Cliff's δ, mixed-effects)
-                 matched_budget.py                 compute-fairness control
-                 condition_adjusted_sensitivity.py post hoc, additive
-                 ablation_analysis.py divergence.py compare_judges.py
-                 run_cross_judge_audit.py          second-judge robustness audit
-                 figures/                          figure generators + their test
-
-tools/           test_*.py            the test suite (standalone scripts — see Tests and CI)
-                 verify_problems.py   re-solves problems.yaml symbolically
-                 compare_*.py         reproduction comparators
-                 scan_sensitive.py    credential/PII scan over the tracked tree
-                 build_submission_artifact.py, make_mock_logs.py, …
-
-supplement/      frozen rubrics (helpfulness, pedagogy, independence) and prompts
-results/         per-base tables + inference verdicts (tracked); judge caches gitignored
-logs/            full per-session transcripts (gitignored, ~100 MB; sha256-pinned by the
-                 *-log-manifest.sha256 files at the repo root)
-artifact/        pinned environment + the archive verifier
-```
-
-## Setup
-
-Python 3.11 or 3.12. CI runs both; 3.12.8 is the pinned analysis version recorded in
-[`artifact/pinned-environment.json`](./artifact/pinned-environment.json).
+Use Python 3.11 or 3.12. After setup, the analyses run locally without API keys.
 
 ```bash
 git clone https://github.com/bydeng01/conv-vs-ped-tutor.git
 cd conv-vs-ped-tutor
-python -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
+python tools/reproduce_inference.py
 ```
 
-Collecting new runs or scoring with a live judge requires the relevant provider keys:
+The last command recomputes the three confirmatory analyses from the published tables, compares them with the reference results, and prints the location of the new files under `reproduced/`.
 
-| Variable | Used for |
-|---|---|
-| `ANTHROPIC_API_KEY` | Sonnet tutor + Opus judge (`configs/models.yaml`) |
-| `OPENROUTER_API_KEY` | Llama-3.1-8B student (Groq upstream); GPT-5.6 Sol robustness judge (OpenAI upstream) |
-| `OPENAI_API_KEY` | GPT tutor base (`configs/models.gpt.yaml`) |
-| `GEMINI_API_KEY` | Gemini tutor base (`configs/models.gemini.yaml`) |
-
-Per-role model strings are in `configs/models.yaml`; the roles use separate configurations
-by design. `ANTHROPIC_API_KEY` alone covers only the single-condition smoke test.
-
-## Running the experiment
-
-[`experiments/RUN.md`](./experiments/RUN.md) is the authoritative runbook, including the
-per-base cross-model procedure. The confirmatory entry point is `run_confirmatory.py`; the
-canonical order is:
+Figure 2 shows the judge comparisons and the seven-policy Sonnet ablation. Regenerate it with the same tables.
 
 ```bash
-# 1. Preflight gates — exits non-zero before any budget is spent.
-python experiments/preflight.py --pilot-results results/pilot_groq
-
-# 2. Freeze the tree. The runner refuses to start unless HEAD is the freeze commit and
-#    `git status --porcelain` is empty.
-git rev-parse HEAD && git status --porcelain && git tag confirmatory-freeze
-
-# 3. Collect: 10 replicates × {cold, conv, ped}. Re-run to resume; --status for progress.
-python experiments/run_confirmatory.py --replicates 10 --freeze-commit <hash>
-
-# 4. Metrics + both judges, post-hoc from the logged transcripts.
-python analysis/compute_metrics.py logs/conf-s0-{cold,conv,ped}-r* \
-    --out results/confirmatory --judge-helpfulness --judge-pedagogy
-
-# 5. Inference.
-python analysis/run_inference.py results/confirmatory
+python analysis/figures/fig2_dissociation.py --output-dir reproduced/figures
 ```
 
-Cross-model bases re-run the identical protocol with `--base <slug> --models
-configs/models.<base>.yaml`, once per base, **never pooled**.
+Run `python tools/verify_problems.py` to check all 19 [reference answers](domain/algebra/problems.yaml) symbolically. The [design record](decisions-log.md) documents the review of the problems and answer-matching rules. For the exact tutor prompts and judge instructions, see the [study materials](supplement/prompts.md).
 
-## Tests and CI
+The [archive guide](artifact/README.md) covers reconstruction from raw transcripts and cached ratings for readers who have the full archive. The [experiment runbook](experiments/RUN.md) covers collecting new sessions with provider credentials.
 
-Run `tools/test_*.py` directly. The directory contains both standalone checks and
-`unittest` modules; some older scripts exit at module scope and cannot be collected by pytest:
-
-```bash
-for f in tools/test_*.py; do python "$f" || echo "FAILED: $f"; done
-python tools/verify_problems.py                                  # symbolic problem-set check
-python -m pytest analysis/figures/test_fig2_dissociation.py -q   # the one pytest-style test
-```
-
-Tests that require the gitignored transcripts report `SKIP` on a fresh clone.
-The test summary counts these separately from passed checks.
-
-[`.github/workflows/ci.yml`](./.github/workflows/ci.yml) runs the tests, offline inference
-comparisons, and `tools/scan_sensitive.py` on Python 3.11 and 3.12. It uses no provider
-credentials and checks that no wire log was produced.
-
-For an offline pipeline demonstration with synthetic scores:
-
-```bash
-python tools/make_mock_logs.py --seed 0 --conditions cold,conv,ped
-python analysis/compute_metrics.py logs/cold-* logs/conv-* logs/ped-* --out results/mock_triple \
-    --judge-helpfulness --judge-backend mock
-```
-
-The mock tutor produces identical text for ConvTutor and PedTutor; this checks pipeline
-execution, not behavioral differences.
-
-## Reproducing the published analyses
-
-After the [confirmatory inference](#quickstart), these commands compute the post hoc
-policy-adjusted sensitivity and descriptive ablation analysis from tracked tables:
-
-```bash
-python analysis/condition_adjusted_sensitivity.py
-python analysis/ablation_analysis.py results/ablation
-```
-
-Each `results/confirmatory*/` holds the per-turn, per-session, and per-replicate tables, the
-metric summary, and the judge details behind its `inference.json`. Raw transcripts are not
-committed, but the `*-log-manifest.sha256` files verify a released copy.
-
-`python tools/build_submission_artifact.py` packages the full archive — the transcripts and
-judge caches that are too large to track — and `python artifact/verify_artifact.py` checks a
-received copy against its manifest. See [`artifact/README.md`](./artifact/README.md) for
-construction, integrity checks, and offline reconstruction.
-
-Local submission preparation and earlier release copies belong in ignored `output/`,
-`dist/`, or `.local-archive/` directories. The artifact builder excludes coordinator
-instructions and conversation handoffs. Dated scientific plans, protocol amendments,
-and provenance records remain part of the release; their historical status statements
-are explained in the [research record](supplement/research-record.md).
-
-### Docker
-
-```bash
-docker build -t conv-vs-ped-tutor .
-docker run --rm conv-vs-ped-tutor
-```
-
-The image pins Python 3.12.8 and the direct dependencies and runs offline inference
-comparisons. Its Linux/BLAS environment can produce different mixed-model coefficients
-from the macOS reference. See [environment and comparison details](artifact/README.md#pinned-environment).
-
-## Citation
-
-```bibtex
-@misc{fan2026rethinkingllmjudgedhelpfulnesspedagogy,
-      title={Rethinking LLM-Judged Helpfulness as a Pedagogy Signal: A Pre-Registered Audit Across Tutor Models},
-      author={Shuyi Fan and Boyuan Deng and Mengyu Xu and Jiale Liu and Hongyang Zhang and Qiaoxin Yang and Chongyang Gao},
-      year={2026},
-      eprint={2607.28128},
-      archivePrefix={arXiv},
-      primaryClass={cs.CL},
-      url={https://arxiv.org/abs/2607.28128},
-}
-```
-
-`CITATION.cff` carries the same entry in machine-readable form.
-
-## License
-
-MIT — see [`LICENSE`](./LICENSE).
+[Citation](CITATION.cff) · [MIT license](LICENSE)

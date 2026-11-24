@@ -1,28 +1,13 @@
-"""Preflight gates for the confirmatory 10x3 run -- run LIVE before committing API
-budget. Re-verifies, on the pinned student serving and the
-frozen problem set, the things that must hold for the confirmatory run to be
-interpretable (paper-plan.md §6, §8, §11; decisions-log 2026-06-18/19):
+"""Check the student endpoint and tutor behavior before collecting new sessions.
 
-  1. ISOLATED cold is LOW on the frozen 19 (cold gate). Each probe attempted from a
-     FRESH context (run_problem_session, not the carried-memory protocol), so this is
-     the genuine-difficulty floor the amendment fixed on (§3/§6/§11; calibration
-     ≈ 11%). High *continuous*-protocol cold is expected and is NOT this gate.
-  2. Sonnet ConvTutor leakage is PRESENT on the training items (failure-mode #3).
-  3. The student's served provider is Groq (the calibration-validated weak serving;
-     OpenRouter routing drift produced cold-100% before -- decisions-log 2026-06-18).
-  4. A token/cost estimate for the 10x3 run, extrapolated from a stored pilot.
+The student attempts each algebra problem in a fresh context. The checks cover
+unaided probe accuracy, the final-answer marker, the serving provider, and answer
+disclosure by ConvTutor. For cross-model runs, --leakage-advisory records the
+disclosure rate while keeping the student checks active. If a pilot table is
+available, --pilot-results also estimates collection tokens.
 
-It mirrors experiments/calibrate.py's failure-mode reads (FM #1 cold, FM #3 leakage)
-but on the FROZEN 19 and adds the confirmatory-specific provenance + cost checks. It
-REUSES the frozen scoring primitives (turn_leaks, is_correct, has_final_marker) and
-changes no runtime behavior. The lead runs it live; it is mock-validatable here
-(`--backend mock`) for plumbing only -- mock scores are synthetic, NOT a gate result.
-
-Usage:
-  # live, on the pinned student serving (the real preflight):
-  ANTHROPIC_API_KEY=... OPENROUTER_API_KEY=... python experiments/preflight.py
-  # offline plumbing rehearsal (synthetic):
-  python experiments/preflight.py --backend mock --pilot-results results/pilot_groq
+See experiments/RUN.md for the live procedure. Use --backend mock to exercise
+the pipeline with synthetic responses.
 """
 from __future__ import annotations
 

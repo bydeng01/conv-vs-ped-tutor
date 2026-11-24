@@ -1,4 +1,4 @@
-"""Descriptive ablation analysis (paper-plan.md §14; decisions-log.md 2026-06-30).
+"""Descriptive ablation analysis (paper-plan.md §14).
 
 Reads metric tables containing ablation conditions and reused primary baselines:
 

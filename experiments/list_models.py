@@ -1,15 +1,7 @@
-"""List available model ids from a provider (the slugs change over time). Two uses:
+"""List model IDs available to configured providers.
 
-  - the free-tier student/calibration providers, so configs/models.free.yaml uses valid slugs;
-  - the CROSS-MODEL tutor bases: confirm + pin the exact flagship chat id (and capture the
-    evidence) for the per-base pin addendum (decisions-log.md 2026-06-27, point 1).
-
-OpenAI and Gemini both expose an OpenAI-compatible models.list(), so one client lists them all.
-Run with whichever keys you have set:
-
-    export OPENAI_API_KEY=...; export GEMINI_API_KEY=...        # cross-model tutor bases
-    export GROQ_API_KEY=...; export CEREBRAS_API_KEY=...; export OPENROUTER_API_KEY=...   # free tier
-    python experiments/list_models.py
+Run python experiments/list_models.py with the relevant provider keys set to
+check availability of tutor and calibration endpoints.
 """
 import os
 import re

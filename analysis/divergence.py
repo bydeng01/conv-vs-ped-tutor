@@ -1,4 +1,4 @@
-"""Three-evaluator divergence view (descriptive EXTENSION; decisions-log 2026-06-27).
+"""Descriptive comparison of three evaluators, added June 27, 2026.
 
 Lines up the three post-hoc evaluators of the visible training tutor turns -- generic
 **helpfulness** (analysis/judge.py, §9.4), **pedagogical quality** (analysis/judge_pedagogy.py,

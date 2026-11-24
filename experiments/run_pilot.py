@@ -1,36 +1,8 @@
-"""Run the NON-INFERENTIAL pilot (paper-plan.md §10): 1-2 replicates x
-{cold, conv, ped} on the LIVE models, each session into its own logs/<run_id>/ dir,
-so the judge + metrics can be read over a PAIRED conv/ped session for the M2 go/no-go
-(paper-plan.md §11).
+"""Collect paired pilot sessions for the no-tutor, ConvTutor, and PedTutor conditions.
 
-This is the live analog of tools/make_mock_logs.py and it changes NO harness runtime
-behavior: it just drives protocol.full_session.run_full_session once per condition per
-replicate, identically for both tutors (condition-neutral). Pilot output is
-non-inferential -- no p-values, no stop/scale decision from it (paper-plan.md §10); it
-exists for the M2 manipulation-check + cost gates only.
-
-Scope / integrity:
-  - It deliberately does NOT add condition/replicate_id call tags. That is R1's
-    CONFIRMATORY runner (Step-6 brief "out of scope"; decisions-log 2026-06-18 Step 5).
-    The metrics pipeline already infers condition from the tutor component and pairs by
-    seed, so for the pilot the SEED is the replicate id: replicate r uses
-    seed = base_seed + r for all three conditions, and analysis/compute_metrics.py pairs
-    that replicate's conv and ped sessions by that seed.
-  - The confirmatory 10x3 run is R1's runner (with explicit condition/replicate_id
-    tags), NOT this script.
-
-Needs the keys the chosen models config requires. For the default configs/models.yaml:
-ANTHROPIC_API_KEY (tutor + judge) and OPENROUTER_API_KEY (student).
-
-Usage:
-  # one paired replicate, live:
-  python experiments/run_pilot.py --replicates 1 --conditions cold,conv,ped
-  # then read the paired conv/ped helpfulness + manipulation checks:
-  python analysis/compute_metrics.py logs/cold-* logs/conv-* logs/ped-* \
-      --out results/pilot --judge-helpfulness
-  # offline plumbing rehearsal (synthetic; NOT a pilot result):
-  python experiments/run_pilot.py --backend mock --replicates 1
-See experiments/PILOT.md.
+The three sessions in each replicate share a seed, which the metrics pipeline
+uses for pairing. See experiments/PILOT.md for provider credentials, scoring,
+and the descriptive measures used in the pilot.
 """
 from __future__ import annotations
 

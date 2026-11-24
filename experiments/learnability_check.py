@@ -1,15 +1,8 @@
-"""Learnability gate (decision point before building PedTutor).
+"""Compare unaided test performance after training with and without ConvTutor.
 
-Runs the continuous protocol (protocol/full_session) twice on the frozen-candidate
-problems: cold (no tutor) and ConvTutor. Question: does tutoring on the mixture
-TRAINING items lift the student's untutored DELAYED/TRANSFER accuracy above the
-cold floor (~0%)? If yes, the domain is learnable and we proceed to PedTutor. If
-even ConvTutor (which fully explains/leaks) cannot lift it, the domain is too hard
-and we ease difficulty.
-
-Usage (needs ANTHROPIC_API_KEY + GROQ_API_KEY for the mixed config):
-  python experiments/learnability_check.py --models configs/models.yaml
-  python experiments/learnability_check.py --backend mock   # offline plumbing test
+Each session carries student memory through the continuous protocol. The
+primary configuration uses ANTHROPIC_API_KEY for the tutor and OPENROUTER_API_KEY
+for the student. Use --backend mock for an offline demonstration.
 """
 from __future__ import annotations
 

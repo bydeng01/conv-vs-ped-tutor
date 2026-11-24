@@ -389,7 +389,7 @@ def main(argv: list[str] | None = None) -> int:
         destination_hash = _sha256(destination)
         if source_hash != destination_hash:
             raise RuntimeError("manuscript Figure 3 synchronization failed")
-        print(f"synced manuscript PDF (sha256 {source_hash}) -> {destination}")
+        print(f"synced manuscript PDF -> {destination}")
     return 0
 
 

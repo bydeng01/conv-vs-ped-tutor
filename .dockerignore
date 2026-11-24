@@ -1,30 +1,33 @@
-# Keep the build context small and the image free of local state.
-.git
-.github
-__pycache__
-*.py[cod]
-.venv
-venv
-.DS_Store
-.env
-
-# ~100 MB of raw transcripts and ~7 MB of built archives. Neither is needed by the offline
-# analysis, which reads only the tracked tables under results/.
-logs/
-dist/
-tmp/
-reproduced/
-.local-archive/
-output/
-nohup.out
-
-# Rendered figures are build outputs; the generators under analysis/figures/*.py are copied.
-analysis/figures/*.pdf
-analysis/figures/*.svg
-analysis/figures/*.png
-analysis/figures/*.tiff
-
-# Manuscript sources are not inputs to the analysis.
-manuscript/
-supplement/
-*.tex
+# The offline analysis reads Python code, problem definitions, and published result tables.
+**
+!agents/
+!agents/*.py
+!analysis/
+!analysis/*.py
+!artifact/
+!artifact/requirements-pinned.txt
+!artifact/pinned-environment.json
+!domain/
+!domain/*.py
+!domain/algebra/
+!domain/algebra/*.py
+!domain/algebra/*.yaml
+!protocol/
+!protocol/*.py
+!student/
+!student/*.py
+!tools/
+!tools/reproduce_inference.py
+!tools/compare_inference.py
+!tools/compare_condition_adjusted.py
+!results/
+!results/confirmatory/
+!results/confirmatory_gpt/
+!results/confirmatory_gemini/
+!results/ablation/
+!results/condition_adjusted_sensitivity/
+!results/confirmatory*/per_*.csv
+!results/confirmatory*/metrics_summary.json
+!results/confirmatory*/inference.json
+!results/ablation/per_*.csv
+!results/condition_adjusted_sensitivity/analysis.json

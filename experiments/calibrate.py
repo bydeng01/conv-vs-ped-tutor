@@ -1,21 +1,8 @@
-"""Live diagnostic / Step-2 calibration runner.
+"""Measure unaided student accuracy and answer disclosure on the calibration set.
 
-Reads the two thesis-decisive failure modes on a live model BEFORE authoring the
-frozen problem set:
-  - FAILURE MODE #1: cold-baseline accuracy LOW (target 20-40%, paper-plan §6).
-  - FAILURE MODE #3: ConvTutor actually leaky (leakage rate clearly > 0, §8).
-Also reports the §6 student acceptance bands: behavior frequencies and the
-FINAL ANSWER marker-emission rate.
-
-Usage:
-  # offline plumbing dry-run
-  python experiments/calibrate.py --backend mock
-
-  # live (free provider): set the provider's key first, e.g. GROQ_API_KEY
-  python experiments/calibrate.py --models configs/models.free.yaml
-
-Behavior classification here is an APPROXIMATE regex read for calibration only;
-the frozen independence metric (regex + LLM verification, §9.3) is built in Step 5.
+Use --cold-only to run the student alone. The full report also describes student
+behavior using simple patterns specific to calibration. See experiments/CALIBRATION.md
+for study targets, provider credentials, and output files.
 """
 from __future__ import annotations
 

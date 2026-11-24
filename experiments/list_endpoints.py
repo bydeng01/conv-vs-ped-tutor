@@ -1,25 +1,10 @@
-"""List the OpenRouter provider endpoints for one model — provider, quantization,
-context, and price — so the student can be PINNED to a single weak serving instead of
-drifting across providers (the unpinned routing that produced cold 100%; see
-decisions-log 2026-06-18).
+"""List the OpenRouter serving providers, precision, context limits and prices for a model.
 
-    export OPENROUTER_API_KEY=...
+With OPENROUTER_API_KEY set, inspect the endpoint used by the study student:
+
     python experiments/list_endpoints.py meta-llama/llama-3.1-8b-instruct
 
-Then put the chosen serving in configs/models.yaml under the student role:
-
-    extra_body:
-      provider:
-        order: ["<Provider name>"]   # exactly as printed below
-        allow_fallbacks: false       # stay on the one pinned serving
-        quantizations: ["<quant>"]   # match the chosen endpoint
-
-Lower precision (fp8 / int4) = a WEAKER student; full precision (fp16 / bf16) was too
-strong (cold 100%). There is no guarantee any OpenRouter serving matches the calibrated
-Groq weakness, so verify the choice with the cold gate (experiments/calibrate.py
---cold-only) and adjust; the served provider is now logged per call (served_provider).
-
-Stdlib only (urllib), so no extra dependency.
+The study configuration routes student requests to Groq with fallbacks disabled.
 """
 from __future__ import annotations
 

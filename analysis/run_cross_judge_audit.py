@@ -65,7 +65,7 @@ REQUESTED_MODEL = "openai/gpt-5.6-sol"   # the OpenRouter slug for the pinned So
 ALLOWED_NAMESPACE = ("results", "judge_robustness")
 PLAN_FREEZE_TAG = "judge-robustness-openrouter-freeze"
 
-# ---- transport freeze (cross-judge-amendment-openrouter-2026-07-19.md) --------------------
+# ---- transport freeze (cross-judge-amendment-openrouter-2026-07-20.md) --------------------
 # The second judge is served through OpenRouter rather than OpenAI direct. This is a FREEZE
 # AMENDMENT, forced by two empirically established faults on the OpenAI-direct route: an
 # intermittent provider-side 401 "insufficient permissions" on 10-30% of byte-identical
@@ -302,7 +302,7 @@ def load_judge_cfg(models_path: str) -> dict:
     if prov not in FROZEN_TRANSPORT:
         raise SystemExit(
             f"{models_path}: judge.provider must be one of {sorted(FROZEN_TRANSPORT)!r} (the "
-            f"transport frozen by cross-judge-amendment-openrouter-2026-07-19.md); got "
+            f"transport frozen by cross-judge-amendment-openrouter-2026-07-20.md); got "
             f"{prov!r}. Changing the transport requires a new amendment, not a config edit.")
     pc = (cfg.get("providers") or {}).get(prov) or {}
     base_url = pc.get("base_url")
@@ -786,12 +786,8 @@ class _SpendLedger:
         restored. Deliberately conservative: only LIVE-stamped caches and wire records
         actually marked `backend == "live"` count, so a mock run can never trip it.
 
-        The file selection is EXACT, never a glob. `_flush_cache` leaves a zero-byte
-        `cache/tmp.lock.<instrument>_cache.json` behind, which `glob("*_cache.json")` matched
-        and `json.loads` rejected -- so the mock rehearsal the handoff prescribes before paying
-        made the FIRST live run on every base abort claiming spend that never happened, and
-        told the operator to reconstruct a ledger from nothing. An unparseable file is only
-        evidence when it is a file this runner would actually have written ratings into."""
+        Read each rubric's cache by name. Temporary lock files can match a cache
+        glob without containing any ratings."""
         base_dir, found = self.path.parent, []
         wire_dir = base_dir / "wire"
         for name in sorted(RUBRICS):
@@ -922,7 +918,7 @@ class _SpendLedger:
         # prior spend is the safe direction, it costs a handful of attempts out of thousands,
         # and it means no one has to hand-edit a record of real paid spend to proceed. The
         # rows stay in the file as evidence, which is what `_live_spend_evidence` needs them
-        # for. See cross-judge-amendment-openrouter-2026-07-19.md.
+        # for. See cross-judge-amendment-openrouter-2026-07-20.md.
         prov_excluded = 0
         if self.provider:
             prov_excluded = sum(inv["http_attempts"] for inv in invocations
@@ -2435,7 +2431,7 @@ def _provenance(loaded, scored, cfg, backend, resolved, reps, rubrics) -> dict:
                     "intermediary itself: one additional hop that could in principle misroute, "
                     "mitigated by the enforced pin (a bogus provider tag is refused) and by "
                     "this per-rating attestation. See "
-                    "cross-judge-amendment-openrouter-2026-07-19.md.",
+                    "cross-judge-amendment-openrouter-2026-07-20.md.",
         },
         "served_backend_identity": {
             "system_fingerprint_frozen_at_preflight": scored.get("system_fingerprint_frozen"),
@@ -2860,9 +2856,8 @@ def main() -> None:
     if args.judge_backend == "live" and not args.offline_cache_only and not (
             _key_env and os.environ.get(_key_env)):
         raise SystemExit(
-            f"{_key_env or '<providers.*.api_key_env>'} is not set. The live GPT judge pass is "
-            "blocked. Everything else (manifest, offline tests) is complete. See "
-            "cross-judge-amendment-openrouter-2026-07-19.md for the exact live commands.")
+            f"Live scoring requires {_key_env or '<providers.*.api_key_env>'}. See "
+            "cross-judge-amendment-openrouter-2026-07-20.md for the recorded transport settings.")
 
     if args.offline_cache_only:
         # Reconstruction is self-contained: the stamp (returned_model, seed policy) is read

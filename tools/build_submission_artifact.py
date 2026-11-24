@@ -1,7 +1,6 @@
 """Build the deterministic analysis archive.
 
-The archive includes ignored GPT/Gemini logs and judge-score caches, which
-``git archive`` would omit.
+The archive includes the three confirmatory transcript sets and cached judge scores.
 
 Run:
   python tools/build_submission_artifact.py
@@ -14,6 +13,7 @@ import hashlib
 import io
 import json
 import platform
+import subprocess
 import tarfile
 from importlib.metadata import version
 from pathlib import Path
@@ -29,6 +29,8 @@ TOP_LEVEL = (
     ".dockerignore",
     ".github/workflows/ci.yml",
     "requirements.txt",
+    "results/README.md",
+    "tools/reproduce_inference.py",
     "paper-plan.md",
     "metric-amendment-2026-06-19.md",
     "cross-judge-amendment-2026-07-19.md",
@@ -60,10 +62,6 @@ RESULT_DIRS = (
 RAW_FAMILIES = {"sonnet": "conf-s0-*", "gpt": "conf-gpt-s0-*", "gemini": "conf-gemini-s0-*"}
 EXCLUDED_PARTS = {"__pycache__", ".pytest_cache"}
 EXCLUDED_NAMES = {".DS_Store"}
-
-
-def sha256_bytes(data: bytes) -> str:
-    return hashlib.sha256(data).hexdigest()
 
 
 def sha256_path(path: Path) -> str:
@@ -258,58 +256,32 @@ def verify_wire_manifest(manifest: Path, jr_payload: list[Path]) -> list[str]:
     return problems
 
 
-def untracked_payload_paths(paths) -> list[Path]:
-    """Find payload files under SOURCE_DIRS that Git neither tracks nor ignores.
-
-    The filesystem-based builder includes ignored raw logs and caches. This check
-    catches untracked source files that would otherwise enter the archive without
-    a versioned source in the repository.
-    """
-    import subprocess
-
-    def git(*args, stdin=None):
-        return subprocess.run(("git", "-C", str(REPO_ROOT)) + args, input=stdin,
-                              capture_output=True, text=True)
-
-    if git("rev-parse", "--git-dir").returncode != 0:
-        print("  NOTE: not a git checkout -- skipping the tracked-or-ignored payload check")
-        return []
-
-    tracked = {line for line in git("ls-files").stdout.splitlines() if line}
-    candidates = []
-    for p in sorted(paths):
-        try:
-            rel = p.relative_to(REPO_ROOT).as_posix()
-        except ValueError:
-            continue
-        if rel.split("/", 1)[0] in SOURCE_DIRS and rel not in tracked:
-            candidates.append((rel, p))
-    if not candidates:
-        return []
-    # `git check-ignore --stdin` prints only the paths it DOES ignore.
-    ignored = set(git("check-ignore", "--stdin",
-                      stdin="\n".join(rel for rel, _ in candidates) + "\n").stdout.splitlines())
-    return [p for rel, p in candidates if rel not in ignored]
+def public_sources() -> list[Path]:
+    """Select versioned source files in a checkout, or the files listed in an extracted archive."""
+    if (REPO_ROOT / ".git").exists():
+        output = subprocess.check_output(
+            ["git", "-C", str(REPO_ROOT), "ls-files", "-z", "--", *SOURCE_DIRS]
+        )
+        names = [n.decode("utf-8") for n in output.split(b"\0") if n]
+    else:
+        manifest = REPO_ROOT / "ARTIFACT-MANIFEST.sha256"
+        if not manifest.is_file():
+            raise SystemExit("Build from a Git checkout or an extracted study archive.")
+        names = [line.split(None, 1)[1].strip() for line in manifest.read_text().splitlines()
+                 if line.strip()]
+    return [REPO_ROOT / name for name in names
+            if Path(name).parts[0] in SOURCE_DIRS and acceptable(REPO_ROOT / name)]
 
 
 def collect_payload() -> list[Path]:
     paths = {REPO_ROOT / name for name in TOP_LEVEL}
     paths.update(REPO_ROOT / name for name in OPTIONAL_TOP_LEVEL
                  if (REPO_ROOT / name).is_file())
-    for directory in SOURCE_DIRS + RESULT_DIRS:
+    paths.update(public_sources())
+    for directory in RESULT_DIRS:
         root = REPO_ROOT / directory
         if root.is_dir():
             paths.update(p for p in root.rglob("*") if acceptable(p))
-
-    strays = untracked_payload_paths(paths)
-    if strays:
-        raise SystemExit(
-            "refusing to package: {} file(s) under {} are neither git-tracked nor git-ignored, "
-            "so the archive would ship content no commit records:\n  - {}\n"
-            "Track them (git add), or move them out of the packaged source directories."
-            .format(len(strays), "/".join(SOURCE_DIRS),
-                    "\n  - ".join(str(p.relative_to(REPO_ROOT)) for p in strays[:10])
-                    + ("\n  - ..." if len(strays) > 10 else "")))
 
     raw_dirs = []
     for family, pattern in RAW_FAMILIES.items():
@@ -405,16 +377,12 @@ def build(output: Path) -> None:
                 relative = Path("ARTIFACT-MANIFEST.sha256")
                 tar.addfile(tar_info(relative, len(manifest)), io.BytesIO(manifest))
 
-    digest = sha256_path(output)
-    checksum = output.with_suffix(output.suffix + ".sha256")
-    checksum.write_text(f"{digest}  {output.name}\n")
     n_raw_dirs = 30 * len(RAW_FAMILIES)
     try:
         shown = output.relative_to(REPO_ROOT)
     except ValueError:                    # an out-of-repo --output is explicitly supported
         shown = output
     print(f"wrote {shown} ({output.stat().st_size} bytes)")
-    print(f"sha256 {digest}")
     print(f"payload files {len(payload) + 1}; raw run directories {n_raw_dirs}; "
           f"raw files {n_raw_dirs * 3}")
 

@@ -1,55 +1,17 @@
 # Research record
 
-The dated plans and decisions below document how the study developed. Their status statements
-refer to the date of each entry: the confirmatory runs and Sol robustness scoring have since
-completed. The original records remain unchanged.
+The primary plan was amended after calibration and the pilot, before the Sonnet confirmatory run. Sections 12–14 were added later. The dated source files retain the predictions and status statements made at each stage.
 
-The decisions log combines implementation notes with the only saved source for
-some calibration measurements, model-selection decisions, and protocol deviations.
-It is retained as evidence. The dated human-validation and J2 plans likewise
-specify sampling, analysis, and disclosure requirements. Local coordination
-instructions and chat handoffs are excluded from public packaging; they do not
-replace these scientific records.
-
-| Record | Contents |
+| Document | What it establishes |
 |---|---|
-| [Pre-registration](../paper-plan.md) | Predictions, metrics, analysis plan, and outcome interpretation; amended after calibration and before confirmatory collection. |
-| [Metric amendment, 2026-06-19](../metric-amendment-2026-06-19.md) | Answer-phase evaluation window, metric definitions, and inferential units. |
-| [Decisions log](../decisions-log.md) | Dated design changes, calibration observations, model pins, collection, and analysis decisions. |
-| [Second-judge plan, 2026-07-19](../cross-judge-amendment-2026-07-19.md) | Sol robustness analysis specified after the transcripts and primary scores existed, before Sol scoring. |
-| [Transport amendment, 2026-07-20](../cross-judge-amendment-openrouter-2026-07-20.md) | Move from OpenAI direct to OpenRouter, routing checks, and transport evidence. |
+| [Pre-registration and analysis plan](../paper-plan.md) | The original session-level and turn-level predictions (J1 and J2), outcomes, unit of inference, and criteria for support in sections 4 and 9–11. |
+| [June 19 metric amendment](../metric-amendment-2026-06-19.md) | The first parseable answer closes the evaluation window. The amendment defines the boundary for each measure and records the pilot finding that prompted it. |
+| [Study design decisions](../decisions-log.md) | Dated evidence for problem and answer review, student selection, calibration, matched turn budgets, and the timing of the cross-model, pedagogy, and ablation studies. |
+| [July 19 second-judge plan](../cross-judge-amendment-2026-07-19.md) | A post hoc comparison specified before GPT-5.6 Sol scoring, with transcripts and primary Opus ratings already available. |
+| [July 20 transport amendment](../cross-judge-amendment-openrouter-2026-07-20.md) | The route used for all second-judge ratings and the limits on identifying the upstream deployment. |
 
-The main decisions in the log are:
+## Reading the original materials
 
-- **2026-06-15:** student and domain calibration; shift from accuracy to process measures.
-- **2026-06-19:** isolated cold baseline and answer-phase metric amendment.
-- **2026-06-26:** confirmatory collection, inference, and matched visible-turn-budget rule.
-- **2026-06-27–28:** cross-model selection rules, model pins, and pedagogy-rubric extension.
-- **2026-06-30:** descriptive ablation plan; results follow on July 3–4.
-- **2026-07-20:** completed second-judge scoring through OpenRouter.
-
-## Wording clarifications (2026-09-19)
-
-Some historical comments make stronger claims than the recorded controls establish:
-
-- Judge inputs omit condition labels, internal node names, and canonical answers. This
-  establishes label masking; dialogue style may still reveal the tutoring policy. References
-  in the frozen judge files to a judge being unable to identify the tutor should be read with
-  this distinction.
-- Sol requests used the same configured reasoning effort. Upstream enforcement was not
-  established. The transport amendment's assertions that this cannot affect a condition
-  contrast are not established by identical requested settings. The
-  [transport disclosure](second-judge-transport-disclosure.md) states the supported scope.
-- The frozen primary config's header mentions `GROQ_API_KEY`, but its student role routes
-  through OpenRouter and uses `OPENROUTER_API_KEY`. Its claim attributing the serving
-  difference specifically to quantization is not established by the calibration comparison;
-  the config itself records Groq's quantization as unknown.
-- The returned Sol model slug does not identify a dated deployment. Historical generated
-  provenance prose mentioning a dated snapshot should be read against the captured model
-  identifiers and the transport amendment's withdrawal of that claim.
-
-Primary judge modules, protected model configs, and frozen rubric files retain their original
-bytes because the released protection manifests bind whole files, including comments.
-Documentation edits leave those manifests, results, caches, logs, and pre-registration records
-unchanged. Current usage is described in the [repository README](../README.md),
-[runbook](../experiments/RUN.md), and [artifact instructions](../artifact/README.md).
+- The judge saw the dialogue without condition labels, internal node names, or canonical answers. Its wording could still reveal how the tutor was prompted. [Helpfulness rubric](judge_rubric.md) · [Pedagogy rubric](judge_pedagogy_rubric.md)
+- The frozen primary configuration contains an early reference to a Groq key. The experiment accessed Groq through OpenRouter using `OPENROUTER_API_KEY`. The record supports a difference in student performance across serving providers. The role played by quantization is unknown. [Model configuration](../configs/models.yaml) · [Calibration record](../decisions-log.md)
+- The manuscript measures turn-level reasoning in a simulated learner with the conversation still in context. The June amendment proposed a separate study of agreement with human annotators. The published tables in this release contain model ratings. [Metric amendment](../metric-amendment-2026-06-19.md) · [Results](../results/README.md)

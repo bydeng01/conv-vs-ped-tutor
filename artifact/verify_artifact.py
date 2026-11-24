@@ -155,10 +155,11 @@ REQUIRED_ARTIFACT_PATHS = (
     "cross-judge-amendment-2026-07-19.md",
     # Transport specification for the released second-judge scores.
     "cross-judge-amendment-openrouter-2026-07-20.md",
-    # The only record of deviation from pre-registration, and the cited source for the advisory
-    # leakage values in supplement/technical-appendix.md §1, which are NOT re-derivable from the
-    # shipped raw logs.
+    # Document the calibration choices and deviations from the registered plan.
     "decisions-log.md",
+    "supplement/research-record.md",
+    "results/README.md",
+    "tools/reproduce_inference.py",
     # -- raw-log manifests -------------------------------------------------------------------
     "confirmatory-log-manifest.sha256",
     "crossmodel-gpt-log-manifest.sha256",

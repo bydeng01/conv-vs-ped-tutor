@@ -5,7 +5,7 @@ tutor tokens — already in analysis/inferential.py `cost_normalized`) and "the 
 comparison fixes the same visible-turn budget across tutors." This module is the second one,
 run as a read-only robustness re-analysis over the frozen confirmatory tables/logs.
 
-The frozen rule (decisions-log.md 2026-06-26, written before this result was read): for each
+The rule was specified on June 26, 2026. For each
 (problem, replicate) pair, K = min over conv/ped of the in-window (answer-phase) visible
 tutor-turn count; truncate BOTH conditions to the first K tutor turns of that problem and the
 student turns up to (and including) the response to the K-th tutor turn. The three marginals

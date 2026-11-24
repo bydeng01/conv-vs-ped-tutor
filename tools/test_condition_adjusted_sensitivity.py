@@ -64,9 +64,12 @@ def _pinned_environment() -> tuple[bool, str]:
     just the package set. Pip pinning alone does not reproduce these numbers."""
     recorded = json.loads((REPO_ROOT / "artifact" / "pinned-environment.json").read_text())
     want_os = recorded["analysis_hardware"]["operating_system"]
-    if not (platform.system() == "Darwin" and platform.machine() == "arm64"):
-        return False, (f"checkpoints were fit on {want_os}; this is "
-                       f"{platform.system()} {platform.machine()} with a different BLAS")
+    system = platform.system()
+    if system == "Darwin":
+        system = f"macOS {platform.mac_ver()[0]}"
+    have_os = f"{system} {platform.machine()}"
+    if have_os != want_os:
+        return False, f"checkpoints were fit on {want_os}, running on {have_os}"
     want_py = recorded["python"]
     have_py = platform.python_version()
     if have_py != want_py:
