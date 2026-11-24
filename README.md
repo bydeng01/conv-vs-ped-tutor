@@ -1,5 +1,11 @@
 # Rethinking LLM-Judged Helpfulness as a Pedagogy Signal
 
+[![Python](https://img.shields.io/badge/python-3.11%20%7C%203.12-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![CI](https://img.shields.io/github/actions/workflow/status/bydeng01/conv-vs-ped-tutor/ci.yml?branch=main&label=CI)](https://github.com/bydeng01/conv-vs-ped-tutor/actions/workflows/ci.yml)
+[![arXiv](https://img.shields.io/badge/arXiv-2607.28128-b31b1b.svg)](https://arxiv.org/abs/2607.28128)
+[![Docker](https://img.shields.io/badge/Docker-supported-2496ED.svg?logo=docker&logoColor=white)](Dockerfile)
+
 Can a helpfulness rating distinguish a tutor that gives away the answer from one that helps a student work it out? We tested two tutoring policies on each of three language models. ConvTutor's only tutoring instruction is to be helpful and clear. PedTutor tracks the student's progress, offers increasingly specific hints, and asks the student to supply the final answer. Each pair of tutors used the same underlying model. A third condition gave the student no tutor.
 
 One simulated student worked through algebra word problems. We recorded when a tutor disclosed the answer and whether the student's next turn contained independent work. Claude Opus 4.8 rated the tutor turns for helpfulness and pedagogy without seeing the policy labels. A post hoc analysis used GPT-5.6 Sol to rate the same 1,179 turns. [Paper and authors](https://arxiv.org/abs/2607.28128v2) · [Study plan and amendments](supplement/research-record.md)
